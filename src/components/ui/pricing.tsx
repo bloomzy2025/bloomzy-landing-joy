@@ -155,7 +155,7 @@ export function Pricing({
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 0,
                     }}
-                    formatter={(value) => `$${value}`}
+                    formatValue={(value) => `$${value}`}
                     transformTiming={{
                       duration: 500,
                       easing: "ease-out",
