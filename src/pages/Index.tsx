@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
 import { Hero } from "@/components/ui/animated-hero";
-import { PricingSection } from "@/components/ui/pricing-section";
+import { Pricing } from "@/components/ui/pricing";
 
 const testimonials = [
   {
@@ -42,17 +42,12 @@ const testimonials = [
   }
 ];
 
-const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
-
-const TIERS = [
+const PRICING_PLANS = [
   {
-    id: "startup",
     name: "STARTUP",
-    price: {
-      monthly: 29,
-      yearly: 23,
-    },
-    description: "Perfect for solo founders and early-stage startups",
+    price: "29",
+    yearlyPrice: "23",
+    period: "per month",
     features: [
       "Task prioritization",
       "Basic Habitree visualization", 
@@ -60,17 +55,16 @@ const TIERS = [
       "Email support",
       "5 trees planted monthly"
     ],
-    cta: "Get Started",
-    popular: false,
+    description: "Perfect for solo founders and early-stage startups",
+    buttonText: "Get Started",
+    href: "#",
+    isPopular: false,
   },
   {
-    id: "growth",
     name: "GROWTH",
-    price: {
-      monthly: 79,
-      yearly: 63,
-    },
-    description: "Ideal for growing startups with increasing complexity",
+    price: "79",
+    yearlyPrice: "63",
+    period: "per month",
     features: [
       "Advanced task prioritization",
       "Full AI guidance system",
@@ -80,17 +74,16 @@ const TIERS = [
       "Custom Habitree themes",
       "15 trees planted monthly"
     ],
-    cta: "Get Started",
-    popular: true,
+    description: "Ideal for growing startups with increasing complexity",
+    buttonText: "Get Started",
+    href: "#",
+    isPopular: true,
   },
   {
-    id: "enterprise",
     name: "ENTERPRISE",
-    price: {
-      monthly: 299,
-      yearly: 239,
-    },
-    description: "For established startups with multiple team members",
+    price: "299",
+    yearlyPrice: "239",
+    period: "per month",
     features: [
       "Everything in Growth",
       "Team collaboration",
@@ -100,29 +93,11 @@ const TIERS = [
       "VIP support",
       "50 trees planted monthly"
     ],
-    cta: "Contact Sales",
-    popular: false,
+    description: "For established startups with multiple team members",
+    buttonText: "Contact Sales",
+    href: "#",
+    isPopular: false,
   },
-  {
-    id: "custom",
-    name: "CUSTOM",
-    price: {
-      monthly: "Custom",
-      yearly: "Custom",
-    },
-    description: "Tailored solutions for your specific needs",
-    features: [
-      "Everything in Enterprise",
-      "White-label solutions",
-      "Custom development",
-      "Dedicated support team",
-      "Quarterly business reviews",
-      "Strategic partnership",
-      "100+ trees planted monthly"
-    ],
-    cta: "Contact Us",
-    highlighted: true,
-  }
 ];
 
 const Index = () => {
@@ -200,11 +175,10 @@ const Index = () => {
           <div className="absolute inset-0 -z-10">
             <div className="h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:35px_35px] opacity-30 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
           </div>
-          <PricingSection
+          <Pricing 
+            plans={PRICING_PLANS}
             title="Choose Your Growth Plan"
-            subtitle="Select the perfect plan for your startup's stage and needs. All plans include our core features to help you focus on what matters most."
-            frequencies={PAYMENT_FREQUENCIES}
-            tiers={TIERS}
+            description="Select the perfect plan for your startup's stage and needs. All plans include our core features to help you focus on what matters most."
           />
         </div>
       </section>
