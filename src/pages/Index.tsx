@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -102,13 +103,6 @@ const PRICING_PLANS = [
 
 const Index = () => {
   const { toast } = useToast();
-
-  const handleDemoRequest = () => {
-    toast({
-      title: "Demo Request Received",
-      description: "We'll get back to you shortly!",
-    });
-  };
 
   return (
     <div className="min-h-screen">
