@@ -1,3 +1,4 @@
+
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -157,7 +158,7 @@ export function Pricing({
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0,
                       }}
-                      formatValue={(value) => `$${value}`}
+                      formatter={(value) => `$${value}`}
                       transformTiming={{
                         duration: 500,
                         easing: "ease-out",
