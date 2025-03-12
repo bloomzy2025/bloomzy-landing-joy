@@ -1,3 +1,4 @@
+
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -90,7 +91,7 @@ export function Pricing({
           </Label>
         </label>
         <span className="ml-2 font-semibold">
-          Annual billing <span className="text-primary">(Save 20%)</span>
+          Annual billing <span className="text-primary dark:text-primary">(Save 20%)</span>
         </span>
       </div>
 
@@ -148,7 +149,12 @@ export function Pricing({
                     value={
                       isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
                     }
-                    format={(value) => `$${value}`}
+                    format={{
+                      style: 'currency',
+                      currency: 'USD',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0
+                    }}
                     transformTiming={{
                       duration: 500,
                       easing: "ease-out",
@@ -177,7 +183,7 @@ export function Pricing({
                 ))}
               </ul>
 
-              <hr className="w-full my-4" />
+              <hr className="w-full my-4 dark:border-gray-700" />
 
               <a
                 href={plan.href}
