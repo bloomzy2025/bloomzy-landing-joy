@@ -14,6 +14,7 @@ import { Hero } from "@/components/ui/animated-hero";
 import { Pricing } from "@/components/ui/pricing";
 import { Header1 } from "@/components/ui/header";
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/features-section-with-hover-effects";
+import { Footerdemo } from "@/components/ui/footer-section";
 
 const testimonials = [
   {
@@ -147,37 +148,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-brand-green text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Bloomzy</h3>
-              <p className="text-gray-300">Your startup's clarity and growth companion.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2">
-                <li><a href="#features" className="text-gray-300 hover:text-white">Features</a></li>
-                <li><a href="#pricing" className="text-gray-300 hover:text-white">Pricing</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-300 hover:text-white">About</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-300 hover:text-white">Privacy</a></li>
-                <li><a href="#" className="text-gray-300 hover:text-white">Terms</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footerdemo />
     </div>
   );
 };

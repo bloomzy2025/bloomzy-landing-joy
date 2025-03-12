@@ -148,7 +148,7 @@ export function Pricing({
                     value={
                       isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
                     }
-                    format={(value: number) => `$${value}`}
+                    format={(value) => `$${value}`}
                     transformTiming={{
                       duration: 500,
                       easing: "ease-out",
