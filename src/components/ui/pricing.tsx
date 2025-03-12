@@ -1,4 +1,3 @@
-
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
@@ -149,7 +148,7 @@ export function Pricing({
                     value={
                       isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
                     }
-                    format={(value) => `$${value}`}
+                    format={(value: number) => `$${value}`}
                     transformTiming={{
                       duration: 500,
                       easing: "ease-out",

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +13,7 @@ import { TestimonialsSection } from "@/components/ui/testimonials-section";
 import { Hero } from "@/components/ui/animated-hero";
 import { Pricing } from "@/components/ui/pricing";
 import { Header1 } from "@/components/ui/header";
+import { FeaturesSectionWithHoverEffects } from "@/components/ui/features-section-with-hover-effects";
 
 const testimonials = [
   {
@@ -118,32 +118,10 @@ const Index = () => {
       {/* Features Section */}
       <section id="features" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-brand-green">
+          <h2 className="text-3xl font-bold text-center mb-8 text-brand-green">
             How Bloomzy Works
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="feature-card glass-card">
-              <ListTodo className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Smart Task Prioritization</h3>
-              <p className="text-gray-600">
-                Syncs with your tools and recommends high-impact tasks based on your startup's current stage.
-              </p>
-            </Card>
-            <Card className="feature-card glass-card">
-              <Leaf className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Habitree Progress System</h3>
-              <p className="text-gray-600">
-                Visualize your progress with our unique Habitree that grows as you complete important tasks.
-              </p>
-            </Card>
-            <Card className="feature-card glass-card">
-              <Brain className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Startup Stage Guidance</h3>
-              <p className="text-gray-600">
-                Get personalized tutorials and advice tailored to your startup's current challenges.
-              </p>
-            </Card>
-          </div>
+          <FeaturesSectionWithHoverEffects />
         </div>
       </section>
 
