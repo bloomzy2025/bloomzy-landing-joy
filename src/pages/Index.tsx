@@ -13,6 +13,7 @@ import {
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
 import { Hero } from "@/components/ui/animated-hero";
 import { Pricing } from "@/components/ui/pricing";
+import { Header1 } from "@/components/ui/header";
 
 const testimonials = [
   {
@@ -106,23 +107,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Navbar */}
-      <nav className="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-semibold text-brand-green">Bloomzy</span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#features" className="nav-link text-sm">Features</a>
-            <a href="#pricing" className="nav-link text-sm">Pricing</a>
-            <Button variant="outline" className="btn-secondary text-sm" size="sm">Log In</Button>
-            <Button className="btn-primary text-sm" size="sm">Book a demo</Button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <Hero />
+      {/* Header */}
+      <Header1 />
+      
+      {/* Hero Section with padding for header */}
+      <div className="pt-20">
+        <Hero />
+      </div>
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-gray-50">
