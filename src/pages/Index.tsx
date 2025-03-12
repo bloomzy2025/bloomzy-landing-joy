@@ -118,7 +118,7 @@ const Index = () => {
       </div>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8 text-brand-green dark:text-accent-green">
             How Bloomzy Works
