@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -24,17 +23,16 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Navbar */}
-      <nav className="fixed w-full bg-white/80 backdrop-blur-md z-50 border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="fixed w-full bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/15da5b58-f129-4b26-a28b-3a892f6e029a.png" alt="Bloomzy" className="h-8" />
             <span className="text-xl font-semibold text-brand-green">Bloomzy</span>
           </div>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="nav-link">Features</a>
-            <a href="#pricing" className="nav-link">Pricing</a>
-            <Button variant="outline" className="btn-secondary">Log In</Button>
-            <Button className="btn-primary">Book a demo</Button>
+          <div className="hidden md:flex items-center gap-6">
+            <a href="#features" className="nav-link text-sm">Features</a>
+            <a href="#pricing" className="nav-link text-sm">Pricing</a>
+            <Button variant="outline" className="btn-secondary text-sm" size="sm">Log In</Button>
+            <Button className="btn-primary text-sm" size="sm">Book a demo</Button>
           </div>
         </div>
       </nav>
