@@ -1,13 +1,14 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import {
   CheckCircle2,
-  Coffee,
-  Heart,
-  Sparkles,
-  Timer,
-  Zap,
+  Calendar,
+  ListTodo,
+  Leaf,
+  Target,
+  Brain,
 } from "lucide-react";
 
 const Index = () => {
@@ -42,10 +43,10 @@ const Index = () => {
         <div className="container mx-auto text-center">
           <div className="animate-fade-up">
             <h1 className="text-5xl md:text-6xl font-bold text-brand-green mb-6">
-              Stay Productive, Not Burnt Out
+              Focus on What Matters Most
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Your AI-powered companion for maintaining peak performance while preventing burnout. Built specifically for startup founders.
+              Bloomzy helps startup founders prioritize high-impact tasks, avoid burnout, and grow their business with clarity and purpose.
             </p>
             <div className="flex gap-4 justify-center">
               <Button className="btn-primary" onClick={handleDemoRequest}>
@@ -63,28 +64,28 @@ const Index = () => {
       <section id="features" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-brand-green">
-            Features Built for Your Success
+            How Bloomzy Works
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="feature-card glass-card">
-              <Timer className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Smart Time Tracking</h3>
+              <ListTodo className="w-12 h-12 text-brand-green mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Smart Task Prioritization</h3>
               <p className="text-gray-600">
-                Automatically track and optimize your work patterns for peak productivity.
+                Syncs with your tools and recommends high-impact tasks based on your startup's current stage.
               </p>
             </Card>
             <Card className="feature-card glass-card">
-              <Heart className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Wellness Monitoring</h3>
+              <Leaf className="w-12 h-12 text-brand-green mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Habitree Progress System</h3>
               <p className="text-gray-600">
-                Keep track of your mental and physical well-being with AI-powered insights.
+                Visualize your progress with our unique Habitree that grows as you complete important tasks.
               </p>
             </Card>
             <Card className="feature-card glass-card">
-              <Coffee className="w-12 h-12 text-brand-green mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Break Optimization</h3>
+              <Brain className="w-12 h-12 text-brand-green mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Startup Stage Guidance</h3>
               <p className="text-gray-600">
-                Get personalized recommendations for when to take breaks and recharge.
+                Get personalized tutorials and advice tailored to your startup's current challenges.
               </p>
             </Card>
           </div>
@@ -100,7 +101,7 @@ const Index = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <Card className="p-6 glass-card">
               <p className="text-gray-600 mb-4">
-                "Bloomzy has completely transformed how I manage my time and energy. I'm more productive than ever without feeling overwhelmed."
+                "Bloomzy has transformed how I prioritize my work. The clear ROI breakdowns and stage-specific guidance have been invaluable for my SaaS startup."
               </p>
               <div className="flex items-center gap-4">
                 <div className="rounded-full bg-brand-green/10 w-12 h-12 flex items-center justify-center">
@@ -114,7 +115,7 @@ const Index = () => {
             </Card>
             <Card className="p-6 glass-card">
               <p className="text-gray-600 mb-4">
-                "The AI-powered insights have helped me maintain a healthy work-life balance while scaling my startup."
+                "The Habitree visualization keeps me motivated, and I love that real trees get planted when I complete my goals. Bloomzy has given me clarity on what to focus on at each stage."
               </p>
               <div className="flex items-center gap-4">
                 <div className="rounded-full bg-brand-green/10 w-12 h-12 flex items-center justify-center">
@@ -138,39 +139,39 @@ const Index = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="p-6 glass-card">
-              <h3 className="text-xl font-semibold mb-2">Starter</h3>
+              <h3 className="text-xl font-semibold mb-2">Startup</h3>
               <p className="text-4xl font-bold mb-4">$29<span className="text-sm text-gray-500">/mo</span></p>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Basic time tracking</span>
+                  <span>Task prioritization</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Simple analytics</span>
+                  <span>Basic Habitree</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Email support</span>
+                  <span>Core integrations</span>
                 </li>
               </ul>
               <Button className="w-full btn-primary">Get Started</Button>
             </Card>
             <Card className="p-6 glass-card border-brand-green">
-              <h3 className="text-xl font-semibold mb-2">Pro</h3>
+              <h3 className="text-xl font-semibold mb-2">Growth</h3>
               <p className="text-4xl font-bold mb-4">$79<span className="text-sm text-gray-500">/mo</span></p>
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Advanced time tracking</span>
+                  <span>Advanced prioritization</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>AI-powered insights</span>
+                  <span>Full AI guidance</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Priority support</span>
+                  <span>All integrations</span>
                 </li>
               </ul>
               <Button className="w-full btn-primary">Get Started</Button>
@@ -181,7 +182,7 @@ const Index = () => {
               <ul className="space-y-3 mb-6">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Custom solutions</span>
+                  <span>Team collaboration</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-5 h-5 text-brand-green" />
@@ -206,7 +207,7 @@ const Index = () => {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-xl font-semibold mb-4">Bloomzy</h3>
-              <p className="text-gray-300">Your productivity and wellness companion.</p>
+              <p className="text-gray-300">Your startup's clarity and growth companion.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
