@@ -10,8 +10,8 @@ import {
   Brain,
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
-import { Pricing } from "@/components/ui/pricing";
 import { Hero } from "@/components/ui/animated-hero";
+import { PricingSection } from "@/components/ui/pricing-section";
 
 const testimonials = [
   {
@@ -42,12 +42,17 @@ const testimonials = [
   }
 ];
 
-const bloomzyPlans = [
+const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
+
+const TIERS = [
   {
+    id: "startup",
     name: "STARTUP",
-    price: "29",
-    yearlyPrice: "23",
-    period: "per month",
+    price: {
+      monthly: 29,
+      yearly: 23,
+    },
+    description: "Perfect for solo founders and early-stage startups",
     features: [
       "Task prioritization",
       "Basic Habitree visualization", 
@@ -55,16 +60,17 @@ const bloomzyPlans = [
       "Email support",
       "5 trees planted monthly"
     ],
-    description: "Perfect for solo founders and early-stage startups",
-    buttonText: "Get Started",
-    href: "#",
-    isPopular: false,
+    cta: "Get Started",
+    popular: false,
   },
   {
+    id: "growth",
     name: "GROWTH",
-    price: "79",
-    yearlyPrice: "63",
-    period: "per month",
+    price: {
+      monthly: 79,
+      yearly: 63,
+    },
+    description: "Ideal for growing startups with increasing complexity",
     features: [
       "Advanced task prioritization",
       "Full AI guidance system",
@@ -74,16 +80,17 @@ const bloomzyPlans = [
       "Custom Habitree themes",
       "15 trees planted monthly"
     ],
-    description: "Ideal for growing startups with increasing complexity",
-    buttonText: "Get Started",
-    href: "#",
-    isPopular: true,
+    cta: "Get Started",
+    popular: true,
   },
   {
+    id: "enterprise",
     name: "ENTERPRISE",
-    price: "299",
-    yearlyPrice: "239",
-    period: "per month",
+    price: {
+      monthly: 299,
+      yearly: 239,
+    },
+    description: "For established startups with multiple team members",
     features: [
       "Everything in Growth",
       "Team collaboration",
@@ -93,11 +100,29 @@ const bloomzyPlans = [
       "VIP support",
       "50 trees planted monthly"
     ],
-    description: "For established startups with multiple team members",
-    buttonText: "Contact Sales",
-    href: "#",
-    isPopular: false,
+    cta: "Contact Sales",
+    popular: false,
   },
+  {
+    id: "custom",
+    name: "CUSTOM",
+    price: {
+      monthly: "Custom",
+      yearly: "Custom",
+    },
+    description: "Tailored solutions for your specific needs",
+    features: [
+      "Everything in Enterprise",
+      "White-label solutions",
+      "Custom development",
+      "Dedicated support team",
+      "Quarterly business reviews",
+      "Strategic partnership",
+      "100+ trees planted monthly"
+    ],
+    cta: "Contact Us",
+    highlighted: true,
+  }
 ];
 
 const Index = () => {
@@ -127,7 +152,7 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section - Replaced with the new animated Hero component */}
+      {/* Hero Section */}
       <Hero />
 
       {/* Features Section */}
@@ -171,12 +196,17 @@ const Index = () => {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-gray-50">
-        <Pricing 
-          plans={bloomzyPlans}
-          title="Choose Your Growth Plan"
-          description="Select the perfect plan for your startup's stage and needs.
-All plans include our core features to help you focus on what matters most."
-        />
+        <div className="relative flex justify-center items-center w-full">
+          <div className="absolute inset-0 -z-10">
+            <div className="h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:35px_35px] opacity-30 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+          </div>
+          <PricingSection
+            title="Choose Your Growth Plan"
+            subtitle="Select the perfect plan for your startup's stage and needs. All plans include our core features to help you focus on what matters most."
+            frequencies={PAYMENT_FREQUENCIES}
+            tiers={TIERS}
+          />
+        </div>
       </section>
 
       {/* Footer */}
