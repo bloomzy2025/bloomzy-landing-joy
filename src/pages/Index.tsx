@@ -10,7 +10,7 @@ import {
   Brain,
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
-
+import { Pricing } from "@/components/ui/pricing";
 
 const testimonials = [
   {
@@ -39,6 +39,64 @@ const testimonials = [
     },
     text: "As a first-time founder, Bloomzy's stage-specific guidance and clear prioritization has been like having a mentor in my pocket. It's transformed how I work."
   }
+];
+
+const bloomzyPlans = [
+  {
+    name: "STARTUP",
+    price: "29",
+    yearlyPrice: "23",
+    period: "per month",
+    features: [
+      "Task prioritization",
+      "Basic Habitree visualization", 
+      "Core integrations",
+      "Email support",
+      "5 trees planted monthly"
+    ],
+    description: "Perfect for solo founders and early-stage startups",
+    buttonText: "Get Started",
+    href: "#",
+    isPopular: false,
+  },
+  {
+    name: "GROWTH",
+    price: "79",
+    yearlyPrice: "63",
+    period: "per month",
+    features: [
+      "Advanced task prioritization",
+      "Full AI guidance system",
+      "All integrations",
+      "Priority support",
+      "ROI breakdown reports",
+      "Custom Habitree themes",
+      "15 trees planted monthly"
+    ],
+    description: "Ideal for growing startups with increasing complexity",
+    buttonText: "Get Started",
+    href: "#",
+    isPopular: true,
+  },
+  {
+    name: "ENTERPRISE",
+    price: "299",
+    yearlyPrice: "239",
+    period: "per month",
+    features: [
+      "Everything in Growth",
+      "Team collaboration",
+      "Dedicated account manager",
+      "Custom integrations",
+      "Enhanced analytics dashboard",
+      "VIP support",
+      "50 trees planted monthly"
+    ],
+    description: "For established startups with multiple team members",
+    buttonText: "Contact Sales",
+    href: "#",
+    isPopular: false,
+  },
 ];
 
 const Index = () => {
@@ -131,72 +189,12 @@ const Index = () => {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-brand-green">
-            Choose Your Growth Plan
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6 glass-card">
-              <h3 className="text-xl font-semibold mb-2">Startup</h3>
-              <p className="text-4xl font-bold mb-4">$29<span className="text-sm text-gray-500">/mo</span></p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Task prioritization</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Basic Habitree</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Core integrations</span>
-                </li>
-              </ul>
-              <Button className="w-full btn-primary">Get Started</Button>
-            </Card>
-            <Card className="p-6 glass-card border-brand-green">
-              <h3 className="text-xl font-semibold mb-2">Growth</h3>
-              <p className="text-4xl font-bold mb-4">$79<span className="text-sm text-gray-500">/mo</span></p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Advanced prioritization</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Full AI guidance</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>All integrations</span>
-                </li>
-              </ul>
-              <Button className="w-full btn-primary">Get Started</Button>
-            </Card>
-            <Card className="p-6 glass-card">
-              <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
-              <p className="text-2xl font-bold mb-4">Custom</p>
-              <ul className="space-y-3 mb-6">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Team collaboration</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Dedicated support</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-brand-green" />
-                  <span>Custom integrations</span>
-                </li>
-              </ul>
-              <Button variant="outline" className="w-full btn-secondary" onClick={handleDemoRequest}>
-                Contact Sales
-              </Button>
-            </Card>
-          </div>
-        </div>
+        <Pricing 
+          plans={bloomzyPlans}
+          title="Choose Your Growth Plan"
+          description="Select the perfect plan for your startup's stage and needs.
+All plans include our core features to help you focus on what matters most."
+        />
       </section>
 
       {/* Footer */}
