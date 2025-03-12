@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
 import { Pricing } from "@/components/ui/pricing";
+import { Hero } from "@/components/ui/animated-hero";
 
 const testimonials = [
   {
@@ -126,27 +127,8 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="animate-fade-up">
-            <h1 className="text-5xl md:text-6xl font-bold text-brand-green mb-6">
-              Focus on What Matters Most
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Bloomzy helps startup founders prioritize high-impact tasks, avoid burnout, and grow their business with clarity and purpose.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Button className="btn-primary" onClick={handleDemoRequest}>
-                Book a Demo
-              </Button>
-              <Button variant="outline" className="btn-secondary">
-                Learn More
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section - Replaced with the new animated Hero component */}
+      <Hero />
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-gray-50">

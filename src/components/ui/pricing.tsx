@@ -2,217 +2,158 @@
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Check, Star } from "lucide-react";
-import { useState, useRef } from "react";
-import confetti from "canvas-confetti";
-import NumberFlow from "@number-flow/react";
+import { CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { NumberFlow } from "@number-flow/react";
 
-interface PricingPlan {
+type Plan = {
   name: string;
   price: string;
   yearlyPrice: string;
   period: string;
-  features: string[];
   description: string;
+  features: string[];
   buttonText: string;
   href: string;
-  isPopular: boolean;
-}
+  isPopular?: boolean;
+};
 
-interface PricingProps {
-  plans: PricingPlan[];
-  title?: string;
-  description?: string;
-}
+type PricingProps = {
+  title: string;
+  description: string;
+  plans: Plan[];
+};
 
-export function Pricing({
-  plans,
-  title = "Simple, Transparent Pricing",
-  description = "Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support.",
-}: PricingProps) {
-  const [isMonthly, setIsMonthly] = useState(true);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-  const switchRef = useRef<HTMLButtonElement>(null);
-
-  const handleToggle = (checked: boolean) => {
-    setIsMonthly(!checked);
-    if (checked && switchRef.current) {
-      const rect = switchRef.current.getBoundingClientRect();
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: {
-          x: x / window.innerWidth,
-          y: y / window.innerHeight,
-        },
-        colors: [
-          "hsl(var(--primary))",
-          "hsl(var(--accent))",
-          "hsl(var(--secondary))",
-          "hsl(var(--muted))",
-        ],
-        ticks: 200,
-        gravity: 1.2,
-        decay: 0.94,
-        startVelocity: 30,
-        shapes: ["circle"],
-      });
-    }
-  };
+export function Pricing({ title, description, plans }: PricingProps) {
+  const [isYearly, setIsYearly] = useState(false);
 
   return (
-    <div className="container py-20">
-      <div className="text-center space-y-4 mb-12">
-        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          {title}
-        </h2>
-        <p className="text-muted-foreground text-lg whitespace-pre-line">
+    <div className="container max-w-5xl">
+      <div className="text-center">
+        <h2 className="text-3xl font-bold text-brand-green mb-2">{title}</h2>
+        <p className="mx-auto max-w-lg text-gray-600 whitespace-pre-line">
           {description}
         </p>
       </div>
-
-      <div className="flex justify-center mb-10">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <Label>
-            <Switch
-              ref={switchRef as any}
-              checked={!isMonthly}
-              onCheckedChange={handleToggle}
-              className="relative"
-            />
-          </Label>
-        </label>
-        <span className="ml-2 font-semibold">
-          Annual billing <span className="text-primary">(Save 20%)</span>
+      <div className="flex items-center justify-center mt-8 space-x-3">
+        <span className="text-sm font-medium">Monthly</span>
+        <Switch
+          checked={isYearly}
+          onCheckedChange={setIsYearly}
+          id="billing-switch"
+        />
+        <span className="text-sm font-medium">
+          Yearly <span className="text-green-500 font-semibold">(-20%)</span>
         </span>
       </div>
+      <div className="flex flex-col md:flex-row gap-8 mt-12">
+        {plans.map((plan, index) => {
+          const priceNum =
+            plan.name === "ENTERPRISE"
+              ? null
+              : parseInt(isYearly ? plan.yearlyPrice : plan.price);
 
-      <div className="grid grid-cols-1 md:grid-cols-3 sm:2 gap-4">
-        {plans.map((plan, index) => (
-          <motion.div
-            key={index}
-            initial={{ y: 50, opacity: 1 }}
-            whileInView={
-              isDesktop
-                ? {
-                    y: plan.isPopular ? -20 : 0,
-                    opacity: 1,
-                    x: index === 2 ? -30 : index === 0 ? 30 : 0,
-                    scale: index === 0 || index === 2 ? 0.94 : 1.0,
-                  }
-                : {}
-            }
-            viewport={{ once: true }}
-            transition={{
-              duration: 1.6,
-              type: "spring",
-              stiffness: 100,
-              damping: 30,
-              delay: 0.4,
-              opacity: { duration: 0.5 },
-            }}
-            className={cn(
-              `rounded-2xl border-[1px] p-6 bg-background text-center lg:flex lg:flex-col lg:justify-center relative`,
-              plan.isPopular ? "border-primary border-2" : "border-border",
-              "flex flex-col",
-              !plan.isPopular && "mt-5",
-              index === 0 || index === 2
-                ? "z-0 transform translate-x-0 translate-y-0 -translate-z-[50px] rotate-y-[10deg]"
-                : "z-10",
-              index === 0 && "origin-right",
-              index === 2 && "origin-left"
-            )}
-          >
-            {plan.isPopular && (
-              <div className="absolute top-0 right-0 bg-primary py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
-                <Star className="text-primary-foreground h-4 w-4 fill-current" />
-                <span className="text-primary-foreground ml-1 font-sans font-semibold">
-                  Popular
-                </span>
+          return (
+            <div
+              key={index}
+              className={cn(
+                "flex-1 rounded-xl p-6 border relative",
+                plan.isPopular
+                  ? "bg-brand-green/5 border-brand-green shadow-xl shadow-brand-green/5"
+                  : "bg-white border-gray-200 shadow-lg"
+              )}
+            >
+              {plan.isPopular && (
+                <div className="absolute -top-5 left-0 right-0 flex justify-center">
+                  <div className="bg-brand-green text-white text-xs font-semibold px-4 py-1 rounded-full uppercase">
+                    Most Popular
+                  </div>
+                </div>
+              )}
+              <div className="">
+                <h3
+                  className={cn(
+                    "text-lg font-bold",
+                    plan.isPopular ? "text-brand-green" : "text-gray-900"
+                  )}
+                >
+                  {plan.name}
+                </h3>
+                <p className="text-sm text-gray-500 mt-1">{plan.description}</p>
               </div>
-            )}
-            <div className="flex-1 flex flex-col">
-              <p className="text-base font-semibold text-muted-foreground">
-                {plan.name}
-              </p>
-              <div className="mt-6 flex items-center justify-center gap-x-2">
-                <span className="text-5xl font-bold tracking-tight text-foreground">
-                  {plan.name === "ENTERPRISE" ? (
-                    "Custom"
-                  ) : (
+              <div className="mt-5">
+                {plan.name === "ENTERPRISE" ? (
+                  <div>
+                    <div className="text-5xl font-bold text-gray-900">
+                      Custom
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-baseline">
+                    <span className="text-gray-500 mr-1">$</span>
                     <NumberFlow
-                      value={
-                        isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
-                      }
+                      value={priceNum || 0}
                       format={{
                         style: "currency",
                         currency: "USD",
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0,
                       }}
-                      formatter={(value) => `$${value}`}
+                      formatValue={(value) => `${value}`}
                       transformTiming={{
                         duration: 500,
                         easing: "ease-out",
                       }}
-                      willChange
-                      className="font-variant-numeric: tabular-nums"
+                      willChange={true}
+                      className="text-5xl font-bold text-gray-900"
                     />
-                  )}
-                </span>
-                {plan.period !== "Next 3 months" && plan.name !== "ENTERPRISE" && (
-                  <span className="text-sm font-semibold leading-6 tracking-wide text-muted-foreground">
-                    / {plan.period}
-                  </span>
+                    <span className="text-gray-500 ml-1">{plan.period}</span>
+                  </div>
+                )}
+                {plan.name !== "ENTERPRISE" && isYearly && (
+                  <div className="text-sm text-green-600 mt-1">
+                    Billed yearly (save 20%)
+                  </div>
+                )}
+                {plan.name !== "ENTERPRISE" && !isYearly && (
+                  <div className="text-sm text-gray-500 mt-1">
+                    Billed monthly
+                  </div>
                 )}
               </div>
-
-              {plan.name !== "ENTERPRISE" && (
-                <p className="text-xs leading-5 text-muted-foreground">
-                  {isMonthly ? "billed monthly" : "billed annually"}
-                </p>
-              )}
-
-              <ul className="mt-5 gap-2 flex flex-col">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <Check className="h-4 w-4 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-left">{feature}</span>
+              <ul className="mt-6 space-y-4">
+                {plan.features.map((feature, i) => (
+                  <li key={i} className="flex items-start">
+                    <CheckCircle2
+                      className={cn(
+                        "h-5 w-5 shrink-0 mr-2",
+                        plan.isPopular ? "text-brand-green" : "text-gray-400"
+                      )}
+                    />
+                    <span className="text-sm text-gray-600">{feature}</span>
                   </li>
                 ))}
               </ul>
-
-              <hr className="w-full my-4" />
-
-              <a
-                href={plan.href}
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                  }),
-                  "group relative w-full gap-2 overflow-hidden text-lg font-semibold tracking-tighter",
-                  "transform-gpu ring-offset-current transition-all duration-300 ease-out hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:bg-primary hover:text-primary-foreground",
-                  plan.isPopular
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-background text-foreground"
-                )}
-              >
-                {plan.buttonText}
-              </a>
-              <p className="mt-6 text-xs leading-5 text-muted-foreground">
-                {plan.description}
-              </p>
+              <div className="mt-8">
+                <a
+                  href={plan.href}
+                  className={cn(
+                    buttonVariants({
+                      size: "lg",
+                      variant: plan.isPopular ? "default" : "outline",
+                    }),
+                    "w-full",
+                    plan.isPopular && "bg-brand-green hover:bg-brand-green/90"
+                  )}
+                >
+                  {plan.buttonText}
+                </a>
+              </div>
             </div>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
