@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -10,6 +9,37 @@ import {
   Target,
   Brain,
 } from "lucide-react";
+import { TestimonialsSection } from "@/components/ui/testimonials-section";
+
+
+const testimonials = [
+  {
+    author: {
+      name: "Sarah Johnson",
+      handle: "@sarahj",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face"
+    },
+    text: "Bloomzy has transformed how I prioritize my work. The clear ROI breakdowns and stage-specific guidance have been invaluable for my SaaS startup.",
+    href: "#"
+  },
+  {
+    author: {
+      name: "Mike Martinez",
+      handle: "@mikem",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+    },
+    text: "The Habitree visualization keeps me motivated, and I love that real trees get planted when I complete my goals. Bloomzy has given me clarity on what to focus on at each stage.",
+    href: "#"
+  },
+  {
+    author: {
+      name: "Elena Chen",
+      handle: "@elenac",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face"
+    },
+    text: "As a first-time founder, Bloomzy's stage-specific guidance and clear prioritization has been like having a mentor in my pocket. It's transformed how I work."
+  }
+];
 
 const Index = () => {
   const { toast } = useToast();
@@ -93,43 +123,11 @@ const Index = () => {
       </section>
 
       {/* Social Proof */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-brand-green">
-            Trusted by Founders
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="p-6 glass-card">
-              <p className="text-gray-600 mb-4">
-                "Bloomzy has transformed how I prioritize my work. The clear ROI breakdowns and stage-specific guidance have been invaluable for my SaaS startup."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-brand-green/10 w-12 h-12 flex items-center justify-center">
-                  <span className="text-brand-green font-semibold">SJ</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Sarah Johnson</p>
-                  <p className="text-sm text-gray-500">CEO, TechStart</p>
-                </div>
-              </div>
-            </Card>
-            <Card className="p-6 glass-card">
-              <p className="text-gray-600 mb-4">
-                "The Habitree visualization keeps me motivated, and I love that real trees get planted when I complete my goals. Bloomzy has given me clarity on what to focus on at each stage."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-brand-green/10 w-12 h-12 flex items-center justify-center">
-                  <span className="text-brand-green font-semibold">MM</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Mike Martinez</p>
-                  <p className="text-sm text-gray-500">Founder, GrowthLab</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection
+        title="Trusted by Founders"
+        description="Join thousands of startup founders who are already building with clarity and purpose using Bloomzy"
+        testimonials={testimonials}
+      />
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-gray-50">
