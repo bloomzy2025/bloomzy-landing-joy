@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -135,7 +134,7 @@ function Header1() {
                     <div className="w-8 h-8 mr-2">
                         <AspectRatio ratio={1/1} className="overflow-hidden">
                             <img 
-                                src="/lovable-uploads/589da4f0-3cc7-4ea6-a7ec-2cfa77c904a5.png" 
+                                src="/lovable-uploads/89014d72-b4cf-4fa7-a1c5-92bf3c605c4f.png" 
                                 alt="Bloomzy Logo" 
                                 className="object-cover w-full h-full"
                             />
