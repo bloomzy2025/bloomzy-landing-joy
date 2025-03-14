@@ -115,7 +115,7 @@ export function ExpandableChatDemo() {
                 ) : (
                   <ChatBubbleAvatar
                     className="h-8 w-8 shrink-0"
-                    imageSrc="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
+                    imageSrc="/lovable-uploads/980a4d0b-55ff-43e4-8e5d-4dfbe8054e2c.png"
                     fallback="AI"
                   />
                 )}
@@ -131,7 +131,7 @@ export function ExpandableChatDemo() {
               <ChatBubble variant="received">
                 <ChatBubbleAvatar
                   className="h-8 w-8 shrink-0"
-                  imageSrc="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
+                  imageSrc="/lovable-uploads/980a4d0b-55ff-43e4-8e5d-4dfbe8054e2c.png"
                   fallback="AI"
                 />
                 <ChatBubbleMessage isLoading />
