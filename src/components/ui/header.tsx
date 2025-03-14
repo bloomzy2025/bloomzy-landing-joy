@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -82,13 +83,15 @@ function Header1() {
                                         <>
                                             <NavigationMenuLink asChild>
                                                 <RouterLink to={item.href}>
-                                                    <Button variant="ghost">{item.title}</Button>
+                                                    <Button variant="ghost" className="font-bold text-base">
+                                                        {item.title}
+                                                    </Button>
                                                 </RouterLink>
                                             </NavigationMenuLink>
                                         </>
                                     ) : (
                                         <>
-                                            <NavigationMenuTrigger className="font-medium text-sm">
+                                            <NavigationMenuTrigger className="font-bold text-base">
                                                 {item.title}
                                             </NavigationMenuTrigger>
                                             <NavigationMenuContent className="!w-[450px] p-4">
@@ -152,11 +155,11 @@ function Header1() {
                                                 href={item.href}
                                                 className="flex justify-between items-center"
                                             >
-                                                <span className="text-lg">{item.title}</span>
+                                                <span className="text-lg font-bold">{item.title}</span>
                                                 <MoveRight className="w-4 h-4 stroke-1 text-muted-foreground" />
                                             </Link>
                                         ) : (
-                                            <p className="text-lg">{item.title}</p>
+                                            <p className="text-lg font-bold">{item.title}</p>
                                         )}
                                         {item.items &&
                                             item.items.map((subItem) => (
