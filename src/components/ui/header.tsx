@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
-import { ChevronDown, Menu, Tool, Wrench, X } from "lucide-react";
+import { ChevronDown, Menu, Wrench, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 
@@ -236,7 +236,7 @@ function Header1() {
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
                   <Link to="/tools/keyword-generator" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
-                    <Tool className="h-4 w-4 text-brand-green" />
+                    <Wrench className="h-4 w-4 text-brand-green" />
                     Keyword Generator
                   </Link>
                 </motion.div>
