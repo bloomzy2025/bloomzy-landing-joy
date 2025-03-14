@@ -81,8 +81,8 @@ function Header1() {
         
         {/* Center logo */}
         <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 text-xl font-bold tracking-tighter flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center">
-            <span className="text-white text-xs">🌱</span>
+          <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center overflow-hidden">
+            <img src="/lovable-uploads/12735e3d-18db-4ce4-bb6a-fba45bf2629d.png" alt="Bloomzy Logo" className="w-full h-full object-cover" />
           </div>
           Bloomzy
         </Link>
