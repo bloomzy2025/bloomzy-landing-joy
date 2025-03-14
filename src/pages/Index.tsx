@@ -130,7 +130,7 @@ const Index = () => {
       {/* Social Proof */}
       <TestimonialsSection
         title="Trusted by Founders"
-        description="Join thousands of startup founders who are already building with clarity and purpose using Bloomzy"
+        description="Join over a hundred startup founders who are already scaling with clarity and consistency using Bloomzy"
         testimonials={testimonials}
       />
 
