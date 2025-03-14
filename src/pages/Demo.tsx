@@ -4,6 +4,7 @@ import { Header1 } from "@/components/ui/header";
 import { Footerdemo } from "@/components/ui/footer-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ArrowRight } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,10 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Demo = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -38,23 +40,22 @@ const Demo = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulating form submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    // Validate form
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.usageIntent || !formData.problemToSolve) {
       toast({
-        title: "Demo Request Submitted",
-        description: "We'll be in touch with you shortly to schedule your demo.",
+        title: "Please fill all fields",
+        description: "All fields are required to proceed to scheduling.",
       });
-      
-      // Reset form
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        usageIntent: "",
-        problemToSolve: ""
-      });
-    }, 1500);
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Save form data to session storage for potential use on the calendly page
+    sessionStorage.setItem('demoFormData', JSON.stringify(formData));
+    
+    // Navigate to the calendly page
+    navigate('/calendly');
+    setIsSubmitting(false);
   };
 
   const usageOptions = [
@@ -164,13 +165,14 @@ const Demo = () => {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-14 text-lg bg-[#82BC9C] hover:bg-[#6DA983] transition-colors duration-300"
+              className="w-full h-14 text-lg bg-[#82BC9C] hover:bg-[#6DA983] transition-colors duration-300 flex items-center justify-center gap-2"
             >
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Processing..." : "Schedule a call"} 
+              <ArrowRight className="ml-2" />
             </Button>
             
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-6">
-              By clicking submit, you consent to receive email communications about
+              By clicking schedule, you consent to receive email communications about
               Bloomzy products and services and agree to our <Link to="/terms" className="text-brand-green hover:underline">Terms</Link>. Your data will be
               processed in accordance with our <Link to="/privacy" className="text-brand-green hover:underline">Privacy Policy</Link>. You may opt out at any
               time.

@@ -125,12 +125,17 @@ export function BloomzyChat() {
     ))
   }
 
+  // Create a handler function with the correct type signature
+  const handleExpandChange = (isExpanded: boolean) => {
+    setIsOpen(isExpanded);
+  };
+
   return (
     <ExpandableChat
       size="lg"
       position="bottom-right"
       icon={!isOpen ? <MessageCircle /> : undefined}
-      onChange={setIsOpen}
+      onChange={handleExpandChange}
     >
       <ExpandableChatHeader className="flex-col text-center justify-center">
         <h1 className="text-xl font-semibold">Bloomzy Assistant</h1>
