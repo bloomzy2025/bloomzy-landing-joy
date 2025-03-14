@@ -16,7 +16,7 @@ function Header1() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return <div className="bg-gray-50">
-      <div className="container flex justify-between items-center bg-zinc-50">
+      <div className="container flex justify-between items-center rounded-lg bg-zinc-50">
         {/* Left navigation links */}
         <div className="flex items-center gap-8">
           <Link to="/" className="font-medium">
