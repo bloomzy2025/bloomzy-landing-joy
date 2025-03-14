@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -28,25 +27,6 @@
   body {
     @apply bg-background text-foreground transition-colors duration-300;
   }
-}
-
-/* Hero animations */
-@keyframes text-shimmer {
-  0% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.text-shimmer {
-  background: linear-gradient(90deg, #9b87f5 0%, #D946EF 50%, #9b87f5 100%);
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: text-shimmer 3s linear infinite;
 }
 
 /* Responsive section padding */
