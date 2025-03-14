@@ -15,10 +15,7 @@ function Header1() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  return <div className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out", {
-    "py-2 bg-background/80 backdrop-blur-sm shadow-sm": scrolled,
-    "py-4": !scrolled
-  })}>
+  return <div className="bg-gray-50">
       <div className="container flex justify-between items-center bg-zinc-50">
         {/* Left navigation links */}
         <div className="flex items-center gap-8">
