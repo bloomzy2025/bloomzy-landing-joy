@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -12,7 +11,7 @@ import {
 } from "lucide-react";
 import { TestimonialsSection } from "@/components/ui/testimonials-section";
 import { Hero } from "@/components/ui/animated-hero";
-import { Pricing } from "@/components/ui/pricing";
+import { PricingSection } from "@/components/ui/pricing-section";
 import { Header1 } from "@/components/ui/header";
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/features-section-with-hover-effects";
 import { Footerdemo } from "@/components/ui/footer-section";
@@ -46,12 +45,32 @@ const testimonials = [
   }
 ];
 
-const PRICING_PLANS = [
+const PRICING_TIERS = [
   {
+    id: "free",
+    name: "FREE",
+    price: {
+      monthly: "Free",
+      yearly: "Free",
+    },
+    description: "Perfect for trying out Bloomzy's features",
+    features: [
+      "Basic task prioritization",
+      "Limited Habitree visualization",
+      "Core integrations",
+      "Community support",
+      "1 tree planted monthly"
+    ],
+    cta: "Get Started",
+  },
+  {
+    id: "startup",
     name: "STARTUP",
-    price: "23",
-    yearlyPrice: "19",
-    period: "per month",
+    price: {
+      monthly: 23,
+      yearly: 19,
+    },
+    description: "Perfect for solo founders and early-stage startups",
     features: [
       "Task prioritization",
       "Basic Habitree visualization", 
@@ -59,16 +78,16 @@ const PRICING_PLANS = [
       "Email support",
       "5 trees planted monthly"
     ],
-    description: "Perfect for solo founders and early-stage startups",
-    buttonText: "Get Started",
-    href: "#",
-    isPopular: false,
+    cta: "Get Started",
   },
   {
+    id: "growth",
     name: "GROWTH",
-    price: "79",
-    yearlyPrice: "63",
-    period: "per month",
+    price: {
+      monthly: 79,
+      yearly: 63,
+    },
+    description: "Ideal for growing startups with increasing complexity",
     features: [
       "Advanced task prioritization",
       "Full AI guidance system",
@@ -78,16 +97,17 @@ const PRICING_PLANS = [
       "Custom Habitree themes",
       "15 trees planted monthly"
     ],
-    description: "Ideal for growing startups with increasing complexity",
-    buttonText: "Get Started",
-    href: "#",
-    isPopular: true,
+    cta: "Get Started",
+    popular: true,
   },
   {
+    id: "enterprise",
     name: "ENTERPRISE",
-    price: "CUSTOM",
-    yearlyPrice: "CUSTOM",
-    period: "per month",
+    price: {
+      monthly: "Custom",
+      yearly: "Custom",
+    },
+    description: "For established startups with multiple team members",
     features: [
       "Everything in Growth",
       "Team collaboration",
@@ -97,12 +117,12 @@ const PRICING_PLANS = [
       "VIP support",
       "50 trees planted monthly"
     ],
-    description: "For established startups with multiple team members",
-    buttonText: "Contact Sales",
-    href: "#",
-    isPopular: false,
+    cta: "Contact Sales",
+    highlighted: true,
   },
 ];
+
+const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
 
 const Index = () => {
   const { toast } = useToast();
@@ -140,10 +160,11 @@ const Index = () => {
           <div className="absolute inset-0 -z-10">
             <div className="h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:35px_35px] opacity-30 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] dark:[mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#fff_70%,transparent_110%)]" />
           </div>
-          <Pricing 
-            plans={PRICING_PLANS}
+          <PricingSection 
             title="Choose Your Growth Plan"
-            description="Select the perfect plan for your startup's stage and needs. All plans include our core features to help you focus on what matters most."
+            subtitle="Select the perfect plan for your startup's stage and needs. All plans include our core features to help you focus on what matters most."
+            tiers={PRICING_TIERS}
+            frequencies={PAYMENT_FREQUENCIES}
           />
         </div>
       </section>
