@@ -52,7 +52,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
         <CardDescription className="text-sm mt-2">{tier.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
-        <div className="h-24 flex items-start justify-center mb-4">
+        <div className="h-24 flex items-start justify-center mb-8">
           {isNumericPrice ? (
             <div className="flex items-baseline">
               <span className={cn(
@@ -68,7 +68,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
             )}>{price}</span>
           )}
         </div>
-        <ul className="space-y-3 mt-auto">
+        <ul className="space-y-4 flex-1">
           {tier.features.map((feature) => (
             <li key={feature} className="flex items-start text-gray-700 dark:text-gray-300">
               <Check className="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-green" />
