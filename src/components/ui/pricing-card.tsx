@@ -32,7 +32,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
 
   return (
     <Card className={cn(
-      "flex flex-col", 
+      "flex flex-col h-full", 
       tier.highlighted 
         ? "border border-brand-green/20 shadow-xl bg-gradient-to-b from-brand-green/5 to-brand-green/10 dark:from-brand-green/20 dark:to-brand-green/30" 
         : tier.popular 
@@ -40,7 +40,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
           : "shadow-md"
     )}>
       <CardHeader className={cn(
-        "flex-1",
+        "flex-none",
         tier.highlighted && "bg-transparent"
       )}>
         <CardTitle className={cn(
@@ -51,16 +51,16 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
         </CardTitle>
         <CardDescription className="text-sm mt-2">{tier.description}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1">
-        <div className="mb-4 flex items-baseline justify-center">
+      <CardContent className="flex-1 flex flex-col">
+        <div className="h-24 flex items-start justify-center mb-4">
           {isNumericPrice ? (
-            <>
+            <div className="flex items-baseline">
               <span className={cn(
                 "text-5xl font-bold text-gray-900 dark:text-gray-100",
                 tier.highlighted && "text-brand-green"
               )}>${price}</span>
               <span className="text-gray-600 ml-2 dark:text-gray-400">/{paymentFrequency.replace('ly', '')}</span>
-            </>
+            </div>
           ) : (
             <span className={cn(
               "text-5xl font-bold text-gray-900 dark:text-gray-100",
@@ -68,13 +68,10 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
             )}>{price}</span>
           )}
         </div>
-        <ul className="space-y-3">
+        <ul className="space-y-3 mt-auto">
           {tier.features.map((feature) => (
             <li key={feature} className="flex items-start text-gray-700 dark:text-gray-300">
-              <Check className={cn(
-                "w-4 h-4 mr-2 mt-1 flex-shrink-0", 
-                "text-brand-green"
-              )} />
+              <Check className="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-green" />
               <span className="text-sm">{feature}</span>
             </li>
           ))}
