@@ -34,18 +34,18 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
     <Card className={cn(
       "flex flex-col", 
       tier.highlighted 
-        ? "border-2 border-[#0EA5E9] shadow-xl bg-gradient-to-b from-[#F6F6F7] to-[#F1F1F1] dark:from-[#222222]/60 dark:to-[#222222]" 
+        ? "border border-brand-green/20 shadow-xl bg-gradient-to-b from-brand-green/5 to-brand-green/10 dark:from-brand-green/20 dark:to-brand-green/30" 
         : tier.popular 
           ? "border-2 border-brand-green shadow-xl" 
           : "shadow-md"
     )}>
       <CardHeader className={cn(
         "flex-1",
-        tier.highlighted && "bg-[#0EA5E9]/5 dark:bg-[#0EA5E9]/10"
+        tier.highlighted && "bg-transparent"
       )}>
         <CardTitle className={cn(
           "text-2xl font-semibold",
-          tier.highlighted && "text-[#0EA5E9]"
+          tier.highlighted && "text-brand-green"
         )}>
           {tier.name}
         </CardTitle>
@@ -57,14 +57,14 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
             <>
               <span className={cn(
                 "text-5xl font-bold text-gray-900 dark:text-gray-100",
-                tier.highlighted && "text-[#0EA5E9]"
+                tier.highlighted && "text-brand-green"
               )}>${price}</span>
               <span className="text-gray-600 ml-2 dark:text-gray-400">/{paymentFrequency.replace('ly', '')}</span>
             </>
           ) : (
             <span className={cn(
               "text-5xl font-bold text-gray-900 dark:text-gray-100",
-              tier.highlighted && "text-[#0EA5E9]"
+              tier.highlighted && "text-brand-green"
             )}>{price}</span>
           )}
         </div>
@@ -73,7 +73,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
             <li key={feature} className="flex items-center text-gray-700 dark:text-gray-300">
               <Check className={cn(
                 "w-4 h-4 mr-2", 
-                tier.highlighted ? "text-[#0EA5E9]" : "text-brand-green"
+                tier.highlighted ? "text-brand-green" : "text-brand-green"
               )} />
               {feature}
             </li>
@@ -85,7 +85,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
           className="w-full" 
           variant={tier.highlighted ? "default" : "outline"} 
           asChild
-          style={tier.highlighted ? { backgroundColor: '#0EA5E9', borderColor: '#0EA5E9' } : {}}
+          style={tier.highlighted ? { backgroundColor: '#1A392A', borderColor: '#1A392A' } : {}}
         >
           <a href="#">{tier.cta}</a>
         </Button>
