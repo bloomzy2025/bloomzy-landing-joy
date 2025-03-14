@@ -13,6 +13,7 @@ import Demo from "./pages/Demo";
 import Calendly from "./pages/Calendly";
 import Waitlist from "./pages/Waitlist";
 import Pricing from "./pages/Pricing";
+import EnterpriseContact from "./pages/EnterpriseContact";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/calendly" element={<Calendly />} />
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/enterprise" element={<EnterpriseContact />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

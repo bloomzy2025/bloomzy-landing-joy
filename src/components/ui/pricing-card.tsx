@@ -31,6 +31,9 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
   const price = tier.price[paymentFrequency as keyof typeof tier.price]
   const isNumericPrice = typeof price === "number"
 
+  // Determine the link destination based on the tier ID
+  const linkDestination = tier.id === "enterprise" ? "/enterprise" : "/waitlist"
+
   return (
     <Card className={cn(
       "flex flex-col h-full", 
@@ -87,7 +90,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
           variant={tier.highlighted ? "default" : "outline"} 
           asChild
         >
-          <Link to="/waitlist">{tier.cta}</Link>
+          <Link to={linkDestination}>{tier.cta}</Link>
         </Button>
       </CardFooter>
     </Card>
