@@ -13,12 +13,9 @@ export default function Waitlist() {
     <div className="relative min-h-screen">
       <GridBackground />
       
-      {/* Header with background for better visibility */}
-      <div className="relative z-50 w-full">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
-        <div className="relative">
-          <Header1 />
-        </div>
+      {/* Dark-themed header section */}
+      <div className="relative z-50 w-full bg-background/80 backdrop-blur-sm shadow-md dark:bg-gray-900/90">
+        <Header1 />
       </div>
       
       <div className="relative z-10 flex items-center justify-center min-h-screen">
