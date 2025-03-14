@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -63,6 +64,13 @@
     max-width: 100vw;
     box-sizing: border-box;
   }
+}
+
+/* Text animation improvements */
+.absolute.font-semibold {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 /* Improved dropdown styling for all viewports */
@@ -131,3 +139,4 @@
   @apply absolute -bottom-1 left-0 h-0.5 bg-brand-green rounded-full;
   transition: all 0.3s ease;
 }
+

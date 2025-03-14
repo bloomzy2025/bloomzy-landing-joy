@@ -20,7 +20,7 @@ function Hero() {
       } else {
         setTitleNumber(titleNumber + 1);
       }
-    }, 2000);
+    }, 1500); // Reduced from 2000ms to 1500ms for faster transitions
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
   
@@ -42,18 +42,23 @@ function Hero() {
                   className="absolute font-semibold" 
                   initial={{
                     opacity: 0,
-                    y: 20
+                    y: 15 // Reduced from 20 to 15 for less dramatic movement
                   }} 
                   transition={{
                     type: "spring",
-                    stiffness: 50
+                    stiffness: 100, // Increased from 50 to 100 for faster spring
+                    damping: 12, // Added damping for cleaner motion
+                    duration: 0.3 // Explicit duration to ensure faster transition
                   }} 
                   animate={titleNumber === index ? {
                     y: 0,
                     opacity: 1
                   } : {
-                    y: titleNumber > index ? -20 : 20,
-                    opacity: 0
+                    y: titleNumber > index ? -15 : 15, // Reduced from 20 to 15
+                    opacity: 0,
+                    transition: {
+                      duration: 0.2 // Faster exit animation
+                    }
                   }}
                 >
                   {title}
