@@ -112,31 +112,30 @@ const Index = () => {
       {/* Header */}
       <Header1 />
       
-      {/* Hero Section with reduced padding */}
-      <div className="pt-16">
+      {/* Hero Section with padding for header */}
+      <div className="pt-20">
         <Hero />
       </div>
 
-      {/* Features Section with reduced padding */}
-      <section id="features" className="py-12 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-6 text-brand-green dark:text-accent-green">
+          <h2 className="text-3xl font-bold text-center mb-8 text-brand-green dark:text-accent-green">
             How Bloomzy Works
           </h2>
           <FeaturesSectionWithHoverEffects />
         </div>
       </section>
 
-      {/* Social Proof with reduced padding */}
+      {/* Social Proof */}
       <TestimonialsSection
         title="Trusted by Founders"
         description="Join over a hundred startup founders who are already scaling with clarity and consistency using Bloomzy"
         testimonials={testimonials}
-        className="py-12 sm:py-16"
       />
 
-      {/* Pricing Section with reduced padding */}
-      <section id="pricing" className="py-12 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <div className="relative flex justify-center items-center w-full">
           <div className="absolute inset-0 -z-10">
             <div className="h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:35px_35px] opacity-30 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] dark:[mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#fff_70%,transparent_110%)]" />
