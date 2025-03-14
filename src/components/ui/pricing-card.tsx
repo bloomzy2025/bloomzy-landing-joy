@@ -34,7 +34,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
     <Card className={cn(
       "flex flex-col h-full", 
       tier.highlighted 
-        ? "border border-brand-green/20 shadow-xl bg-gradient-to-b from-brand-green/5 to-brand-green/10 dark:from-brand-green/20 dark:to-brand-green/30" 
+        ? "border-2 border-brand-green/40 shadow-xl bg-gradient-to-b from-brand-green/10 to-brand-green/20 dark:from-brand-green/20 dark:to-brand-green/30 dark:border-brand-green/50" 
         : tier.popular 
           ? "border-2 border-brand-green shadow-xl" 
           : "shadow-md"
@@ -45,11 +45,11 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
       )}>
         <CardTitle className={cn(
           "text-2xl font-semibold",
-          tier.highlighted && "text-brand-green"
+          tier.highlighted && "text-brand-green dark:text-accent-green"
         )}>
           {tier.name}
         </CardTitle>
-        <CardDescription className="text-sm mt-2">{tier.description}</CardDescription>
+        <CardDescription className="text-sm mt-2 dark:text-gray-300">{tier.description}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">
         <div className="h-24 flex items-start justify-center mb-8">
@@ -57,21 +57,21 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
             <div className="flex items-baseline">
               <span className={cn(
                 "text-5xl font-bold text-gray-900 dark:text-gray-100",
-                tier.highlighted && "text-brand-green"
+                tier.highlighted && "text-brand-green dark:text-accent-green"
               )}>${price}</span>
               <span className="text-gray-600 ml-2 dark:text-gray-400">/{paymentFrequency.replace('ly', '')}</span>
             </div>
           ) : (
             <span className={cn(
               "text-5xl font-bold text-gray-900 dark:text-gray-100",
-              tier.highlighted && "text-brand-green"
+              tier.highlighted && "text-brand-green dark:text-accent-green"
             )}>{price}</span>
           )}
         </div>
         <ul className="space-y-4 flex-1">
           {tier.features.map((feature) => (
             <li key={feature} className="flex items-start text-gray-700 dark:text-gray-300">
-              <Check className="w-4 h-4 mr-2 mt-1 flex-shrink-0 text-brand-green" />
+              <Check className="w-5 h-5 mr-3 mt-0.5 flex-shrink-0 text-brand-green dark:text-accent-green rounded-full bg-brand-green/10 dark:bg-accent-green/20 p-0.5" />
               <span className="text-sm">{feature}</span>
             </li>
           ))}
@@ -79,10 +79,12 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
       </CardContent>
       <CardFooter className="mt-auto pt-6">
         <Button 
-          className="w-full" 
+          className={cn(
+            "w-full",
+            tier.highlighted && "bg-brand-green dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90 hover:bg-brand-green/90"
+          )}
           variant={tier.highlighted ? "default" : "outline"} 
           asChild
-          style={tier.highlighted ? { backgroundColor: '#1A392A', borderColor: '#1A392A' } : {}}
         >
           <a href="#">{tier.cta}</a>
         </Button>
