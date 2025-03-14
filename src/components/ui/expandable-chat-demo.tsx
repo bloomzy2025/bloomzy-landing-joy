@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, FormEvent } from "react"
-import { Send, Bot, Paperclip, Mic, CornerDownLeft } from "lucide-react"
+import { Send, Bot, Paperclip, Mic, CornerDownLeft, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   ChatBubble,
@@ -17,8 +17,10 @@ import {
   ExpandableChatFooter,
 } from "@/components/ui/expandable-chat"
 import { ChatMessageList } from "@/components/ui/chat-message-list"
+import { useAuth } from "@/hooks/useAuth"
 
 export function ExpandableChatDemo() {
+  const { user } = useAuth()
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -76,6 +78,14 @@ export function ExpandableChatDemo() {
     //
   }
 
+  // Get the user's first initial if they are signed in
+  const getUserAvatar = () => {
+    if (user && user.email) {
+      return user.email.charAt(0).toUpperCase()
+    }
+    return <User className="h-4 w-4" />
+  }
+
   return (
     <div className="h-[600px] relative">
       <ExpandableChat
@@ -97,15 +107,18 @@ export function ExpandableChatDemo() {
                 key={message.id}
                 variant={message.sender === "user" ? "sent" : "received"}
               >
-                <ChatBubbleAvatar
-                  className="h-8 w-8 shrink-0"
-                  imageSrc={
-                    message.sender === "user"
-                      ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop"
-                      : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
-                  }
-                  fallback={message.sender === "user" ? "US" : "AI"}
-                />
+                {message.sender === "user" ? (
+                  <ChatBubbleAvatar
+                    className="h-8 w-8 shrink-0"
+                    fallback={user ? getUserAvatar() : <User className="h-4 w-4" />}
+                  />
+                ) : (
+                  <ChatBubbleAvatar
+                    className="h-8 w-8 shrink-0"
+                    imageSrc="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
+                    fallback="AI"
+                  />
+                )}
                 <ChatBubbleMessage
                   variant={message.sender === "user" ? "sent" : "received"}
                 >
