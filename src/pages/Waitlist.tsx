@@ -4,28 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Icons } from "@/components/ui/icons";
-import { Header1 } from "@/components/ui/header";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 
-const Waitlist = () => {
-  const navigate = useNavigate();
-
+export default function Waitlist() {
   return (
     <div className="relative min-h-screen">
       <GridBackground />
-      <Header1 className="relative z-10" />
       <div className="relative z-10 flex items-center justify-center min-h-screen">
         <div className="w-full max-w-xl mx-auto p-8 space-y-12">
-          <Button 
-            onClick={() => navigate(-1)}
-            variant="ghost" 
-            className="mb-8 flex items-center text-gray-300 hover:text-white"
-          >
-            <ArrowLeft className="mr-2" />
-            Back
-          </Button>
-
           <div className="space-y-6 text-center">
             <h2 className="text-4xl sm:text-5xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-br from-gray-200 to-gray-600">
               Join Our Product Launch Waitlist
@@ -63,7 +48,7 @@ const Waitlist = () => {
                   <AvatarFallback className="text-sm font-semibold border-white/20 bg-blue-700">MK</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="font-bold text-gray-300">100+ people on the waitlist</span>
+              <span className="font-bold">100+ people on the waitlist</span>
             </div>
 
             <div className="flex gap-6 justify-center">
@@ -72,14 +57,14 @@ const Waitlist = () => {
                 size="icon"
                 className="text-gray-400 hover:text-gray-300"
               >
-                <Icons.twitter className="w-5 h-5 fill-current" />
+                <Icons.twitter className="w-5 h-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 className="text-gray-400 hover:text-gray-300"
               >
-                <Icons.gitHub className="w-5 h-5 fill-current" />
+                <Icons.gitHub className="w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -87,6 +72,4 @@ const Waitlist = () => {
       </div>
     </div>
   );
-};
-
-export default Waitlist;
+}
