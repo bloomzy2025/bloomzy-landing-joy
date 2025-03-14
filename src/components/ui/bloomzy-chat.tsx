@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, FormEvent, useEffect } from "react"
@@ -105,11 +104,6 @@ export function BloomzyChat() {
     <ExpandableChat
       size="lg"
       position="bottom-right"
-      icon={
-        <Avatar className="h-6 w-6">
-          <AvatarImage src="/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png" alt="Bloomzy Assistant" />
-        </Avatar>
-      }
     >
       <ExpandableChatHeader className="flex-col text-center justify-center">
         <h1 className="text-xl font-semibold">Bloomzy Assistant</h1>
