@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Demo = () => {
@@ -99,7 +98,7 @@ const Demo = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="h-14 text-lg border-2 rounded-lg"
+                  className="h-14 text-lg font-normal border-2 rounded-lg"
                 />
               </div>
               <div>
@@ -109,7 +108,7 @@ const Demo = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="h-14 text-lg border-2 rounded-lg"
+                  className="h-14 text-lg font-normal border-2 rounded-lg"
                 />
               </div>
             </div>
@@ -122,7 +121,7 @@ const Demo = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="h-14 text-lg border-2 rounded-lg"
+                className="h-14 text-lg font-normal border-2 rounded-lg"
               />
             </div>
             
@@ -131,12 +130,12 @@ const Demo = () => {
                 value={formData.usageIntent}
                 onValueChange={(value) => handleSelectChange("usageIntent", value)}
               >
-                <SelectTrigger className="h-14 text-lg border-2 rounded-lg">
+                <SelectTrigger className="h-14 text-lg font-normal border-2 rounded-lg">
                   <SelectValue placeholder="How do you plan on using Bloomzy?" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-800 border-2">
                   {usageOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <SelectItem key={option} value={option} className="text-base">
                       {option}
                     </SelectItem>
                   ))}
@@ -149,12 +148,12 @@ const Demo = () => {
                 value={formData.problemToSolve}
                 onValueChange={(value) => handleSelectChange("problemToSolve", value)}
               >
-                <SelectTrigger className="h-14 text-lg border-2 rounded-lg">
+                <SelectTrigger className="h-14 text-lg font-normal border-2 rounded-lg">
                   <SelectValue placeholder="What are you looking to solve with Bloomzy?" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white dark:bg-gray-800 border-2">
                   {problemOptions.map((option) => (
-                    <SelectItem key={option} value={option}>
+                    <SelectItem key={option} value={option} className="text-base">
                       {option}
                     </SelectItem>
                   ))}
