@@ -8,9 +8,9 @@ import { ChatInput } from "@/components/ui/chat-input"
 import { ChatMessageList } from "@/components/ui/chat-message-list"
 import {
   ExpandableChat,
-  ExpandableChatContent,
-  ExpandableChatFooter,
   ExpandableChatHeader,
+  ExpandableChatBody,
+  ExpandableChatFooter,
 } from "@/components/ui/expandable-chat"
 import { MessageCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -39,7 +39,7 @@ export function BloomzyChat() {
   const { toast } = useToast()
   const { user } = useAuth()
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
 
@@ -108,12 +108,29 @@ export function BloomzyChat() {
     )
   }
 
+  // Create a component to render message bubbles
+  const renderMessages = () => {
+    return messages.map((message) => (
+      <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mb-4`}>
+        {message.role === "assistant" && (
+          <ChatBubbleAvatar role="assistant" />
+        )}
+        <div className={`mx-2 p-3 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+          {message.content}
+        </div>
+        {message.role === "user" && (
+          <ChatBubbleAvatar role="user" />
+        )}
+      </div>
+    ))
+  }
+
   return (
     <ExpandableChat
       size="lg"
       position="bottom-right"
       icon={!isOpen ? <MessageCircle /> : undefined}
-      onOpenChange={setIsOpen}
+      onChange={setIsOpen}
     >
       <ExpandableChatHeader className="flex-col text-center justify-center">
         <h1 className="text-xl font-semibold">Bloomzy Assistant</h1>
@@ -121,26 +138,42 @@ export function BloomzyChat() {
           Ask anything about startup growth and prioritization
         </p>
       </ExpandableChatHeader>
-      <ExpandableChatContent>
-        <ChatMessageList isLoading={isLoading}>
-          {messages.map((message) => (
-            <ChatBubble
-              key={message.id}
-              content={message.content}
-              position={message.role === "user" ? "right" : "left"}
-              avatar={<ChatBubbleAvatar role={message.role} />}
-            />
-          ))}
-        </ChatMessageList>
-      </ExpandableChatContent>
+      
+      <ExpandableChatBody>
+        <div className="flex flex-col p-4">
+          {isLoading && (
+            <div className="flex items-center gap-2 self-start mb-4">
+              <ChatBubbleAvatar role="assistant" />
+              <div className="mx-2 p-3 rounded-lg bg-muted">
+                <div className="flex items-center gap-1.5">
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-current" />
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: "0.2s" }} />
+                  <div className="h-2 w-2 animate-bounce rounded-full bg-current" style={{ animationDelay: "0.4s" }} />
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {renderMessages()}
+          
+          <div ref={(el) => {
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth" });
+            }
+          }} />
+        </div>
+      </ExpandableChatBody>
+      
       <ExpandableChatFooter>
-        <ChatInput
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onSubmit={handleSubmit}
-        />
+        <form onSubmit={handleSubmit} className="w-full">
+          <ChatInput
+            placeholder="Type your message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+        </form>
       </ExpandableChatFooter>
     </ExpandableChat>
   )
 }
+
