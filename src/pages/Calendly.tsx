@@ -53,9 +53,9 @@ const Calendly = () => {
             </p>
           </div>
           
-          <div className="calendly-inline-widget h-[650px]" 
-            data-url="https://calendly.com/d/example-calendly-link" 
-            style={{ minWidth: '320px' }}>
+          <div className="calendly-inline-widget" 
+            data-url="https://calendly.com/bloomzy-info/bloomzy-discovery-call?hide_event_type_details=1&hide_gdpr_banner=1" 
+            style={{ minWidth: '320px', height: '700px' }}>
           </div>
           
           <div className="mt-8 text-center">
