@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { Send, Bot, Paperclip, Mic, CornerDownLeft, User } from "lucide-react";
+import { Send, Bot, Paperclip, Mic, CornerDownLeft, User, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat-bubble";
 import { ChatInput } from "@/components/ui/chat-input";
@@ -17,16 +17,6 @@ export function ExpandableChatDemo() {
       id: 1,
       content: "Hello! How can I help you today?",
       sender: "ai"
-    },
-    {
-      id: 2,
-      content: "I have a question about the component library.",
-      sender: "user"
-    },
-    {
-      id: 3,
-      content: "Sure! I'd be happy to help. What would you like to know?",
-      sender: "ai"
     }
   ]);
   const [input, setInput] = useState("");
@@ -35,17 +25,22 @@ export function ExpandableChatDemo() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-    setMessages(prev => [...prev, {
-      id: prev.length + 1,
+    
+    // Add user message
+    const userMessage = {
+      id: Date.now(),
       content: input,
       sender: "user"
-    }]);
+    };
+    setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+    
+    // Simulate AI response
     setTimeout(() => {
       setMessages(prev => [...prev, {
-        id: prev.length + 1,
-        content: "This is an AI response to your message.",
+        id: Date.now() + 1,
+        content: "Thanks for your message. How can I assist you with Bloomzy's component library?",
         sender: "ai"
       }]);
       setIsLoading(false);
@@ -53,11 +48,13 @@ export function ExpandableChatDemo() {
   };
 
   const handleAttachFile = () => {
-    //
+    // File attachment functionality would go here
+    console.log("File attachment clicked");
   };
 
   const handleMicrophoneClick = () => {
-    //
+    // Voice input functionality would go here
+    console.log("Microphone clicked");
   };
 
   // Get the user's first initial if they are signed in
@@ -69,7 +66,11 @@ export function ExpandableChatDemo() {
   };
 
   return (
-    <ExpandableChat>
+    <ExpandableChat
+      icon={<MessageCircle className="h-6 w-6 text-white" />}
+      position="bottom-right"
+      size="md"
+    >
       <ExpandableChatHeader>
         <div className="flex items-center gap-2">
           <div className="bg-primary p-1.5 rounded-full">
@@ -83,17 +84,18 @@ export function ExpandableChatDemo() {
           {messages.map((message) => (
             <ChatBubble
               key={message.id}
-              align={message.sender === "user" ? "end" : "start"}
-              className="mb-4"
+              className={`mb-4 ${message.sender === "user" ? "ml-auto" : "mr-auto"}`}
             >
               <ChatBubbleAvatar>
                 {message.sender === "user" ? getUserAvatar() : <Bot className="h-4 w-4" />}
               </ChatBubbleAvatar>
-              <ChatBubbleMessage>{message.content}</ChatBubbleMessage>
+              <ChatBubbleMessage variant={message.sender === "user" ? "sent" : "received"}>
+                {message.content}
+              </ChatBubbleMessage>
             </ChatBubble>
           ))}
           {isLoading && (
-            <ChatBubble align="start" className="mb-4">
+            <ChatBubble className="mb-4 mr-auto">
               <ChatBubbleAvatar>
                 <Bot className="h-4 w-4" />
               </ChatBubbleAvatar>
@@ -114,7 +116,7 @@ export function ExpandableChatDemo() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1"
+            className="flex-1 min-h-10 max-h-32"
           />
           <div className="flex gap-1.5">
             <Button
@@ -122,6 +124,7 @@ export function ExpandableChatDemo() {
               size="icon"
               variant="ghost"
               onClick={handleAttachFile}
+              className="transition-all hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Paperclip className="h-4 w-4" />
             </Button>
@@ -130,10 +133,16 @@ export function ExpandableChatDemo() {
               size="icon"
               variant="ghost"
               onClick={handleMicrophoneClick}
+              className="transition-all hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <Mic className="h-4 w-4" />
             </Button>
-            <Button type="submit" size="icon" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              size="icon" 
+              disabled={isLoading || !input.trim()}
+              className="bg-primary hover:bg-primary/90 transition-all"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>
