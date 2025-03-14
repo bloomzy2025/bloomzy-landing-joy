@@ -91,7 +91,7 @@ function Footerdemo() {
               <p>245 Fennell Ave W.</p>
               <p>Hamilton, ON L9C 7V7</p>
               <p>Phone: (905) 517 - 4734</p>
-              <p>Email: info@bloomzy.ca</p>
+              <p>Email: <a href="mailto:info@bloomzy.ca" className="text-accent-green hover:underline">info@bloomzy.ca</a></p>
             </address>
           </div>
           <div className="relative">
@@ -187,4 +187,3 @@ function Footerdemo() {
 }
 
 export { Footerdemo }
-
