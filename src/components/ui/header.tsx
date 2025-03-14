@@ -13,6 +13,7 @@ import {
 import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 // Using a function component since we're not using Next.js Link
 const Link = ({ href, children, className }: { href: string, children: React.ReactNode, className?: string }) => (
@@ -130,7 +131,16 @@ function Header1() {
                         </NavigationMenuList>
                     </NavigationMenu>
                 </div>
-                <div className="flex lg:justify-center">
+                <div className="flex lg:justify-center items-center">
+                    <div className="w-8 h-8 mr-2">
+                        <AspectRatio ratio={1/1} className="overflow-hidden">
+                            <img 
+                                src="/lovable-uploads/589da4f0-3cc7-4ea6-a7ec-2cfa77c904a5.png" 
+                                alt="Bloomzy Logo" 
+                                className="object-cover w-full h-full"
+                            />
+                        </AspectRatio>
+                    </div>
                     <p className="font-semibold">Bloomzy</p>
                 </div>
                 <div className="flex justify-end w-full gap-4">
