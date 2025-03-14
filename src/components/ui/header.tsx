@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -94,11 +95,11 @@ function Header1() {
                                             <NavigationMenuTrigger className="font-bold text-base">
                                                 {item.title}
                                             </NavigationMenuTrigger>
-                                            <NavigationMenuContent className="!w-[450px] p-4">
+                                            <NavigationMenuContent className="!w-[450px] p-4 bg-background dark:bg-gray-900 border border-border">
                                                 <div className="flex flex-col lg:grid grid-cols-2 gap-4">
                                                     <div className="flex flex-col h-full justify-between">
                                                         <div className="flex flex-col">
-                                                            <p className="text-base">{item.title}</p>
+                                                            <p className="text-base font-semibold">{item.title}</p>
                                                             <p className="text-muted-foreground text-sm">
                                                                 {item.description}
                                                             </p>
@@ -114,7 +115,7 @@ function Header1() {
                                                                 asChild
                                                                 className="flex flex-row justify-between items-center hover:bg-muted py-2 px-4 rounded"
                                                             >
-                                                                <RouterLink to={subItem.href}>
+                                                                <RouterLink to={subItem.href} className="flex w-full justify-between items-center">
                                                                     <span>{subItem.title}</span>
                                                                     <MoveRight className="w-4 h-4 text-muted-foreground" />
                                                                 </RouterLink>
@@ -155,7 +156,7 @@ function Header1() {
                         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </Button>
                     {isOpen && (
-                        <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8">
+                        <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8 z-50">
                             {navigationItems.map((item) => (
                                 <div key={item.title}>
                                     <div className="flex flex-col gap-2">
