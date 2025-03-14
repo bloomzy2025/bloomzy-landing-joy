@@ -1,61 +1,48 @@
+"use client";
 
-"use client"
-
-import * as React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { 
-  CheckCircle2, Calendar, ListTodo, Leaf, 
-  Target, Brain, Facebook, Instagram, Linkedin, 
-  Moon, Send, Sun, Twitter 
-} from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { CheckCircle2, Calendar, ListTodo, Leaf, Target, Brain, Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 function Footerdemo() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const { toast } = useToast()
-
+  const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const {
+    toast
+  } = useToast();
   React.useEffect(() => {
     if (isDarkMode) {
-      document.documentElement.classList.add("dark")
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove("dark")
+      document.documentElement.classList.remove("dark");
     }
-  }, [isDarkMode])
-
+  }, [isDarkMode]);
   const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     toast({
       title: "Thanks for subscribing!",
-      description: "You'll receive our latest updates and news.",
-    })
-  }
-
+      description: "You'll receive our latest updates and news."
+    });
+  };
   const scrollToSection = (sectionId: string, e: React.MouseEvent) => {
     e.preventDefault();
     const element = document.getElementById(sectionId);
-    
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
+
       // Add highlight animation
       element.classList.add('section-highlight');
       setTimeout(() => {
         element.classList.remove('section-highlight');
       }, 2000);
     }
-  }
-
-  return (
-    <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
+  };
+  return <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
@@ -64,16 +51,8 @@ function Footerdemo() {
               Join our newsletter for the latest updates on startup growth and clarity.
             </p>
             <form className="relative" onSubmit={handleSubscribe}>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="pr-12 backdrop-blur-sm border-white/20 text-brand-green dark:text-gray-200 dark:bg-gray-800/50 dark:border-gray-700"
-              />
-              <Button
-                type="submit"
-                size="icon"
-                className="absolute right-1 top-1 h-8 w-8 rounded-full bg-accent-green text-brand-green dark:text-gray-800 transition-transform hover:scale-105"
-              >
+              <Input type="email" placeholder="Enter your email" className="pr-12 backdrop-blur-sm border-white/20 text-brand-green dark:text-gray-200 dark:bg-gray-800/50 dark:border-gray-700" />
+              <Button type="submit" size="icon" className="absolute right-1 top-1 h-8 w-8 rounded-full bg-accent-green text-brand-green dark:text-gray-800 transition-transform hover:scale-105">
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Subscribe</span>
               </Button>
@@ -83,33 +62,19 @@ function Footerdemo() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
-              <a 
-                href="/#" 
-                onClick={(e) => scrollToSection("hero", e)} 
-                className="block transition-colors hover:text-accent-green"
-              >
+              <a href="/#" onClick={e => scrollToSection("hero", e)} className="block transition-colors hover:text-accent-green">
                 Home
               </a>
-              <a 
-                href="/#features" 
-                onClick={(e) => scrollToSection("features", e)} 
-                className="block transition-colors hover:text-accent-green"
-              >
+              <a href="/#features" onClick={e => scrollToSection("features", e)} className="block transition-colors hover:text-accent-green">
                 Features
               </a>
-              <a 
-                href="/#pricing" 
-                onClick={(e) => scrollToSection("pricing", e)} 
-                className="block transition-colors hover:text-accent-green"
-              >
+              <a href="/#pricing" onClick={e => scrollToSection("pricing", e)} className="block transition-colors hover:text-accent-green">
                 Pricing
               </a>
               <a href="#" className="block transition-colors hover:text-accent-green">
                 Blog
               </a>
-              <a href="#" className="block transition-colors hover:text-accent-green">
-                Support
-              </a>
+              
             </nav>
           </div>
           <div>
@@ -179,12 +144,7 @@ function Footerdemo() {
             </div>
             <div className="flex items-center space-x-2">
               <Sun className="h-4 w-4 text-accent-green" />
-              <Switch
-                id="dark-mode"
-                checked={isDarkMode}
-                onCheckedChange={setIsDarkMode}
-                className="dark:bg-accent-green/30"
-              />
+              <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} className="dark:bg-accent-green/30" />
               <Moon className="h-4 w-4 text-gray-300 dark:text-accent-green" />
               <Label htmlFor="dark-mode" className="sr-only">
                 Toggle dark mode
@@ -209,8 +169,6 @@ function Footerdemo() {
           </nav>
         </div>
       </div>
-    </footer>
-  )
+    </footer>;
 }
-
-export { Footerdemo }
+export { Footerdemo };
