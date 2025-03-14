@@ -61,8 +61,8 @@ function Hero() {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline">
-              Jump on a call <PhoneCall className="w-4 h-4" />
+            <Button size="lg" className="gap-4" variant="outline" asChild>
+              <Link to="/calendly">Jump on a call <PhoneCall className="w-4 h-4" /></Link>
             </Button>
             {user ? (
               <Button size="lg" className="gap-4">

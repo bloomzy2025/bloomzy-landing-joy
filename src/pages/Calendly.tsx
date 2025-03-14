@@ -25,7 +25,9 @@ const Calendly = () => {
     
     return () => {
       // Cleanup
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -43,7 +45,7 @@ const Calendly = () => {
             className="mb-8 flex items-center"
           >
             <ArrowLeft className="mr-2" />
-            Back to form
+            Back
           </Button>
           
           <div className="text-center mb-8">
@@ -54,7 +56,7 @@ const Calendly = () => {
           </div>
           
           <div className="calendly-inline-widget" 
-            data-url="https://calendly.com/bloomzy-info/bloomzy-discovery-call?hide_event_type_details=1&hide_gdpr_banner=1" 
+            data-url="https://calendly.com/bloomzy-info/bloomzy-discovery-call-1?hide_event_type_details=1&hide_gdpr_banner=1" 
             style={{ minWidth: '320px', height: '700px' }}>
           </div>
           
