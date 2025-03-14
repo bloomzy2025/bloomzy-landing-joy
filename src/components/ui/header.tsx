@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -6,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, Tool, Wrench, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 
@@ -21,13 +20,12 @@ function Header1() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
       
-      // Determine which section is currently in view
       const heroSection = document.getElementById('hero');
       const featuresSection = document.getElementById('features');
       const pricingSection = document.getElementById('pricing');
       
       if (heroSection && featuresSection && pricingSection) {
-        const scrollPosition = window.scrollY + 100; // Add offset for header
+        const scrollPosition = window.scrollY + 100;
         
         if (scrollPosition >= pricingSection.offsetTop) {
           setActiveSection('pricing');
@@ -53,21 +51,17 @@ function Header1() {
     setMenuOpen(false);
     setActiveSection(sectionId);
     
-    // If we're not on the homepage, navigate to homepage first
     if (location.pathname !== '/') {
-      // We'll navigate to the homepage with a hash to indicate which section to scroll to
       return;
     }
     
     const section = document.getElementById(sectionId);
     if (section) {
-      // Add animation to scroll
       section.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
       
-      // Add a subtle highlight animation to the section
       section.classList.add('animate-pulse-subtle');
       setTimeout(() => {
         section.classList.remove('animate-pulse-subtle');
@@ -82,7 +76,6 @@ function Header1() {
     scrolled ? "shadow-md" : ""
   )}>
       <div className="container flex justify-between items-center rounded-lg bg-zinc-50 p-2 sm:p-4">
-        {/* Mobile menu toggle */}
         {isMobile && (
           <button 
             onClick={toggleMenu} 
@@ -92,8 +85,7 @@ function Header1() {
           </button>
         )}
         
-        {/* Left navigation links - hidden on mobile unless menu is open */}
-        <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white shadow-md z-50' : 'hidden') : 'flex items-center gap-8'}`}>
+        <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white shadow-md z-50' : 'hidden') : 'flex items-center gap-6'}`}>
           <Link to="/" className="font-medium relative">
             <span className={cn(
               "transition-colors duration-300",
@@ -221,17 +213,54 @@ function Header1() {
               </div>
             </div>
           </div>
+          
+          <div className="relative group">
+            <button className="flex items-center gap-1 font-medium">
+              <span className="transition-colors duration-300">
+                Free Tools
+              </span> <ChevronDown className="h-4 w-4" />
+            </button>
+            <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div className="p-2">
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/tools/seo-checker" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                    <Wrench className="h-4 w-4 text-brand-green" />
+                    SEO Checker
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                    <Tool className="h-4 w-4 text-brand-green" />
+                    Keyword Generator
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                    <Wrench className="h-4 w-4 text-brand-green" />
+                    Content Analyzer
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
         
-        {/* Center logo */}
-        <Link to="/" className={`${isMobile ? 'ml-8' : 'absolute left-1/2 transform -translate-x-1/2'} text-xl font-bold tracking-tighter flex items-center gap-2`}>
+        <Link to="/" className={`${isMobile ? 'mx-auto' : 'absolute left-[52%] transform -translate-x-1/2'} text-xl font-bold tracking-tighter flex items-center gap-2`}>
           <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center overflow-hidden">
             <img src="/lovable-uploads/12735e3d-18db-4ce4-bb6a-fba45bf2629d.png" alt="Bloomzy Logo" className="w-full h-full object-cover" />
           </div>
           Bloomzy
         </Link>
         
-        {/* Right buttons - condensed on mobile */}
         <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
           {!isMobile && (
             <>
