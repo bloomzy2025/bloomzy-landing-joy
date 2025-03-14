@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -48,7 +49,7 @@ const testimonials = [
 const PRICING_TIERS = [
   {
     id: "free",
-    name: "FREE",
+    name: "Free",
     price: {
       monthly: "Free",
       yearly: "Free",
@@ -65,7 +66,7 @@ const PRICING_TIERS = [
   },
   {
     id: "startup",
-    name: "STARTUP",
+    name: "Startup",
     price: {
       monthly: 23,
       yearly: 19,
@@ -82,7 +83,7 @@ const PRICING_TIERS = [
   },
   {
     id: "growth",
-    name: "GROWTH",
+    name: "Growth",
     price: {
       monthly: 79,
       yearly: 63,
@@ -102,7 +103,7 @@ const PRICING_TIERS = [
   },
   {
     id: "enterprise",
-    name: "ENTERPRISE",
+    name: "Enterprise",
     price: {
       monthly: "Custom",
       yearly: "Custom",
