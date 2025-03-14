@@ -29,12 +29,13 @@ interface ChatBubbleAvatarProps
   extends React.ComponentPropsWithoutRef<typeof Avatar> {
   fallback?: React.ReactNode
   status?: "online" | "offline" | "away" | "busy"
+  imageSrc?: string
 }
 
 const ChatBubbleAvatar = React.forwardRef<
   React.ElementRef<typeof Avatar>,
   ChatBubbleAvatarProps
->(({ className, src, fallback, status, ...props }, ref) => {
+>(({ className, imageSrc, fallback, status, ...props }, ref) => {
   return (
     <div className="relative flex-shrink-0">
       <Avatar
@@ -42,7 +43,7 @@ const ChatBubbleAvatar = React.forwardRef<
         className={cn("h-10 w-10 rounded-full", className)}
         {...props}
       >
-        {src && <AvatarImage src={src} />}
+        {imageSrc && <AvatarImage src={imageSrc} />}
         <AvatarFallback>{fallback}</AvatarFallback>
       </Avatar>
       {status && (

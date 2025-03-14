@@ -17,6 +17,7 @@ import {
   ExpandableChatFooter,
 } from "@/components/ui/expandable-chat"
 import { ChatMessageList } from "@/components/ui/chat-message-list"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 
 export function BloomzyChat() {
   const [messages, setMessages] = useState([
@@ -88,7 +89,11 @@ export function BloomzyChat() {
     <ExpandableChat
       size="lg"
       position="bottom-right"
-      icon={<Bot className="h-6 w-6" />}
+      icon={
+        <Avatar className="h-6 w-6">
+          <AvatarImage src="/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png" alt="Bloomzy Assistant" />
+        </Avatar>
+      }
     >
       <ExpandableChatHeader className="flex-col text-center justify-center">
         <h1 className="text-xl font-semibold">Bloomzy Assistant</h1>
@@ -106,10 +111,10 @@ export function BloomzyChat() {
             >
               <ChatBubbleAvatar
                 className="h-8 w-8 shrink-0"
-                src={
+                imageSrc={
                   message.sender === "user"
                     ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop"
-                    : "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
+                    : "/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png"
                 }
                 fallback={message.sender === "user" ? "YOU" : "AI"}
               />
@@ -125,7 +130,7 @@ export function BloomzyChat() {
             <ChatBubble variant="received">
               <ChatBubbleAvatar
                 className="h-8 w-8 shrink-0"
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop"
+                imageSrc="/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png"
                 fallback="AI"
               />
               <ChatBubbleMessage isLoading />
