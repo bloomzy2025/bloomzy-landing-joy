@@ -30,6 +30,25 @@
   }
 }
 
+/* Responsive section padding */
+.py-[100px] {
+  @apply py-[100px] md:py-[100px];
+}
+
+/* On mobile screens, reduce vertical padding */
+@media (max-width: 768px) {
+  .py-[100px] {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+  
+  /* Hero section specific padding */
+  .py-20 {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+
 .glass-card {
   @apply backdrop-blur-md bg-white/80 border border-white/20 shadow-xl;
 }
