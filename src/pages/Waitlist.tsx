@@ -13,8 +13,8 @@ export default function Waitlist() {
     <div className="relative min-h-screen">
       <GridBackground />
       
-      {/* Fixed header with solid background for maximum visibility */}
-      <div className="relative z-50 w-full bg-gray-950 shadow-lg border-b border-gray-800">
+      {/* Fixed header with white background for maximum visibility */}
+      <div className="relative z-50 w-full bg-white shadow-lg border-b border-gray-200">
         <div className="container mx-auto">
           <Header1 />
         </div>
