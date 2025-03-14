@@ -6,6 +6,7 @@ import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Link } from "react-router-dom"
 
 export interface PricingTier {
   id: string
@@ -86,7 +87,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
           variant={tier.highlighted ? "default" : "outline"} 
           asChild
         >
-          <a href="#">{tier.cta}</a>
+          <Link to="/waitlist">{tier.cta}</Link>
         </Button>
       </CardFooter>
     </Card>
