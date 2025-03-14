@@ -39,6 +39,21 @@ function Footerdemo() {
     })
   }
 
+  const scrollToSection = (sectionId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      
+      // Add highlight animation
+      element.classList.add('section-highlight');
+      setTimeout(() => {
+        element.classList.remove('section-highlight');
+      }, 2000);
+    }
+  }
+
   return (
     <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
@@ -68,13 +83,25 @@ function Footerdemo() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
             <nav className="space-y-2 text-sm">
-              <a href="#" className="block transition-colors hover:text-accent-green">
+              <a 
+                href="/#" 
+                onClick={(e) => scrollToSection("hero", e)} 
+                className="block transition-colors hover:text-accent-green"
+              >
                 Home
               </a>
-              <a href="#features" className="block transition-colors hover:text-accent-green">
+              <a 
+                href="/#features" 
+                onClick={(e) => scrollToSection("features", e)} 
+                className="block transition-colors hover:text-accent-green"
+              >
                 Features
               </a>
-              <a href="#pricing" className="block transition-colors hover:text-accent-green">
+              <a 
+                href="/#pricing" 
+                onClick={(e) => scrollToSection("pricing", e)} 
+                className="block transition-colors hover:text-accent-green"
+              >
                 Pricing
               </a>
               <a href="#" className="block transition-colors hover:text-accent-green">
