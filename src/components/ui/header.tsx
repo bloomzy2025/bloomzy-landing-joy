@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -119,7 +120,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('hero')} 
                     className={cn(
-                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
                       isActive('hero') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -128,7 +129,7 @@ function Header1() {
                     Overview
                   </motion.button>
                 ) : (
-                  <Link to="/#hero" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/#hero" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     Overview
                   </Link>
                 )}
@@ -137,7 +138,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('features')} 
                     className={cn(
-                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
                       isActive('features') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -146,7 +147,7 @@ function Header1() {
                     Features
                   </motion.button>
                 ) : (
-                  <Link to="/#features" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/#features" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     Features
                   </Link>
                 )}
@@ -155,7 +156,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('pricing')} 
                     className={cn(
-                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
                       isActive('pricing') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -164,7 +165,7 @@ function Header1() {
                     Pricing
                   </motion.button>
                 ) : (
-                  <Link to="/#pricing" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/#pricing" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     Pricing
                   </Link>
                 )}
@@ -182,7 +183,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/about" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/about" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     About Us
                   </Link>
                 </motion.div>
@@ -190,7 +191,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/blog" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/blog" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     Blog
                   </Link>
                 </motion.div>
@@ -198,7 +199,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/contact" className="block p-2 hover:bg-accent rounded-md">
+                  <Link to="/contact" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
                     Contact
                   </Link>
                 </motion.div>
@@ -218,7 +219,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/seo-checker" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                  <Link to="/tools/seo-checker" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     SEO Checker
                   </Link>
@@ -227,7 +228,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     Keyword Generator
                   </Link>
@@ -236,7 +237,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 p-2 hover:bg-accent rounded-md">
+                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     Content Analyzer
                   </Link>

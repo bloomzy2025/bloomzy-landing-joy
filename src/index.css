@@ -57,6 +57,13 @@
   .group:hover .group-hover\:visible {
     visibility: visible;
   }
+  
+  /* Ensure dropdown menu items fit properly */
+  .group:hover div[class*="absolute"] {
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
 }
 
 .glass-card {
