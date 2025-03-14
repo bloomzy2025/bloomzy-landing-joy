@@ -99,7 +99,7 @@ function Header1() {
             to="/signup" 
             className={cn(
               buttonVariants({ variant: "default" }),
-              "bg-brand-green hover:bg-brand-green/90"
+              "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90"
             )}
           >
             Get started
