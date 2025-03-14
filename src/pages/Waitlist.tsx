@@ -14,7 +14,7 @@ export default function Waitlist() {
       <GridBackground />
       
       {/* Fixed header with white background for maximum visibility */}
-      <div className="relative z-50 w-full bg-white shadow-lg border-b border-gray-200">
+      <div className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-lg border-b border-gray-200">
         <div className="container mx-auto">
           <Header1 />
         </div>
