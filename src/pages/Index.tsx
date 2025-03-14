@@ -49,8 +49,8 @@ const testimonials = [
 const PRICING_PLANS = [
   {
     name: "STARTUP",
-    price: "29",
-    yearlyPrice: "23",
+    price: "23",
+    yearlyPrice: "19",
     period: "per month",
     features: [
       "Task prioritization",
@@ -85,8 +85,8 @@ const PRICING_PLANS = [
   },
   {
     name: "ENTERPRISE",
-    price: "299",
-    yearlyPrice: "239",
+    price: "CUSTOM",
+    yearlyPrice: "CUSTOM",
     period: "per month",
     features: [
       "Everything in Growth",
