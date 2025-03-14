@@ -120,7 +120,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('hero')} 
                     className={cn(
-                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
+                      "block w-full text-left px-4 py-2.5 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
                       isActive('hero') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -129,7 +129,7 @@ function Header1() {
                     Overview
                   </motion.button>
                 ) : (
-                  <Link to="/#hero" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/#hero" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     Overview
                   </Link>
                 )}
@@ -138,7 +138,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('features')} 
                     className={cn(
-                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
+                      "block w-full text-left px-4 py-2.5 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
                       isActive('features') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -147,7 +147,7 @@ function Header1() {
                     Features
                   </motion.button>
                 ) : (
-                  <Link to="/#features" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/#features" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     Features
                   </Link>
                 )}
@@ -156,7 +156,7 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('pricing')} 
                     className={cn(
-                      "block w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors duration-200 text-sm",
+                      "block w-full text-left px-4 py-2.5 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
                       isActive('pricing') && "bg-accent/50 text-brand-green"
                     )}
                     whileHover={{ x: 2 }}
@@ -165,7 +165,7 @@ function Header1() {
                     Pricing
                   </motion.button>
                 ) : (
-                  <Link to="/#pricing" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/#pricing" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     Pricing
                   </Link>
                 )}
@@ -183,7 +183,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/about" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/about" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     About Us
                   </Link>
                 </motion.div>
@@ -191,7 +191,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/blog" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/blog" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     Blog
                   </Link>
                 </motion.div>
@@ -199,7 +199,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/contact" className="block px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/contact" className="block px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     Contact
                   </Link>
                 </motion.div>
@@ -219,7 +219,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/seo-checker" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/tools/seo-checker" className="flex items-center gap-2 px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     SEO Checker
                   </Link>
@@ -228,7 +228,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     Keyword Generator
                   </Link>
@@ -237,7 +237,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md text-sm">
+                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 px-4 py-2.5 hover:bg-accent rounded-md text-sm dropdown-item">
                     <Wrench className="h-4 w-4 text-brand-green" />
                     Content Analyzer
                   </Link>

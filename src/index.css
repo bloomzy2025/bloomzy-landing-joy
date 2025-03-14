@@ -64,6 +64,25 @@
     max-width: 100vw;
     box-sizing: border-box;
   }
+  
+  /* Improved dropdown item styling */
+  .dropdown-item {
+    width: 100%;
+    text-align: left;
+    justify-content: flex-start;
+    white-space: nowrap;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Improved dropdown styling for all viewports */
+.dropdown-item {
+  padding: 10px 16px;
+  width: 100%;
+  display: block;
+  text-align: left;
+  white-space: nowrap;
 }
 
 .glass-card {
