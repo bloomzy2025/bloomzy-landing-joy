@@ -5,11 +5,13 @@ import { MoveRight, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction"], []);
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -33,23 +35,29 @@ function Hero() {
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular">
               <span className="text-spektr-cyan-50">Scale your startup from 0 without</span>
-              <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
+              <span className={`relative flex w-full justify-center overflow-visible ${isMobile ? 'h-20' : 'overflow-hidden'} text-center md:pb-4 md:pt-1`}>
                 &nbsp;
-                {titles.map((title, index) => <motion.span key={index} className="absolute font-semibold" initial={{
-                opacity: 0,
-                y: "-100"
-              }} transition={{
-                type: "spring",
-                stiffness: 50
-              }} animate={titleNumber === index ? {
-                y: 0,
-                opacity: 1
-              } : {
-                y: titleNumber > index ? -150 : 150,
-                opacity: 0
-              }}>
-                    {title}
-                  </motion.span>)}
+                {titles.map((title, index) => <motion.span 
+                  key={index} 
+                  className="absolute font-semibold" 
+                  initial={{
+                    opacity: 0,
+                    y: 20
+                  }} 
+                  transition={{
+                    type: "spring",
+                    stiffness: 50
+                  }} 
+                  animate={titleNumber === index ? {
+                    y: 0,
+                    opacity: 1
+                  } : {
+                    y: titleNumber > index ? -20 : 20,
+                    opacity: 0
+                  }}
+                >
+                  {title}
+                </motion.span>)}
               </span>
             </h1>
 
