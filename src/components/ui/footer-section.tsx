@@ -41,11 +41,11 @@ function Footerdemo() {
 
   return (
     <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
-      <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">Stay Connected</h2>
-            <p className="mb-6 text-gray-300 dark:text-gray-300">
+            <h2 className="mb-3 text-2xl font-bold tracking-tight">Stay Connected</h2>
+            <p className="mb-4 text-gray-300 dark:text-gray-300">
               Join our newsletter for the latest updates on startup growth and clarity.
             </p>
             <form className="relative" onSubmit={handleSubscribe}>
@@ -66,8 +66,8 @@ function Footerdemo() {
             <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-accent-green/10 dark:bg-accent-green/5 blur-2xl" />
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
-            <nav className="space-y-2 text-sm">
+            <h3 className="mb-3 text-lg font-semibold">Quick Links</h3>
+            <nav className="space-y-1 text-sm">
               <a href="#" className="block transition-colors hover:text-accent-green">
                 Home
               </a>
@@ -86,8 +86,8 @@ function Footerdemo() {
             </nav>
           </div>
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
-            <address className="space-y-2 text-sm not-italic dark:text-gray-300">
+            <h3 className="mb-3 text-lg font-semibold">Contact Us</h3>
+            <address className="space-y-1 text-sm not-italic dark:text-gray-300">
               <p>123 Growth Avenue</p>
               <p>Startup Valley, CA 94123</p>
               <p>Phone: (123) 456-7890</p>
@@ -95,8 +95,8 @@ function Footerdemo() {
             </address>
           </div>
           <div className="relative">
-            <h3 className="mb-4 text-lg font-semibold">Follow Us</h3>
-            <div className="mb-6 flex space-x-4">
+            <h3 className="mb-3 text-lg font-semibold">Follow Us</h3>
+            <div className="mb-4 flex space-x-3">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -165,7 +165,7 @@ function Footerdemo() {
             </div>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 dark:border-gray-700/50 pt-8 text-center md:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 dark:border-gray-700/50 pt-4 text-center md:flex-row">
           <p className="text-sm text-gray-300 dark:text-gray-400">
             © 2024 Bloomzy. All rights reserved.
           </p>
