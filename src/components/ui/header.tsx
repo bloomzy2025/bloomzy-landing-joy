@@ -113,7 +113,7 @@ function Header1() {
                 Product
               </span> <ChevronDown className="h-4 w-4" />
             </button>
-            <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="p-2">
                 {location.pathname === '/' ? (
                   <motion.button 
@@ -176,7 +176,7 @@ function Header1() {
             <button className="flex items-center gap-1 font-medium">
               Company <ChevronDown className="h-4 w-4" />
             </button>
-            <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="p-2">
                 <motion.div
                   whileHover={{ x: 2 }}
@@ -212,7 +212,7 @@ function Header1() {
                 Free Tools
               </span> <ChevronDown className="h-4 w-4" />
             </button>
-            <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="p-2">
                 <motion.div
                   whileHover={{ x: 2 }}

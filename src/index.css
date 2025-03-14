@@ -47,6 +47,16 @@
     padding-top: 40px;
     padding-bottom: 40px;
   }
+
+  /* Dropdown menu adjustments for mobile */
+  .group:hover .group-hover\:opacity-100 {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .group:hover .group-hover\:visible {
+    visibility: visible;
+  }
 }
 
 .glass-card {
