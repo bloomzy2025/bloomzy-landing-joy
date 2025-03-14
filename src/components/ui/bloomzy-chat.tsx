@@ -1,8 +1,8 @@
 
 "use client"
 
-import { useState, FormEvent } from "react"
-import { Send, Bot, Paperclip, Mic, CornerDownLeft } from "lucide-react"
+import { useState, FormEvent, useEffect } from "react"
+import { Send, Bot, Paperclip, Mic, CornerDownLeft, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   ChatBubble,
@@ -18,18 +18,34 @@ import {
 } from "@/components/ui/expandable-chat"
 import { ChatMessageList } from "@/components/ui/chat-message-list"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/hooks/useAuth"
 
 export function BloomzyChat() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState([
     {
       id: 1,
       content: "Hello! How can I help you with Bloomzy today?",
       sender: "ai",
     },
-  ])
+  ]);
 
-  const [input, setInput] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [userInitial, setUserInitial] = useState("");
+
+  useEffect(() => {
+    if (user?.email) {
+      // Get the first letter of the email or full_name if available
+      if (user?.user_metadata?.full_name) {
+        setUserInitial(user.user_metadata.full_name.charAt(0).toUpperCase());
+      } else {
+        setUserInitial(user.email.charAt(0).toUpperCase());
+      }
+    } else {
+      setUserInitial("");
+    }
+  }, [user]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -109,15 +125,18 @@ export function BloomzyChat() {
               key={message.id}
               variant={message.sender === "user" ? "sent" : "received"}
             >
-              <ChatBubbleAvatar
-                className="h-8 w-8 shrink-0"
-                imageSrc={
-                  message.sender === "user"
-                    ? "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop"
-                    : "/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png"
-                }
-                fallback={message.sender === "user" ? "YOU" : "AI"}
-              />
+              {message.sender === "user" ? (
+                <ChatBubbleAvatar
+                  className="h-8 w-8 shrink-0"
+                  fallback={userInitial || <User className="h-4 w-4" />}
+                />
+              ) : (
+                <ChatBubbleAvatar
+                  className="h-8 w-8 shrink-0"
+                  imageSrc="/lovable-uploads/d93ebfb7-7e3d-4ab8-8c98-38a4df8c7a55.png"
+                  fallback="AI"
+                />
+              )}
               <ChatBubbleMessage
                 variant={message.sender === "user" ? "sent" : "received"}
               >
