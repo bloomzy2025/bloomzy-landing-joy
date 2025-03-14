@@ -12,7 +12,7 @@ import NotFound from "./pages/NotFound";
 import Demo from "./pages/Demo";
 import Calendly from "./pages/Calendly";
 import Waitlist from "./pages/Waitlist";
-import { BloomzyChat } from "./components/ui/bloomzy-chat";
+import { ExpandableChatDemo } from "./components/ui/expandable-chat-demo";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +33,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <BloomzyChat />
+          <ExpandableChatDemo />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
