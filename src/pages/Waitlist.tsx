@@ -4,15 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Icons } from "@/components/ui/icons";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MoveRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Header1 } from "@/components/ui/header";
 
 export default function Waitlist() {
   return (
     <div className="relative min-h-screen">
       <GridBackground />
+      <Header1 />
+      
       <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-xl mx-auto p-8 space-y-12">
+        <div className="w-full max-w-3xl mx-auto p-8 space-y-12 pt-32">
           <Link to="/">
             <Button 
               variant="outline" 
@@ -23,11 +26,11 @@ export default function Waitlist() {
             </Button>
           </Link>
 
-          <div className="space-y-6 text-center">
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">
+          <div className="space-y-6">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-center tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">
               Join Our Product Launch Waitlist
             </h2>
-            <p className="text-xl text-gray-300 max-w-lg mx-auto">
+            <p className="text-xl text-gray-300 max-w-xl mx-auto text-center">
               Be part of something truly extraordinary. Join thousands of others
               already gaining early access to our revolutionary new product.
             </p>
@@ -40,9 +43,11 @@ export default function Waitlist() {
               className="h-12 bg-gray-900/50 border-gray-700 text-white"
             />
             <Button
-              className="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white"
+              size="lg"
+              className="flex items-center gap-2 bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90 text-white"
             >
               Get Notified
+              <MoveRight className="h-4 w-4" />
             </Button>
           </div>
 
@@ -59,7 +64,7 @@ export default function Waitlist() {
                   <AvatarFallback className="text-sm font-semibold bg-blue-700">MK</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="font-bold text-gray-200">100+ people on the waitlist</span>
+              <span className="font-medium text-gray-200">100+ people on the waitlist</span>
             </div>
 
             <div className="flex gap-6 justify-center">
