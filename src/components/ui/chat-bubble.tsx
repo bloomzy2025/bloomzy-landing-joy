@@ -85,7 +85,7 @@ const ChatBubbleMessage = React.forwardRef<
         className={cn(
           "flex flex-col gap-1 rounded-xl px-4 py-3 text-sm",
           variant === "sent"
-            ? "bg-primary text-primary-foreground"
+            ? "bg-brand-green text-white"
             : "bg-muted",
           className
         )}

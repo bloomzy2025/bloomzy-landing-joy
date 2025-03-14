@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { Send, Bot, Paperclip, Mic, CornerDownLeft, User, MessageCircle } from "lucide-react";
+import { Send, Bot, Paperclip, Mic, CornerDownLeft, User, MessageCircle, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui/chat-bubble";
 import { ChatInput } from "@/components/ui/chat-input";
@@ -67,16 +67,16 @@ export function ExpandableChatDemo() {
 
   return (
     <ExpandableChat
-      icon={<MessageCircle className="h-6 w-6 text-white" />}
+      icon={<Leaf className="h-6 w-6 text-white" />}
       position="bottom-right"
       size="md"
     >
       <ExpandableChatHeader>
         <div className="flex items-center gap-2">
-          <div className="bg-primary p-1.5 rounded-full">
-            <Bot className="h-4 w-4 text-primary-foreground" />
+          <div className="bg-brand-green p-1.5 rounded-full">
+            <Leaf className="h-4 w-4 text-white" />
           </div>
-          <span className="font-medium">Bloomzy AI Assistant</span>
+          <span className="font-medium">Bloomzy Assistant</span>
         </div>
       </ExpandableChatHeader>
       <ExpandableChatBody>
@@ -87,7 +87,12 @@ export function ExpandableChatDemo() {
               className={`mb-4 ${message.sender === "user" ? "ml-auto" : "mr-auto"}`}
             >
               <ChatBubbleAvatar>
-                {message.sender === "user" ? getUserAvatar() : <Bot className="h-4 w-4" />}
+                {message.sender === "user" 
+                  ? getUserAvatar() 
+                  : <div className="bg-brand-green text-white p-1 rounded-full flex items-center justify-center">
+                      <Leaf className="h-4 w-4" />
+                    </div>
+                }
               </ChatBubbleAvatar>
               <ChatBubbleMessage variant={message.sender === "user" ? "sent" : "received"}>
                 {message.content}
@@ -97,7 +102,9 @@ export function ExpandableChatDemo() {
           {isLoading && (
             <ChatBubble className="mb-4 mr-auto">
               <ChatBubbleAvatar>
-                <Bot className="h-4 w-4" />
+                <div className="bg-brand-green text-white p-1 rounded-full flex items-center justify-center">
+                  <Leaf className="h-4 w-4" />
+                </div>
               </ChatBubbleAvatar>
               <ChatBubbleMessage>
                 <div className="flex space-x-1">
@@ -141,7 +148,7 @@ export function ExpandableChatDemo() {
               type="submit" 
               size="icon" 
               disabled={isLoading || !input.trim()}
-              className="bg-primary hover:bg-primary/90 transition-all"
+              className="bg-brand-green hover:bg-brand-green/90 transition-all"
             >
               <Send className="h-4 w-4" />
             </Button>
