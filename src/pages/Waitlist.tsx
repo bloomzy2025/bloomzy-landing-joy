@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Icons } from "@/components/ui/icons";
-import { ArrowLeft, MoveRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { MoveRight } from "lucide-react";
 import { Header1 } from "@/components/ui/header";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -24,16 +23,8 @@ export default function Waitlist() {
       </div>
       
       <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-12 pt-24 sm:pt-32">
-          <Link to="/">
-            <Button 
-              variant="outline" 
-              className="mb-4 sm:mb-6 flex items-center text-gray-300 hover:text-white bg-gray-900/60 border-gray-700"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
-          </Link>
+        <div className="w-full max-w-3xl mx-auto px-4 sm:px-8 space-y-8 sm:space-y-12 pt-24 sm:pt-100">
+          {/* Removed "Back to Home" button */}
 
           <div className="space-y-4 sm:space-y-6">
             <h2 className="text-3xl sm:text-5xl font-extrabold text-center tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">
