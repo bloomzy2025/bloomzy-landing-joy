@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -41,12 +40,12 @@ function Header1() {
                     href: "/statistics",
                 },
                 {
-                    title: "Dashboards",
-                    href: "/dashboards",
+                    title: "Free Tools",
+                    href: "/free-tools",
                 },
                 {
-                    title: "Recordings",
-                    href: "/recordings",
+                    title: "Habitree",
+                    href: "/habitree",
                 },
             ],
         },
@@ -59,12 +58,8 @@ function Header1() {
                     href: "/about",
                 },
                 {
-                    title: "Fundraising",
-                    href: "/fundraising",
-                },
-                {
-                    title: "Investors",
-                    href: "/investors",
+                    title: "Partners",
+                    href: "/partners",
                 },
                 {
                     title: "Contact us",
