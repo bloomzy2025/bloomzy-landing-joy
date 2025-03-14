@@ -198,14 +198,6 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/careers" className="block p-2 hover:bg-accent rounded-md">
-                    Careers
-                  </Link>
-                </motion.div>
-                <motion.div
-                  whileHover={{ x: 2 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                >
                   <Link to="/contact" className="block p-2 hover:bg-accent rounded-md">
                     Contact
                   </Link>
