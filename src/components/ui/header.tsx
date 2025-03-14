@@ -4,7 +4,7 @@
 import * as React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -13,6 +13,7 @@ function Header1() {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const isMobile = useIsMobile();
+  const location = useLocation();
   
   React.useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,21 @@ function Header1() {
   
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    setMenuOpen(false);
+    
+    // If we're not on the homepage, navigate to homepage first
+    if (location.pathname !== '/') {
+      // We'll navigate to the homepage with a hash to indicate which section to scroll to
+      return;
+    }
+    
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return <div className="bg-gray-50">
@@ -50,15 +66,44 @@ function Header1() {
             </button>
             <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <div className="p-2">
-                <Link to="/product" className="block p-2 hover:bg-accent rounded-md">
-                  Overview
-                </Link>
-                <Link to="/features" className="block p-2 hover:bg-accent rounded-md">
-                  Features
-                </Link>
-                <Link to="/pricing" className="block p-2 hover:bg-accent rounded-md">
-                  Pricing
-                </Link>
+                {location.pathname === '/' ? (
+                  <button 
+                    onClick={() => scrollToSection('hero')} 
+                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                  >
+                    Overview
+                  </button>
+                ) : (
+                  <Link to="/#hero" className="block p-2 hover:bg-accent rounded-md">
+                    Overview
+                  </Link>
+                )}
+                
+                {location.pathname === '/' ? (
+                  <button 
+                    onClick={() => scrollToSection('features')} 
+                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                  >
+                    Features
+                  </button>
+                ) : (
+                  <Link to="/#features" className="block p-2 hover:bg-accent rounded-md">
+                    Features
+                  </Link>
+                )}
+                
+                {location.pathname === '/' ? (
+                  <button 
+                    onClick={() => scrollToSection('pricing')} 
+                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                  >
+                    Pricing
+                  </button>
+                ) : (
+                  <Link to="/#pricing" className="block p-2 hover:bg-accent rounded-md">
+                    Pricing
+                  </Link>
+                )}
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -134,13 +135,29 @@ const Index = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
+  // Effect to handle scrolling based on hash in URL
+  useEffect(() => {
+    // Get the hash from the URL
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      // Find the element with the corresponding ID
+      const element = document.getElementById(hash);
+      if (element) {
+        // Wait a bit for the page to fully load
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen">
       {/* Header */}
       <Header1 />
       
       {/* Hero Section with padding for header */}
-      <div className="pt-20">
+      <div id="hero" className="pt-20">
         <Hero />
       </div>
 
