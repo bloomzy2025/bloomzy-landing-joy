@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -7,30 +6,20 @@ import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
 import { ChevronDown } from "lucide-react";
-
 function Header1() {
   const [scrolled, setScrolled] = React.useState(false);
-
   React.useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  return (
-    <div
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
-        {
-          "py-2 bg-background/80 backdrop-blur-sm shadow-sm": scrolled,
-          "py-4": !scrolled,
-        }
-      )}
-    >
-      <div className="container flex justify-between items-center">
+  return <div className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out", {
+    "py-2 bg-background/80 backdrop-blur-sm shadow-sm": scrolled,
+    "py-4": !scrolled
+  })}>
+      <div className="container flex justify-between items-center bg-zinc-50">
         {/* Left navigation links */}
         <div className="flex items-center gap-8">
           <Link to="/" className="font-medium">
@@ -95,19 +84,13 @@ function Header1() {
           <Link to="/signin" className="text-sm font-medium">
             Sign in
           </Link>
-          <Link 
-            to="/signup" 
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90"
-            )}
-          >
+          <Link to="/signup" className={cn(buttonVariants({
+          variant: "default"
+        }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
             Get started
           </Link>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
-
 export { Header1 };
