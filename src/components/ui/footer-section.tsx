@@ -1,4 +1,3 @@
-
 "use client"
 
 import * as React from "react"
@@ -100,7 +99,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 bg-white/10 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
                       <Facebook className="h-4 w-4" />
                       <span className="sr-only">Facebook</span>
                     </Button>
@@ -113,7 +112,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 bg-white/10 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
                       <Twitter className="h-4 w-4" />
                       <span className="sr-only">Twitter</span>
                     </Button>
@@ -126,7 +125,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 bg-white/10 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
                       <Instagram className="h-4 w-4" />
                       <span className="sr-only">Instagram</span>
                     </Button>
@@ -139,7 +138,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 bg-white/10 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:bg-accent-green hover:text-brand-green hover:border-accent-green">
                       <Linkedin className="h-4 w-4" />
                       <span className="sr-only">LinkedIn</span>
                     </Button>
