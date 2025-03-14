@@ -131,6 +131,7 @@ export function Pricing({
               index === 2 && "origin-left"
             )}
           >
+            {/* Popular badge */}
             {plan.isPopular && (
               <div className="absolute top-0 right-0 bg-primary py-0.5 px-2 rounded-bl-xl rounded-tr-xl flex items-center">
                 <Star className="text-primary-foreground h-4 w-4 fill-current" />
@@ -145,23 +146,28 @@ export function Pricing({
               </p>
               <div className="mt-6 flex items-center justify-center gap-x-2">
                 <span className="text-5xl font-bold tracking-tight text-foreground">
-                  <NumberFlow
-                    value={
-                      isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
-                    }
-                    format={{
-                      style: 'currency',
-                      currency: 'USD',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0
-                    }}
-                    transformTiming={{
-                      duration: 500,
-                      easing: "ease-out",
-                    }}
-                    willChange
-                    className="font-variant-numeric: tabular-nums"
-                  />
+                  {/* Conditionally render NumberFlow for numbers or plain text for non-numeric values */}
+                  {!isNaN(Number(isMonthly ? plan.price : plan.yearlyPrice)) ? (
+                    <NumberFlow
+                      value={
+                        isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)
+                      }
+                      format={{
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                      }}
+                      transformTiming={{
+                        duration: 500,
+                        easing: "ease-out",
+                      }}
+                      willChange
+                      className="font-variant-numeric: tabular-nums"
+                    />
+                  ) : (
+                    isMonthly ? plan.price : plan.yearlyPrice
+                  )}
                 </span>
                 {/* Only show period text for numeric prices */}
                 {plan.period !== "Next 3 months" && 
