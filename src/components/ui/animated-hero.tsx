@@ -1,10 +1,16 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction"], []);
+  const { user } = useAuth();
+  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -15,6 +21,7 @@ function Hero() {
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
+  
   return <div className="w-full">
       <div className="container mx-auto">
         <div className="flex gap-8 py-20 items-center justify-center flex-col lg:py-[60px]">
@@ -57,12 +64,19 @@ function Hero() {
             <Button size="lg" className="gap-4" variant="outline">
               Jump on a call <PhoneCall className="w-4 h-4" />
             </Button>
-            <Button size="lg" className="gap-4">
-              Sign up here <MoveRight className="w-4 h-4" />
-            </Button>
+            {user ? (
+              <Button size="lg" className="gap-4">
+                Dashboard <MoveRight className="w-4 h-4" />
+              </Button>
+            ) : (
+              <Button size="lg" className="gap-4" asChild>
+                <Link to="/signup">Sign up here <MoveRight className="w-4 h-4" /></Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>
     </div>;
 }
+
 export { Hero };
