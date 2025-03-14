@@ -40,30 +40,30 @@ function Footerdemo() {
   }
 
   return (
-    <footer className="relative border-t bg-brand-green text-white transition-colors duration-300">
+    <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="relative">
             <h2 className="mb-4 text-3xl font-bold tracking-tight">Stay Connected</h2>
-            <p className="mb-6 text-gray-300">
+            <p className="mb-6 text-gray-300 dark:text-gray-300">
               Join our newsletter for the latest updates on startup growth and clarity.
             </p>
             <form className="relative" onSubmit={handleSubscribe}>
               <Input
                 type="email"
                 placeholder="Enter your email"
-                className="pr-12 backdrop-blur-sm border-white/20 text-brand-green"
+                className="pr-12 backdrop-blur-sm border-white/20 text-brand-green dark:text-gray-200 dark:bg-gray-800/50 dark:border-gray-700"
               />
               <Button
                 type="submit"
                 size="icon"
-                className="absolute right-1 top-1 h-8 w-8 rounded-full bg-accent-green text-brand-green transition-transform hover:scale-105"
+                className="absolute right-1 top-1 h-8 w-8 rounded-full bg-accent-green text-brand-green dark:text-gray-800 transition-transform hover:scale-105"
               >
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Subscribe</span>
               </Button>
             </form>
-            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-accent-green/10 blur-2xl" />
+            <div className="absolute -right-4 top-0 h-24 w-24 rounded-full bg-accent-green/10 dark:bg-accent-green/5 blur-2xl" />
           </div>
           <div>
             <h3 className="mb-4 text-lg font-semibold">Quick Links</h3>
@@ -87,7 +87,7 @@ function Footerdemo() {
           </div>
           <div>
             <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
-            <address className="space-y-2 text-sm not-italic">
+            <address className="space-y-2 text-sm not-italic dark:text-gray-300">
               <p>123 Growth Avenue</p>
               <p>Startup Valley, CA 94123</p>
               <p>Phone: (123) 456-7890</p>
@@ -100,7 +100,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green dark:border-gray-700 dark:hover:border-accent-green">
                       <Facebook className="h-4 w-4" />
                       <span className="sr-only">Facebook</span>
                     </Button>
@@ -113,7 +113,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green dark:border-gray-700 dark:hover:border-accent-green">
                       <Twitter className="h-4 w-4" />
                       <span className="sr-only">Twitter</span>
                     </Button>
@@ -126,7 +126,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green dark:border-gray-700 dark:hover:border-accent-green">
                       <Instagram className="h-4 w-4" />
                       <span className="sr-only">Instagram</span>
                     </Button>
@@ -139,7 +139,7 @@ function Footerdemo() {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green">
+                    <Button variant="outline" size="icon" className="rounded-full border-white/20 text-white hover:text-accent-green hover:border-accent-green dark:border-gray-700 dark:hover:border-accent-green">
                       <Linkedin className="h-4 w-4" />
                       <span className="sr-only">LinkedIn</span>
                     </Button>
@@ -156,16 +156,17 @@ function Footerdemo() {
                 id="dark-mode"
                 checked={isDarkMode}
                 onCheckedChange={setIsDarkMode}
+                className="dark:bg-accent-green/30"
               />
-              <Moon className="h-4 w-4 text-gray-300" />
+              <Moon className="h-4 w-4 text-gray-300 dark:text-accent-green" />
               <Label htmlFor="dark-mode" className="sr-only">
                 Toggle dark mode
               </Label>
             </div>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-center md:flex-row">
-          <p className="text-sm text-gray-300">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 dark:border-gray-700/50 pt-8 text-center md:flex-row">
+          <p className="text-sm text-gray-300 dark:text-gray-400">
             © 2024 Bloomzy. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm">
