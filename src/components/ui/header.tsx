@@ -8,17 +8,39 @@ import { Link, useLocation } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
 
 function Header1() {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [activeSection, setActiveSection] = React.useState<string | null>(null);
   const isMobile = useIsMobile();
   const location = useLocation();
   
   React.useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
+      
+      // Determine which section is currently in view
+      const heroSection = document.getElementById('hero');
+      const featuresSection = document.getElementById('features');
+      const pricingSection = document.getElementById('pricing');
+      
+      if (heroSection && featuresSection && pricingSection) {
+        const scrollPosition = window.scrollY + 100; // Add offset for header
+        
+        if (scrollPosition >= pricingSection.offsetTop) {
+          setActiveSection('pricing');
+        } else if (scrollPosition >= featuresSection.offsetTop) {
+          setActiveSection('features');
+        } else if (scrollPosition >= heroSection.offsetTop) {
+          setActiveSection('hero');
+        } else {
+          setActiveSection(null);
+        }
+      }
     };
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -29,6 +51,7 @@ function Header1() {
 
   const scrollToSection = (sectionId: string) => {
     setMenuOpen(false);
+    setActiveSection(sectionId);
     
     // If we're not on the homepage, navigate to homepage first
     if (location.pathname !== '/') {
@@ -38,11 +61,26 @@ function Header1() {
     
     const section = document.getElementById(sectionId);
     if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
+      // Add animation to scroll
+      section.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+      
+      // Add a subtle highlight animation to the section
+      section.classList.add('animate-pulse-subtle');
+      setTimeout(() => {
+        section.classList.remove('animate-pulse-subtle');
+      }, 1000);
     }
   };
 
-  return <div className="bg-gray-50">
+  const isActive = (sectionId: string) => activeSection === sectionId;
+
+  return <div className={cn(
+    "bg-gray-50 sticky top-0 z-50 transition-all duration-300",
+    scrolled ? "shadow-md" : ""
+  )}>
       <div className="container flex justify-between items-center rounded-lg bg-zinc-50 p-2 sm:p-4">
         {/* Mobile menu toggle */}
         {isMobile && (
@@ -56,23 +94,47 @@ function Header1() {
         
         {/* Left navigation links - hidden on mobile unless menu is open */}
         <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white shadow-md z-50' : 'hidden') : 'flex items-center gap-8'}`}>
-          <Link to="/" className="font-medium">
-            Home
+          <Link to="/" className="font-medium relative">
+            <span className={cn(
+              "transition-colors duration-300",
+              isActive('hero') && "text-brand-green"
+            )}>
+              Home
+            </span>
+            {isActive('hero') && (
+              <motion.div 
+                className="absolute -bottom-1 left-0 h-0.5 bg-brand-green rounded-full w-full"
+                layoutId="navIndicator"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
           </Link>
           
           <div className="relative group">
             <button className="flex items-center gap-1 font-medium">
-              Product <ChevronDown className="h-4 w-4" />
+              <span className={cn(
+                "transition-colors duration-300",
+                isActive('features') && "text-brand-green"
+              )}>
+                Product
+              </span> <ChevronDown className="h-4 w-4" />
             </button>
             <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <div className="p-2">
                 {location.pathname === '/' ? (
-                  <button 
+                  <motion.button 
                     onClick={() => scrollToSection('hero')} 
-                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                    className={cn(
+                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      isActive('hero') && "bg-accent/50 text-brand-green"
+                    )}
+                    whileHover={{ x: 2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     Overview
-                  </button>
+                  </motion.button>
                 ) : (
                   <Link to="/#hero" className="block p-2 hover:bg-accent rounded-md">
                     Overview
@@ -80,12 +142,17 @@ function Header1() {
                 )}
                 
                 {location.pathname === '/' ? (
-                  <button 
+                  <motion.button 
                     onClick={() => scrollToSection('features')} 
-                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                    className={cn(
+                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      isActive('features') && "bg-accent/50 text-brand-green"
+                    )}
+                    whileHover={{ x: 2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     Features
-                  </button>
+                  </motion.button>
                 ) : (
                   <Link to="/#features" className="block p-2 hover:bg-accent rounded-md">
                     Features
@@ -93,12 +160,17 @@ function Header1() {
                 )}
                 
                 {location.pathname === '/' ? (
-                  <button 
+                  <motion.button 
                     onClick={() => scrollToSection('pricing')} 
-                    className="block w-full text-left p-2 hover:bg-accent rounded-md"
+                    className={cn(
+                      "block w-full text-left p-2 hover:bg-accent rounded-md transition-colors duration-200",
+                      isActive('pricing') && "bg-accent/50 text-brand-green"
+                    )}
+                    whileHover={{ x: 2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     Pricing
-                  </button>
+                  </motion.button>
                 ) : (
                   <Link to="/#pricing" className="block p-2 hover:bg-accent rounded-md">
                     Pricing
@@ -114,18 +186,38 @@ function Header1() {
             </button>
             <div className="absolute left-0 top-full mt-1 w-48 bg-background rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
               <div className="p-2">
-                <Link to="/about" className="block p-2 hover:bg-accent rounded-md">
-                  About Us
-                </Link>
-                <Link to="/blog" className="block p-2 hover:bg-accent rounded-md">
-                  Blog
-                </Link>
-                <Link to="/careers" className="block p-2 hover:bg-accent rounded-md">
-                  Careers
-                </Link>
-                <Link to="/contact" className="block p-2 hover:bg-accent rounded-md">
-                  Contact
-                </Link>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/about" className="block p-2 hover:bg-accent rounded-md">
+                    About Us
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/blog" className="block p-2 hover:bg-accent rounded-md">
+                    Blog
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/careers" className="block p-2 hover:bg-accent rounded-md">
+                    Careers
+                  </Link>
+                </motion.div>
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/contact" className="block p-2 hover:bg-accent rounded-md">
+                    Contact
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -151,12 +243,18 @@ function Header1() {
               </Link>
             </>
           )}
-          <Link to="/signup" className={cn(buttonVariants({
-            variant: "default", 
-            size: isMobile ? "sm" : "default"
-          }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
-            {isMobile ? "Start" : "Get started"}
-          </Link>
+          <motion.div 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          >
+            <Link to="/signup" className={cn(buttonVariants({
+              variant: "default", 
+              size: isMobile ? "sm" : "default"
+            }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
+              {isMobile ? "Start" : "Get started"}
+            </Link>
+          </motion.div>
         </div>
       </div>
     </div>;

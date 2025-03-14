@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -20,8 +19,8 @@ import { FeaturesSectionWithHoverEffects } from "@/components/ui/features-sectio
 import { Footerdemo } from "@/components/ui/footer-section";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { motion, useScroll, useInView } from "framer-motion";
 
 const testimonials = [
   {
@@ -134,18 +133,27 @@ const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
 const Index = () => {
   const { toast } = useToast();
   const { user } = useAuth();
+  
+  const heroRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const pricingRef = useRef<HTMLDivElement>(null);
+  
+  const heroInView = useInView(heroRef, { margin: "-50% 0px -50% 0px" });
+  const featuresInView = useInView(featuresRef, { margin: "-50% 0px -50% 0px" });
+  const pricingInView = useInView(pricingRef, { margin: "-50% 0px -50% 0px" });
 
-  // Effect to handle scrolling based on hash in URL
   useEffect(() => {
-    // Get the hash from the URL
     const hash = window.location.hash.substring(1);
     if (hash) {
-      // Find the element with the corresponding ID
       const element = document.getElementById(hash);
       if (element) {
-        // Wait a bit for the page to fully load
         setTimeout(() => {
           element.scrollIntoView({ behavior: 'smooth' });
+          
+          element.classList.add('section-highlight');
+          setTimeout(() => {
+            element.classList.remove('section-highlight');
+          }, 1000);
         }, 100);
       }
     }
@@ -153,33 +161,59 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
       <Header1 />
       
-      {/* Hero Section with padding for header */}
-      <div id="hero" className="pt-20">
+      <motion.div 
+        id="hero" 
+        ref={heroRef}
+        className="pt-20"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+      >
         <Hero />
-      </div>
+      </motion.div>
 
-      {/* Features Section */}
-      <section id="features" className="py-[100px] bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      <motion.section 
+        id="features" 
+        ref={featuresRef}
+        className="py-[100px] bg-gray-50 dark:bg-gray-800 transition-colors duration-300"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        viewport={{ once: true }}
+      >
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8 text-brand-green dark:text-accent-green">
             How Bloomzy Works
           </h2>
           <FeaturesSectionWithHoverEffects />
         </div>
-      </section>
+      </motion.section>
 
-      {/* Social Proof */}
-      <TestimonialsSection
-        title="Trusted by Founders"
-        description="Join over a hundred startup founders who are already scaling with clarity and consistency using Bloomzy"
-        testimonials={testimonials}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <TestimonialsSection
+          title="Trusted by Founders"
+          description="Join over a hundred startup founders who are already scaling with clarity and consistency using Bloomzy"
+          testimonials={testimonials}
+        />
+      </motion.div>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-[100px] bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <motion.section 
+        id="pricing" 
+        ref={pricingRef}
+        className="py-[100px] bg-gray-50 dark:bg-gray-900 transition-colors duration-300"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        viewport={{ once: true }}
+      >
         <div className="relative flex justify-center items-center w-full">
           <div className="absolute inset-0 -z-10">
             <div className="h-full w-full bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:35px_35px] opacity-30 [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] dark:[mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#fff_70%,transparent_110%)]" />
@@ -191,9 +225,8 @@ const Index = () => {
             frequencies={PAYMENT_FREQUENCIES}
           />
         </div>
-      </section>
+      </motion.section>
 
-      {/* Footer */}
       <Footerdemo />
     </div>
   );

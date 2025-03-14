@@ -93,11 +93,23 @@ export default {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
         },
+        "pulse-subtle": {
+          '0%': { backgroundColor: 'transparent' },
+          '50%': { backgroundColor: 'rgba(149, 208, 161, 0.1)' },
+          '100%': { backgroundColor: 'transparent' },
+        },
+        "section-highlight": {
+          '0%': { boxShadow: '0 0 0 0 rgba(149, 208, 161, 0)' },
+          '50%': { boxShadow: '0 0 0 10px rgba(149, 208, 161, 0.1)' },
+          '100%': { boxShadow: '0 0 0 0 rgba(149, 208, 161, 0)' },
+        }
       },
       animation: {
         "fade-up": "fade-up 0.5s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
         marquee: 'marquee var(--duration) linear infinite',
+        "pulse-subtle": "pulse-subtle 2s ease-in-out 1",
+        "section-highlight": "section-highlight 2s ease-in-out 1",
       },
     },
   },
