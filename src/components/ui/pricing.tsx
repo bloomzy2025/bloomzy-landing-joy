@@ -163,7 +163,9 @@ export function Pricing({
                     className="font-variant-numeric: tabular-nums"
                   />
                 </span>
-                {plan.period !== "Next 3 months" && (
+                {/* Only show period text for numeric prices */}
+                {plan.period !== "Next 3 months" && 
+                 !isNaN(Number(isMonthly ? plan.price : plan.yearlyPrice)) && (
                   <span className="text-sm font-semibold leading-6 tracking-wide text-muted-foreground">
                     / {plan.period}
                   </span>
