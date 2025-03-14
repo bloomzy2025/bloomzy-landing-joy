@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -5,9 +6,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 function Header1() {
   const [scrolled, setScrolled] = React.useState(false);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const isMobile = useIsMobile();
+  
   React.useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -15,10 +21,25 @@ function Header1() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return <div className="bg-gray-50">
-      <div className="container flex justify-between items-center rounded-lg bg-zinc-50">
-        {/* Left navigation links */}
-        <div className="flex items-center gap-8">
+      <div className="container flex justify-between items-center rounded-lg bg-zinc-50 p-2 sm:p-4">
+        {/* Mobile menu toggle */}
+        {isMobile && (
+          <button 
+            onClick={toggleMenu} 
+            className="z-50 p-2"
+          >
+            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        )}
+        
+        {/* Left navigation links - hidden on mobile unless menu is open */}
+        <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white shadow-md z-50' : 'hidden') : 'flex items-center gap-8'}`}>
           <Link to="/" className="font-medium">
             Home
           </Link>
@@ -66,25 +87,30 @@ function Header1() {
         </div>
         
         {/* Center logo */}
-        <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 text-xl font-bold tracking-tighter flex items-center gap-2">
+        <Link to="/" className={`${isMobile ? 'ml-8' : 'absolute left-1/2 transform -translate-x-1/2'} text-xl font-bold tracking-tighter flex items-center gap-2`}>
           <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center overflow-hidden">
             <img src="/lovable-uploads/12735e3d-18db-4ce4-bb6a-fba45bf2629d.png" alt="Bloomzy Logo" className="w-full h-full object-cover" />
           </div>
           Bloomzy
         </Link>
         
-        {/* Right buttons */}
-        <div className="flex items-center gap-4">
-          <Link to="/demo" className="text-sm font-medium">
-            Book a demo
-          </Link>
-          <Link to="/signin" className="text-sm font-medium">
-            Sign in
-          </Link>
+        {/* Right buttons - condensed on mobile */}
+        <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
+          {!isMobile && (
+            <>
+              <Link to="/demo" className="text-sm font-medium">
+                Book a demo
+              </Link>
+              <Link to="/signin" className="text-sm font-medium">
+                Sign in
+              </Link>
+            </>
+          )}
           <Link to="/signup" className={cn(buttonVariants({
-          variant: "default"
-        }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
-            Get started
+            variant: "default", 
+            size: isMobile ? "sm" : "default"
+          }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
+            {isMobile ? "Start" : "Get started"}
           </Link>
         </div>
       </div>
