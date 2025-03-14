@@ -88,10 +88,10 @@ function Footerdemo() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Contact Us</h3>
             <address className="space-y-2 text-sm not-italic dark:text-gray-300">
-              <p>123 Growth Avenue</p>
-              <p>Startup Valley, CA 94123</p>
-              <p>Phone: (123) 456-7890</p>
-              <p>Email: hello@bloomzy.com</p>
+              <p>245 Fennell Ave W.</p>
+              <p>Hamilton, ON L9C 7V7</p>
+              <p>Phone: (905) 517 - 4734</p>
+              <p>Email: info@bloomzy.ca</p>
             </address>
           </div>
           <div className="relative">
@@ -187,3 +187,4 @@ function Footerdemo() {
 }
 
 export { Footerdemo }
+
