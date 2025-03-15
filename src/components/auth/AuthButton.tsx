@@ -16,7 +16,7 @@ export default function AuthButton() {
 
   if (connectionError) {
     return (
-      <Button variant="outline" className="gap-2 text-yellow-600 dark:text-yellow-400">
+      <Button variant="outline" className="gap-2 text-yellow-600 dark:text-yellow-500 dark:border-gray-700 dark:hover:bg-gray-800">
         <AlertTriangle size={16} />
         Connection Limited
       </Button>
@@ -24,7 +24,7 @@ export default function AuthButton() {
   }
 
   if (isLoading) {
-    return <Button variant="ghost" disabled className="dark:text-gray-400">Loading...</Button>;
+    return <Button variant="ghost" disabled className="dark:text-gray-400 dark:hover:bg-transparent">Loading...</Button>;
   }
 
   if (!user) {

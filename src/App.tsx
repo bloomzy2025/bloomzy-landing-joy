@@ -14,6 +14,7 @@ import Calendly from "./pages/Calendly";
 import Waitlist from "./pages/Waitlist";
 import Pricing from "./pages/Pricing";
 import EnterpriseContact from "./pages/EnterpriseContact";
+import MakerManagerQuiz from "./pages/MakerManagerQuiz";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/enterprise" element={<EnterpriseContact />} />
+            <Route path="/maker-manager-quiz" element={<MakerManagerQuiz />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
