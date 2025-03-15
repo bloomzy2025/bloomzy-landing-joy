@@ -26,10 +26,7 @@ export default function Waitlist() {
             <h2 className="text-3xl sm:text-5xl font-extrabold text-center tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white to-gray-400">
               Join Our Product Launch Waitlist
             </h2>
-            <p className="text-base sm:text-xl text-gray-300 max-w-xl mx-auto text-center">
-              Be part of something truly extraordinary. Join thousands of others
-              already gaining early access to our revolutionary new product.
-            </p>
+            <p className="text-base sm:text-xl text-gray-300 max-w-xl mx-auto text-center">Be part of something truly extraordinary. Join hundreds of others already gaining early access to our software which simplifies scaling startups.</p>
           </div>
 
           {/* Email input - full width on mobile, side by side on desktop */}
@@ -54,7 +51,7 @@ export default function Waitlist() {
                   <AvatarFallback className="text-xs sm:text-sm font-semibold bg-blue-700">MK</AvatarFallback>
                 </Avatar>
               </div>
-              <span className="font-medium text-sm sm:text-base text-gray-200">100+ people on the waitlist</span>
+              <span className="font-medium text-sm sm:text-base text-gray-200">100+ founders on the waitlist</span>
             </div>
 
             <div className="flex gap-6 justify-center">
