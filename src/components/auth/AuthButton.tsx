@@ -9,10 +9,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, AlertTriangle } from "lucide-react";
 
 export default function AuthButton() {
-  const { user, signOut, isLoading } = useAuth();
+  const { user, signOut, isLoading, connectionError } = useAuth();
+
+  if (connectionError) {
+    return (
+      <Button variant="outline" className="gap-2 text-yellow-600">
+        <AlertTriangle size={16} />
+        Connection Limited
+      </Button>
+    );
+  }
 
   if (isLoading) {
     return <Button variant="ghost" disabled>Loading...</Button>;

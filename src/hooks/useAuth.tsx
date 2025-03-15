@@ -12,6 +12,7 @@ type AuthContextType = {
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  connectionError: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,38 +21,57 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [connectionError, setConnectionError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getSession = async () => {
       setIsLoading(true);
       
-      const { data, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error('Error getting session:', error);
-        setIsLoading(false);
-        return;
-      }
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          if (error.message.includes('network') || error.message.includes('fetch')) {
+            setConnectionError(true);
+          }
+          setIsLoading(false);
+          return;
+        }
 
-      setSession(data.session);
-      setUser(data.session?.user || null);
-      setIsLoading(false);
+        setSession(data.session);
+        setUser(data.session?.user || null);
+        setConnectionError(false);
+      } catch (err) {
+        console.error('Fatal error getting session:', err);
+        setConnectionError(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setUser(session?.user || null);
-        setIsLoading(false);
-      }
-    );
+    try {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          setSession(session);
+          setUser(session?.user || null);
+          setIsLoading(false);
+          setConnectionError(false);
+        }
+      );
 
-    return () => {
-      subscription.unsubscribe();
-    };
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch (err) {
+      console.error('Error setting up auth state change listener:', err);
+      setConnectionError(true);
+      setIsLoading(false);
+      return () => {};
+    }
   }, []);
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -154,7 +174,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isLoading,
         signUp,
         signIn,
-        signOut
+        signOut,
+        connectionError
       }}
     >
       {children}
