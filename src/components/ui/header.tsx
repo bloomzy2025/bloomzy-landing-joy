@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -6,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import AuthButton from "@/components/auth/AuthButton";
-import { ChevronDown, Menu, Wrench, X } from "lucide-react";
+import { ChevronDown, Menu, Wrench, Brain, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 
@@ -215,6 +214,15 @@ function Header1() {
             </button>
             <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white dark:bg-gray-800 rounded-md shadow-md border dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="py-2 px-2">
+                <motion.div
+                  whileHover={{ x: 2 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <Link to="/maker-manager-quiz" className="flex items-center gap-2 py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
+                    <Brain className="h-4 w-4 min-w-4 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+                    <span className="truncate">Maker vs. Manager Quiz</span>
+                  </Link>
+                </motion.div>
                 <motion.div
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
