@@ -58,9 +58,7 @@ export default function Waitlist() {
             </div>
 
             <div className="flex gap-6 justify-center">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-100">
-                <Icons.twitter className="w-5 h-5" />
-              </Button>
+              
               <Button variant="ghost" size="icon" className="text-gray-400 hover:text-gray-100">
                 <Icons.gitHub className="w-5 h-5" />
               </Button>
