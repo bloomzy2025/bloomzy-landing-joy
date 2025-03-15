@@ -73,30 +73,30 @@ function Header1() {
   const isActive = (sectionId: string) => activeSection === sectionId;
 
   return <div className={cn(
-    "bg-gray-50 sticky top-0 z-50 transition-all duration-300",
-    scrolled ? "shadow-md" : ""
+    "bg-gray-50 dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
+    scrolled ? "shadow-md dark:shadow-gray-800/20" : ""
   )}>
-      <div className="container flex justify-between items-center rounded-lg bg-zinc-50 p-2 sm:p-4">
+      <div className="container flex justify-between items-center rounded-lg bg-zinc-50 dark:bg-gray-900 p-2 sm:p-4">
         {isMobile && (
           <button 
             onClick={toggleMenu} 
-            className="z-50 p-2"
+            className="z-50 p-2 text-gray-800 dark:text-gray-200"
           >
             {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         )}
         
-        <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white shadow-md z-50' : 'hidden') : 'flex items-center gap-6'}`}>
+        <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-6'}`}>
           <Link to="/" className="font-medium relative">
             <span className={cn(
-              "transition-colors duration-300",
-              isActive('hero') && "text-brand-green"
+              "transition-colors duration-300 dark:text-gray-200",
+              isActive('hero') && "text-brand-green dark:text-accent-green"
             )}>
               Home
             </span>
             {isActive('hero') && (
               <motion.div 
-                className="absolute -bottom-1 left-0 h-0.5 bg-brand-green rounded-full w-full"
+                className="absolute -bottom-1 left-0 h-0.5 bg-brand-green dark:bg-accent-green rounded-full w-full"
                 layoutId="navIndicator"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -108,20 +108,20 @@ function Header1() {
           <div className="relative group">
             <button className="flex items-center gap-1 font-medium">
               <span className={cn(
-                "transition-colors duration-300",
-                isActive('features') && "text-brand-green"
+                "transition-colors duration-300 dark:text-gray-200",
+                isActive('features') && "text-brand-green dark:text-accent-green"
               )}>
                 Product
-              </span> <ChevronDown className="h-4 w-4" />
+              </span> <ChevronDown className="h-4 w-4 dark:text-gray-400" />
             </button>
-            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white dark:bg-gray-800 rounded-md shadow-md border dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="py-2 px-2">
                 {location.pathname === '/' ? (
                   <motion.button 
                     onClick={() => scrollToSection('hero')} 
                     className={cn(
-                      "block w-full text-left py-2 px-3 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
-                      isActive('hero') && "bg-accent/50 text-brand-green"
+                      "block w-full text-left py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md transition-colors duration-200 text-sm dropdown-item dark:text-gray-200",
+                      isActive('hero') && "bg-accent/50 text-brand-green dark:bg-gray-700/50 dark:text-accent-green"
                     )}
                     whileHover={{ x: 2 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -129,7 +129,7 @@ function Header1() {
                     Overview
                   </motion.button>
                 ) : (
-                  <Link to="/#hero" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/#hero" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     Overview
                   </Link>
                 )}
@@ -138,8 +138,8 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('features')} 
                     className={cn(
-                      "block w-full text-left py-2 px-3 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
-                      isActive('features') && "bg-accent/50 text-brand-green"
+                      "block w-full text-left py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md transition-colors duration-200 text-sm dropdown-item dark:text-gray-200",
+                      isActive('features') && "bg-accent/50 text-brand-green dark:bg-gray-700/50 dark:text-accent-green"
                     )}
                     whileHover={{ x: 2 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -147,7 +147,7 @@ function Header1() {
                     Features
                   </motion.button>
                 ) : (
-                  <Link to="/#features" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/#features" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     Features
                   </Link>
                 )}
@@ -156,8 +156,8 @@ function Header1() {
                   <motion.button 
                     onClick={() => scrollToSection('pricing')} 
                     className={cn(
-                      "block w-full text-left py-2 px-3 hover:bg-accent rounded-md transition-colors duration-200 text-sm dropdown-item",
-                      isActive('pricing') && "bg-accent/50 text-brand-green"
+                      "block w-full text-left py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md transition-colors duration-200 text-sm dropdown-item dark:text-gray-200",
+                      isActive('pricing') && "bg-accent/50 text-brand-green dark:bg-gray-700/50 dark:text-accent-green"
                     )}
                     whileHover={{ x: 2 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -165,7 +165,7 @@ function Header1() {
                     Pricing
                   </motion.button>
                 ) : (
-                  <Link to="/#pricing" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/#pricing" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     Pricing
                   </Link>
                 )}
@@ -174,16 +174,16 @@ function Header1() {
           </div>
           
           <div className="relative group">
-            <button className="flex items-center gap-1 font-medium">
-              Company <ChevronDown className="h-4 w-4" />
+            <button className="flex items-center gap-1 font-medium dark:text-gray-200">
+              Company <ChevronDown className="h-4 w-4 dark:text-gray-400" />
             </button>
-            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white dark:bg-gray-800 rounded-md shadow-md border dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="py-2 px-2">
                 <motion.div
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/about" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/about" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     About Us
                   </Link>
                 </motion.div>
@@ -191,7 +191,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/blog" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/blog" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     Blog
                   </Link>
                 </motion.div>
@@ -199,7 +199,7 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/contact" className="block py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
+                  <Link to="/contact" className="block py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
                     Contact
                   </Link>
                 </motion.div>
@@ -208,19 +208,19 @@ function Header1() {
           </div>
           
           <div className="relative group">
-            <button className="flex items-center gap-1 font-medium">
+            <button className="flex items-center gap-1 font-medium dark:text-gray-200">
               <span className="transition-colors duration-300">
                 Free Tools
-              </span> <ChevronDown className="h-4 w-4" />
+              </span> <ChevronDown className="h-4 w-4 dark:text-gray-400" />
             </button>
-            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white rounded-md shadow-md border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
+            <div className={`absolute left-0 ${isMobile ? 'top-full w-full' : 'top-full w-48'} mt-1 bg-white dark:bg-gray-800 rounded-md shadow-md border dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50`}>
               <div className="py-2 px-2">
                 <motion.div
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/seo-checker" className="flex items-center gap-2 py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
-                    <Wrench className="h-4 w-4 min-w-4 text-brand-green flex-shrink-0" />
+                  <Link to="/tools/seo-checker" className="flex items-center gap-2 py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
+                    <Wrench className="h-4 w-4 min-w-4 text-brand-green dark:text-accent-green flex-shrink-0" />
                     <span className="truncate">SEO Checker</span>
                   </Link>
                 </motion.div>
@@ -228,8 +228,8 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
-                    <Wrench className="h-4 w-4 min-w-4 text-brand-green flex-shrink-0" />
+                  <Link to="/tools/keyword-generator" className="flex items-center gap-2 py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
+                    <Wrench className="h-4 w-4 min-w-4 text-brand-green dark:text-accent-green flex-shrink-0" />
                     <span className="truncate">Keyword Generator</span>
                   </Link>
                 </motion.div>
@@ -237,8 +237,8 @@ function Header1() {
                   whileHover={{ x: 2 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 py-2 px-3 hover:bg-accent rounded-md text-sm dropdown-item">
-                    <Wrench className="h-4 w-4 min-w-4 text-brand-green flex-shrink-0" />
+                  <Link to="/tools/content-analyzer" className="flex items-center gap-2 py-2 px-3 hover:bg-accent dark:hover:bg-gray-700 rounded-md text-sm dropdown-item dark:text-gray-200">
+                    <Wrench className="h-4 w-4 min-w-4 text-brand-green dark:text-accent-green flex-shrink-0" />
                     <span className="truncate">Content Analyzer</span>
                   </Link>
                 </motion.div>
@@ -247,7 +247,7 @@ function Header1() {
           </div>
         </div>
         
-        <Link to="/" className={`${isMobile ? 'mx-auto' : 'absolute left-[52%] transform -translate-x-1/2'} text-xl font-bold tracking-tighter flex items-center gap-2`}>
+        <Link to="/" className={`${isMobile ? 'mx-auto' : 'absolute left-[52%] transform -translate-x-1/2'} text-xl font-bold tracking-tighter flex items-center gap-2 text-gray-900 dark:text-white`}>
           <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center overflow-hidden">
             <img src="/lovable-uploads/12735e3d-18db-4ce4-bb6a-fba45bf2629d.png" alt="Bloomzy Logo" className="w-full h-full object-cover" />
           </div>
@@ -257,10 +257,10 @@ function Header1() {
         <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
           {!isMobile && (
             <>
-              <Link to="/demo" className="text-sm font-medium">
+              <Link to="/demo" className="text-sm font-medium dark:text-gray-200">
                 Book a demo
               </Link>
-              <Link to="/signin" className="text-sm font-medium">
+              <Link to="/signin" className="text-sm font-medium dark:text-gray-200">
                 Sign in
               </Link>
             </>
