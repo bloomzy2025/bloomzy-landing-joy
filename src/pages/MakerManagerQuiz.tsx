@@ -1,6 +1,5 @@
-
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -31,12 +30,23 @@ type ResultType = {
 
 const MakerManagerQuiz = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [result, setResult] = useState<ResultType | null>(null);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (user && location.pathname === '/maker-manager-quiz') {
+      const storedType = sessionStorage.getItem('quizResultType');
+      if (storedType && !result) {
+        setResult(results[storedType as keyof typeof results]);
+        setShowResults(true);
+      }
+    }
+  }, [user, location.pathname, result]);
 
   const questions: QuestionType[] = [
     {
@@ -255,8 +265,8 @@ const MakerManagerQuiz = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
-      const result = calculateResult();
-      setResult(result);
+      const calculatedResult = calculateResult();
+      setResult(calculatedResult);
       setShowResults(true);
     }
   };
@@ -281,7 +291,6 @@ const MakerManagerQuiz = () => {
   };
 
   const redirectToSignIn = () => {
-    // Store quiz result in sessionStorage
     if (result) {
       sessionStorage.setItem('quizResultType', result.type);
     }
@@ -324,21 +333,23 @@ const MakerManagerQuiz = () => {
                 </ul>
               </div>
               
-              <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20">
-                <div className="flex items-center mb-3">
-                  <LockKeyhole className="h-5 w-5 text-brand-green dark:text-accent-green mr-2" />
-                  <h4 className="text-lg font-medium dark:text-gray-100">Want personalized recommendations?</h4>
+              {!user && (
+                <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20">
+                  <div className="flex items-center mb-3">
+                    <LockKeyhole className="h-5 w-5 text-brand-green dark:text-accent-green mr-2" />
+                    <h4 className="text-lg font-medium dark:text-gray-100">Want personalized recommendations?</h4>
+                  </div>
+                  <p className="text-sm dark:text-gray-300 mb-4">
+                    Sign in to unlock extended personalized productivity recommendations based on your {result.type} profile.
+                  </p>
+                  <Button 
+                    onClick={handleGetPersonalizedRecommendations} 
+                    className="w-full bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
+                  >
+                    Sign In for Personalized Recommendations
+                  </Button>
                 </div>
-                <p className="text-sm dark:text-gray-300 mb-4">
-                  Sign in to unlock extended personalized productivity recommendations based on your {result.type} profile.
-                </p>
-                <Button 
-                  onClick={handleGetPersonalizedRecommendations} 
-                  className="w-full bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
-                >
-                  {user ? "View Extended Recommendations" : "Sign In for Personalized Recommendations"}
-                </Button>
-              </div>
+              )}
               
               {user && result.extendedRecommendations && (
                 <div className="mt-8">

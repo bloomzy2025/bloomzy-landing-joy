@@ -17,6 +17,11 @@ export default function SignIn() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
+      // Check if we're coming from the maker-manager quiz
+      if (returnTo.includes('/maker-manager-quiz')) {
+        // Clear stored result type as it's no longer needed after sign-in
+        sessionStorage.removeItem('quizResultType');
+      }
       navigate(returnTo);
     }
   }, [user, navigate, returnTo]);

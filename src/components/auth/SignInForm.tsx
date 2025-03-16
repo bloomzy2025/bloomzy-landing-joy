@@ -1,9 +1,9 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,15 @@ type SignInFormProps = {
 export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const { signIn, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const location = useLocation();
+  const [isFromQuiz, setIsFromQuiz] = useState(false);
+  
+  useEffect(() => {
+    // Check if we're coming from the maker-manager quiz
+    if (returnTo.includes('/maker-manager-quiz') || location.search.includes('returnTo=/maker-manager-quiz')) {
+      setIsFromQuiz(true);
+    }
+  }, [returnTo, location.search]);
   
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -41,7 +50,11 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
     <div className="mx-auto w-full max-w-md space-y-6 p-6 bg-card rounded-lg border shadow">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Sign In</h1>
-        <p className="text-muted-foreground">Welcome back</p>
+        <p className="text-muted-foreground">
+          {isFromQuiz 
+            ? "Sign in to unlock personalized productivity recommendations" 
+            : "Welcome back"}
+        </p>
       </div>
       
       <Form {...form}>
