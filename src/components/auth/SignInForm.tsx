@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Icons } from "@/components/ui/icons";
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -22,7 +24,7 @@ type SignInFormProps = {
 };
 
 export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
-  const { signIn, isLoading } = useAuth();
+  const { signIn, signInWithProvider, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const [isFromQuiz, setIsFromQuiz] = useState(false);
@@ -55,6 +57,39 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
             ? "Sign in to unlock personalized productivity recommendations" 
             : "Welcome back"}
         </p>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => signInWithProvider('google', returnTo)}
+          disabled={isLoading}
+        >
+          <Icons.google className="mr-2 h-4 w-4" />
+          Google
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => signInWithProvider('apple', returnTo)}
+          disabled={isLoading}
+        >
+          <Icons.apple className="mr-2 h-4 w-4" />
+          Apple
+        </Button>
+      </div>
+      
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">or continue with</span>
+        </div>
       </div>
       
       <Form {...form}>

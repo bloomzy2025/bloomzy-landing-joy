@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Icons } from "@/components/ui/icons";
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -19,7 +21,7 @@ const signUpSchema = z.object({
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export default function SignUpForm() {
-  const { signUp, isLoading } = useAuth();
+  const { signUp, signInWithProvider, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   
   const form = useForm<SignUpFormValues>({
@@ -40,6 +42,39 @@ export default function SignUpForm() {
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Sign Up</h1>
         <p className="text-muted-foreground">Create a new account</p>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => signInWithProvider('google')}
+          disabled={isLoading}
+        >
+          <Icons.google className="mr-2 h-4 w-4" />
+          Google
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => signInWithProvider('apple')}
+          disabled={isLoading}
+        >
+          <Icons.apple className="mr-2 h-4 w-4" />
+          Apple
+        </Button>
+      </div>
+      
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center">
+          <Separator className="w-full" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-card px-2 text-muted-foreground">or continue with</span>
+        </div>
       </div>
       
       <Form {...form}>

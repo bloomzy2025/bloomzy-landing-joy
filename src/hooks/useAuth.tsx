@@ -1,7 +1,6 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User, Provider } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
 import { toast } from './use-toast';
 
@@ -11,6 +10,7 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string, redirectTo?: string) => Promise<void>;
+  signInWithProvider: (provider: Provider, redirectTo?: string) => Promise<void>;
   signOut: () => Promise<void>;
   connectionError: boolean;
 };
@@ -139,6 +139,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithProvider = async (provider: Provider, redirectTo = '/') => {
+    try {
+      setIsLoading(true);
+      
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+      
+      // Note: We don't need to manually navigate or show success toast here
+      // as the OAuth flow will redirect the user back to our app after authentication
+      
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+      setIsLoading(false);
+    }
+  };
+
   const signOut = async () => {
     try {
       setIsLoading(true);
@@ -174,6 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isLoading,
         signUp,
         signIn,
+        signInWithProvider,
         signOut,
         connectionError
       }}
