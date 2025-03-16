@@ -24,6 +24,16 @@ export default function SignUpForm() {
   const { signUp, signInWithProvider, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   
+  // Add information tooltips about permissions being requested
+  const renderPermissionsInfo = () => {
+    return (
+      <div className="text-xs text-center mb-4 text-muted-foreground">
+        <p>By signing up, you'll share your email and profile information with us.</p>
+        <p>We only request essential permissions needed for account creation.</p>
+      </div>
+    );
+  };
+  
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -43,6 +53,8 @@ export default function SignUpForm() {
         <h1 className="text-3xl font-bold">Sign Up</h1>
         <p className="text-muted-foreground">Create a new account</p>
       </div>
+      
+      {renderPermissionsInfo()}
       
       <div className="grid grid-cols-2 gap-4">
         <Button 

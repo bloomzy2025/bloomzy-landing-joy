@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User, Provider } from '@supabase/supabase-js';
@@ -143,6 +144,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
+      // Add information about what permissions are being requested
+      console.log(`Requesting permissions for ${provider}: email and profile information`);
+      
       if (provider === 'google' && options?.idToken) {
         const { error } = await supabase.auth.signInWithIdToken({
           provider: 'google',
@@ -181,10 +185,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
       
+      // For standard OAuth flow, specify options with more explicit consent information
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
+          // Only request minimal scopes to improve user experience
+          scopes: 'email profile',
         },
       });
 

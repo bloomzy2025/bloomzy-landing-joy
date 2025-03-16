@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -57,7 +56,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       
       container.appendChild(googleSignInButton);
       
-      // Initialize the One Tap functionality
+      // Initialize the One Tap functionality with explicit permission scopes
       window.google?.accounts.id.initialize({
         client_id: 'YOUR_GOOGLE_CLIENT_ID', // This should be replaced with actual client ID
         callback: async (response) => {
@@ -67,23 +66,34 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
           }
         },
         auto_select: false,
+        ux_mode: 'popup',
+        // Explicitly define scopes to make it clear what permissions are being requested
+        scope: 'email profile',
       });
       
       // Render the button
       window.google?.accounts.id.renderButton(
         googleSignInButton,
-        { theme: 'outline', size: 'large', width: container.offsetWidth }
+        { 
+          theme: 'outline', 
+          size: 'large', 
+          width: container.offsetWidth,
+          type: 'standard',
+          text: 'signin_with',
+          logo_alignment: 'left',
+        }
       );
     }
   }, [googleButtonRef, returnTo, signInWithProvider]);
 
-  // Initialize Apple Sign-In
+  // Initialize Apple Sign-In with explicit consent information
   useEffect(() => {
     if (appleButtonRef.current && window.AppleID) {
       try {
+        // Initialize Apple Sign In with explicit scope definitions
         window.AppleID.auth.init({
           clientId: '[CLIENT_ID]', // Replace with your Apple Client ID
-          scope: 'name email',
+          scope: 'name email', // Explicitly define scopes
           redirectURI: window.location.origin + '/auth/callback?redirectTo=' + returnTo,
           state: 'signin',
           usePopup: true
@@ -115,12 +125,26 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         appleButtonRef.current.appendChild(appleSignInButton);
         
         // This will render the Apple button
-        window.AppleID?.auth.renderButton({ element: appleSignInButton });
+        window.AppleID?.auth.renderButton({ 
+          element: appleSignInButton,
+          // Add attributes to display permissions more clearly
+          text: 'sign in with apple', 
+        });
       } catch (error) {
         console.error('Error initializing Apple Sign In:', error);
       }
     }
   }, [appleButtonRef, returnTo, signInWithProvider]);
+
+  // Add information tooltips about permissions being requested
+  const renderPermissionsInfo = () => {
+    return (
+      <div className="text-xs text-center mb-4 text-muted-foreground">
+        <p>By signing in, you'll share your email and profile information with us.</p>
+        <p>We only request essential permissions needed for account creation.</p>
+      </div>
+    );
+  };
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -144,6 +168,8 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
             : "Welcome back"}
         </p>
       </div>
+      
+      {renderPermissionsInfo()}
       
       <div className="flex flex-col gap-4">
         <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
