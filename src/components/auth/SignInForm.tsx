@@ -29,6 +29,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const location = useLocation();
   const [isFromQuiz, setIsFromQuiz] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
+  const appleButtonRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Check if we're coming from the maker-manager quiz
@@ -76,6 +77,51 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
     }
   }, [googleButtonRef, returnTo, signInWithProvider]);
 
+  // Initialize Apple Sign-In
+  useEffect(() => {
+    if (appleButtonRef.current && window.AppleID) {
+      try {
+        window.AppleID.auth.init({
+          clientId: '[CLIENT_ID]', // Replace with your Apple Client ID
+          scope: 'name email',
+          redirectURI: window.location.origin + '/auth/callback?redirectTo=' + returnTo,
+          state: 'signin',
+          usePopup: true
+        });
+        
+        // Add event listener for Apple authentication
+        document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
+          // Handle successful authorization
+          if (event.detail.authorization && event.detail.authorization.id_token) {
+            signInWithProvider('apple', returnTo, { 
+              idToken: event.detail.authorization.id_token 
+            });
+          }
+        });
+        
+        document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
+          console.error('Apple Sign In failed:', event.detail.error);
+        });
+        
+        // Create and render the Apple sign-in button
+        const appleSignInButton = document.createElement('div');
+        appleSignInButton.id = 'appleid-signin';
+        appleSignInButton.className = 'w-full';
+        appleSignInButton.dataset.color = 'black';
+        appleSignInButton.dataset.border = 'true';
+        appleSignInButton.dataset.type = 'sign-in';
+        
+        appleButtonRef.current.innerHTML = '';
+        appleButtonRef.current.appendChild(appleSignInButton);
+        
+        // This will render the Apple button
+        window.AppleID?.auth.renderButton({ element: appleSignInButton });
+      } catch (error) {
+        console.error('Error initializing Apple Sign In:', error);
+      }
+    }
+  }, [appleButtonRef, returnTo, signInWithProvider]);
+
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -102,6 +148,11 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       <div className="flex flex-col gap-4">
         <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
         
+        <div ref={appleButtonRef} className="w-full h-10 flex justify-center">
+          {/* Apple Sign In button will be rendered here */}
+        </div>
+        
+        {/* Fallback Apple button in case JS API fails */}
         <Button 
           variant="outline" 
           type="button" 

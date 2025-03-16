@@ -162,6 +162,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
       
+      if (provider === 'apple' && options?.idToken) {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'apple',
+          token: options.idToken,
+        });
+
+        if (error) {
+          throw error;
+        }
+        
+        toast({
+          title: "Welcome!",
+          description: "You have successfully signed in with Apple."
+        });
+        
+        navigate(redirectTo);
+        return;
+      }
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {

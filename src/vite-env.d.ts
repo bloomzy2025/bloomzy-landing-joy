@@ -11,4 +11,11 @@ interface Window {
       }
     }
   }
+  AppleID?: {
+    auth: {
+      init: (options: any) => void;
+      renderButton: (options: any) => void;
+      signIn: () => Promise<any>;
+    }
+  }
 }
