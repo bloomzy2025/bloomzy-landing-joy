@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Wrench, ArrowRight, ArrowLeft, Check, Brain } from "lucide-react";
+import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole } from "lucide-react";
 import { motion } from "framer-motion";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/useAuth";
 
 type QuestionType = {
   id: string;
@@ -24,6 +26,7 @@ type ResultType = {
   title: string;
   description: string;
   recommendations: string[];
+  extendedRecommendations?: string[];
 };
 
 const MakerManagerQuiz = () => {
@@ -32,6 +35,8 @@ const MakerManagerQuiz = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [result, setResult] = useState<ResultType | null>(null);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const { user } = useAuth();
 
   const questions: QuestionType[] = [
     {
@@ -158,6 +163,15 @@ const MakerManagerQuiz = () => {
         "Enable focus tools (e.g., 'Do Not Disturb' mode, timeboxing)",
         "Consider time-blocking your calendar to protect your focus time",
         "Batch similar tasks together to maintain flow states"
+      ],
+      extendedRecommendations: [
+        "Set aside specific days for deep work with no meetings allowed",
+        "Use the Pomodoro technique (25 min focus, 5 min break) to maintain concentration",
+        "Schedule recurring 'maker time' blocks in your calendar that others can't book over",
+        "Create a visual signaling system for colleagues to know when you're in deep work mode",
+        "Track your most productive time periods and protect those hours religiously",
+        "Establish a personal ritual to enter deep focus states more consistently",
+        "Configure notification batching on all devices to reduce interruptions"
       ]
     },
     manager: {
@@ -170,6 +184,15 @@ const MakerManagerQuiz = () => {
         "Leverage collaboration tools to streamline communication",
         "Consider scheduling meetings in batches to maintain workflow",
         "Build in buffer time between meetings for follow-up and transitions"
+      ],
+      extendedRecommendations: [
+        "Implement a 'no meeting day' each week to catch up on administrative tasks",
+        "Create templated agendas for recurring meetings to streamline decision-making",
+        "Set up automated status updates from team members to reduce check-in meetings",
+        "Practice active delegation with clear accountability mechanisms",
+        "Create decision-making frameworks that allow for asynchronous input",
+        "Use task batching for similar administrative responsibilities",
+        "Develop systems for tracking action items from multiple meetings efficiently"
       ]
     },
     hybrid: {
@@ -182,6 +205,15 @@ const MakerManagerQuiz = () => {
         "Periodically evaluate your balance to adjust schedules dynamically",
         "Consider 'meeting days' and 'focus days' to separate different work modes",
         "Communicate your schedule to teammates to set clear expectations"
+      ],
+      extendedRecommendations: [
+        "Develop context-switching rituals to transition effectively between modes",
+        "Create separate to-do lists for maker tasks and manager responsibilities",
+        "Block off 'transition time' between deep work and collaborative sessions",
+        "Use calendar color-coding to visually distinguish maker and manager time",
+        "Batch similar tasks together within each mode to maximize efficiency",
+        "Practice mindfulness techniques to fully engage in each mode",
+        "Train your team to understand which types of interruptions are appropriate in each mode"
       ]
     }
   };
@@ -241,6 +273,20 @@ const MakerManagerQuiz = () => {
     setShowResults(false);
     setResult(null);
   };
+  
+  const handleGetPersonalizedRecommendations = () => {
+    if (!user) {
+      setShowAuthDialog(true);
+    }
+  };
+
+  const redirectToSignIn = () => {
+    // Store quiz result in sessionStorage
+    if (result) {
+      sessionStorage.setItem('quizResultType', result.type);
+    }
+    navigate('/signin?returnTo=/maker-manager-quiz');
+  };
 
   const currentQuestion = questions[currentQuestionIndex];
   const currentProgress = ((currentQuestionIndex + 1) / questions.length) * 100;
@@ -277,6 +323,38 @@ const MakerManagerQuiz = () => {
                   ))}
                 </ul>
               </div>
+              
+              <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20">
+                <div className="flex items-center mb-3">
+                  <LockKeyhole className="h-5 w-5 text-brand-green dark:text-accent-green mr-2" />
+                  <h4 className="text-lg font-medium dark:text-gray-100">Want personalized recommendations?</h4>
+                </div>
+                <p className="text-sm dark:text-gray-300 mb-4">
+                  Sign in to unlock extended personalized productivity recommendations based on your {result.type} profile.
+                </p>
+                <Button 
+                  onClick={handleGetPersonalizedRecommendations} 
+                  className="w-full bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
+                >
+                  {user ? "View Extended Recommendations" : "Sign In for Personalized Recommendations"}
+                </Button>
+              </div>
+              
+              {user && result.extendedRecommendations && (
+                <div className="mt-8">
+                  <h3 className="text-xl font-semibold mb-4 dark:text-gray-100">Extended Recommendations:</h3>
+                  <ul className="space-y-3">
+                    {result.extendedRecommendations.map((rec, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <div className="mt-1 flex-shrink-0">
+                          <Check className="h-5 w-5 text-brand-green dark:text-accent-green" />
+                        </div>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </CardContent>
             <CardFooter className="flex justify-between pt-4">
               <Button variant="outline" onClick={handleRestart} className="dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
@@ -288,6 +366,34 @@ const MakerManagerQuiz = () => {
             </CardFooter>
           </Card>
         </motion.div>
+        
+        <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Sign in required</DialogTitle>
+              <DialogDescription>
+                You need to sign in to view personalized productivity recommendations.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="sm:justify-start">
+              <Button
+                type="button"
+                variant="default"
+                onClick={redirectToSignIn}
+                className="bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
+              >
+                Sign In
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAuthDialog(false)}
+              >
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

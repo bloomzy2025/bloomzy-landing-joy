@@ -17,7 +17,11 @@ const signInSchema = z.object({
 
 type SignInFormValues = z.infer<typeof signInSchema>;
 
-export default function SignInForm() {
+type SignInFormProps = {
+  returnTo?: string;
+};
+
+export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const { signIn, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   
@@ -30,7 +34,7 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (values: SignInFormValues) => {
-    await signIn(values.email, values.password);
+    await signIn(values.email, values.password, returnTo);
   };
 
   return (
