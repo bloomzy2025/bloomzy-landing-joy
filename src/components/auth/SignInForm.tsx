@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
+import { toast } from "@/hooks/use-toast";
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -29,6 +31,8 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const [isFromQuiz, setIsFromQuiz] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
   const appleButtonRef = useRef<HTMLDivElement>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
+  const [appleError, setAppleError] = useState<string | null>(null);
   
   useEffect(() => {
     // Check if we're coming from the maker-manager quiz
@@ -39,50 +43,58 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   
   useEffect(() => {
     // Initialize Google One Tap button
-    if (googleButtonRef.current) {
-      const container = googleButtonRef.current;
-      container.innerHTML = '';
-      
-      // Create the Google Sign-In button
-      const googleSignInButton = document.createElement('div');
-      googleSignInButton.className = 'g_id_signin';
-      googleSignInButton.dataset.type = 'standard';
-      googleSignInButton.dataset.size = 'large';
-      googleSignInButton.dataset.theme = 'outline';
-      googleSignInButton.dataset.text = 'sign_in_with';
-      googleSignInButton.dataset.shape = 'rectangular';
-      googleSignInButton.dataset.logo_alignment = 'left';
-      googleSignInButton.dataset.width = '100%';
-      
-      container.appendChild(googleSignInButton);
-      
-      // Initialize the One Tap functionality with explicit permission scopes
-      window.google?.accounts.id.initialize({
-        client_id: 'YOUR_GOOGLE_CLIENT_ID', // This should be replaced with actual client ID
-        callback: async (response) => {
-          if (response.credential) {
-            // Use the id_token from Google response
-            await signInWithProvider('google', returnTo, { idToken: response.credential });
+    if (googleButtonRef.current && window.google) {
+      try {
+        const container = googleButtonRef.current;
+        container.innerHTML = '';
+        
+        // Create the Google Sign-In button
+        const googleSignInButton = document.createElement('div');
+        googleSignInButton.className = 'g_id_signin';
+        googleSignInButton.dataset.type = 'standard';
+        googleSignInButton.dataset.size = 'large';
+        googleSignInButton.dataset.theme = 'outline';
+        googleSignInButton.dataset.text = 'sign_in_with';
+        googleSignInButton.dataset.shape = 'rectangular';
+        googleSignInButton.dataset.logo_alignment = 'left';
+        googleSignInButton.dataset.width = '100%';
+        
+        container.appendChild(googleSignInButton);
+        
+        // Initialize the One Tap functionality with explicit permission scopes
+        window.google?.accounts.id.initialize({
+          client_id: '123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com', // Replace with your actual Google Client ID
+          callback: async (response) => {
+            if (response.credential) {
+              // Use the id_token from Google response
+              await signInWithProvider('google', returnTo, { idToken: response.credential });
+            }
+          },
+          auto_select: false,
+          ux_mode: 'popup',
+          // Explicitly define scopes to make it clear what permissions are being requested
+          scope: 'email profile',
+        });
+        
+        // Render the button
+        window.google?.accounts.id.renderButton(
+          googleSignInButton,
+          { 
+            theme: 'outline', 
+            size: 'large', 
+            width: container.offsetWidth,
+            type: 'standard',
+            text: 'signin_with',
+            logo_alignment: 'left',
           }
-        },
-        auto_select: false,
-        ux_mode: 'popup',
-        // Explicitly define scopes to make it clear what permissions are being requested
-        scope: 'email profile',
-      });
-      
-      // Render the button
-      window.google?.accounts.id.renderButton(
-        googleSignInButton,
-        { 
-          theme: 'outline', 
-          size: 'large', 
-          width: container.offsetWidth,
-          type: 'standard',
-          text: 'signin_with',
-          logo_alignment: 'left',
-        }
-      );
+        );
+      } catch (error) {
+        console.error('Error initializing Google Sign In:', error);
+        setGoogleError('Error initializing Google Sign In. Please try the email option.');
+      }
+    } else if (!window.google) {
+      console.warn('Google Identity Services not loaded');
+      setGoogleError('Google Sign In unavailable. Please try the email option.');
     }
   }, [googleButtonRef, returnTo, signInWithProvider]);
 
@@ -92,7 +104,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       try {
         // Initialize Apple Sign In with explicit scope definitions
         window.AppleID.auth.init({
-          clientId: '[CLIENT_ID]', // Replace with your Apple Client ID
+          clientId: 'com.your.app.id', // Replace with your Apple Client ID
           scope: 'name email', // Explicitly define scopes
           redirectURI: window.location.origin + '/auth/callback?redirectTo=' + returnTo,
           state: 'signin',
@@ -111,6 +123,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         
         document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
           console.error('Apple Sign In failed:', event.detail.error);
+          setAppleError('Apple Sign In failed. Please try the email option.');
         });
         
         // Create and render the Apple sign-in button
@@ -132,7 +145,11 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         });
       } catch (error) {
         console.error('Error initializing Apple Sign In:', error);
+        setAppleError('Error initializing Apple Sign In. Please try the email option.');
       }
+    } else if (!window.AppleID) {
+      console.warn('Apple Sign In SDK not loaded');
+      setAppleError('Apple Sign In unavailable. Please try the email option.');
     }
   }, [appleButtonRef, returnTo, signInWithProvider]);
 
@@ -172,23 +189,35 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       {renderPermissionsInfo()}
       
       <div className="flex flex-col gap-4">
-        <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
-        
-        <div ref={appleButtonRef} className="w-full h-10 flex justify-center">
-          {/* Apple Sign In button will be rendered here */}
+        <div className="w-full">
+          {googleError ? (
+            <div className="text-red-500 text-xs mb-2">{googleError}</div>
+          ) : null}
+          <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
         </div>
         
-        {/* Fallback Apple button in case JS API fails */}
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={() => signInWithProvider('apple', returnTo)}
-          disabled={isLoading}
-        >
-          <Icons.apple className="mr-2 h-4 w-4" />
-          Continue with Apple
-        </Button>
+        <div className="w-full">
+          {appleError ? (
+            <div className="text-red-500 text-xs mb-2">{appleError}</div>
+          ) : null}
+          <div ref={appleButtonRef} className="w-full h-10 flex justify-center">
+            {/* Apple Sign In button will be rendered here */}
+          </div>
+          
+          {/* Fallback Apple button in case JS API fails */}
+          {appleError ? (
+            <Button 
+              variant="outline" 
+              type="button" 
+              className="w-full mt-2"
+              onClick={() => signInWithProvider('apple', returnTo)}
+              disabled={isLoading}
+            >
+              <Icons.apple className="mr-2 h-4 w-4" />
+              Continue with Apple
+            </Button>
+          ) : null}
+        </div>
       </div>
       
       <div className="relative">

@@ -148,44 +148,71 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(`Requesting permissions for ${provider}: email and profile information`);
       
       if (provider === 'google' && options?.idToken) {
-        const { error } = await supabase.auth.signInWithIdToken({
-          provider: 'google',
-          token: options.idToken,
-        });
+        try {
+          console.log('Signing in with Google ID token');
+          const { error } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: options.idToken,
+          });
 
-        if (error) {
-          throw error;
+          if (error) {
+            console.error('Google sign in error:', error);
+            throw error;
+          }
+          
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in with Google."
+          });
+          
+          navigate(redirectTo);
+          return;
+        } catch (tokenError: any) {
+          console.error('Google ID token error:', tokenError);
+          toast({
+            title: "Google Sign In Failed",
+            description: tokenError.message || "Could not authenticate with Google. Please try another method.",
+            variant: "destructive"
+          });
+          setIsLoading(false);
+          return;
         }
-        
-        toast({
-          title: "Welcome!",
-          description: "You have successfully signed in with Google."
-        });
-        
-        navigate(redirectTo);
-        return;
       }
       
       if (provider === 'apple' && options?.idToken) {
-        const { error } = await supabase.auth.signInWithIdToken({
-          provider: 'apple',
-          token: options.idToken,
-        });
+        try {
+          console.log('Signing in with Apple ID token');
+          const { error } = await supabase.auth.signInWithIdToken({
+            provider: 'apple',
+            token: options.idToken,
+          });
 
-        if (error) {
-          throw error;
+          if (error) {
+            console.error('Apple sign in error:', error);
+            throw error;
+          }
+          
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in with Apple."
+          });
+          
+          navigate(redirectTo);
+          return;
+        } catch (tokenError: any) {
+          console.error('Apple ID token error:', tokenError);
+          toast({
+            title: "Apple Sign In Failed",
+            description: tokenError.message || "Could not authenticate with Apple. Please try another method.",
+            variant: "destructive"
+          });
+          setIsLoading(false);
+          return;
         }
-        
-        toast({
-          title: "Welcome!",
-          description: "You have successfully signed in with Apple."
-        });
-        
-        navigate(redirectTo);
-        return;
       }
       
       // For standard OAuth flow, specify options with more explicit consent information
+      console.log(`Initiating OAuth flow for ${provider}`);
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -196,6 +223,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       if (error) {
+        console.error(`${provider} OAuth error:`, error);
         throw error;
       }
       
@@ -203,9 +231,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // as the OAuth flow will redirect the user back to our app after authentication
       
     } catch (error: any) {
+      console.error('Provider sign in error:', error);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Authentication Error",
+        description: error.message || `Could not sign in with ${provider}. Please try another method.`,
         variant: "destructive"
       });
       setIsLoading(false);

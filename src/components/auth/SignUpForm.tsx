@@ -61,7 +61,10 @@ export default function SignUpForm() {
           variant="outline" 
           type="button" 
           className="w-full"
-          onClick={() => signInWithProvider('google')}
+          onClick={() => {
+            console.log('Initiating Google sign in from sign up page');
+            signInWithProvider('google');
+          }}
           disabled={isLoading}
         >
           <Icons.google className="mr-2 h-4 w-4" />
@@ -72,7 +75,10 @@ export default function SignUpForm() {
           variant="outline" 
           type="button" 
           className="w-full"
-          onClick={() => signInWithProvider('apple')}
+          onClick={() => {
+            console.log('Initiating Apple sign in from sign up page');
+            signInWithProvider('apple');
+          }}
           disabled={isLoading}
         >
           <Icons.apple className="mr-2 h-4 w-4" />
