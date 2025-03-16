@@ -11,24 +11,47 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
-      
-      if (error) {
+      try {
+        // Get session and check for errors
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          toast({
+            title: "Authentication error",
+            description: error.message,
+            variant: "destructive",
+          });
+          navigate('/signin');
+          return;
+        }
+        
+        // If we have a session, authentication was successful
+        if (data.session) {
+          toast({
+            title: "Success",
+            description: "You have successfully signed in!",
+          });
+          
+          // Check if we're coming from the quiz
+          if (redirectTo.includes('/maker-manager-quiz')) {
+            // Clear stored result type as it's no longer needed after sign-in
+            sessionStorage.removeItem('quizResultType');
+          }
+          
+          navigate(redirectTo);
+        } else {
+          // No session found, redirect to sign in
+          navigate('/signin');
+        }
+      } catch (error: any) {
+        console.error("Error in auth callback:", error);
         toast({
-          title: "Authentication error",
-          description: error.message,
+          title: "Something went wrong",
+          description: "An unexpected error occurred during authentication.",
           variant: "destructive",
         });
         navigate('/signin');
-        return;
       }
-
-      toast({
-        title: "Success",
-        description: "You have successfully signed in!",
-      });
-      
-      navigate(redirectTo);
     };
 
     handleAuthCallback();

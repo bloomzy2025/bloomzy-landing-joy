@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +28,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const [isFromQuiz, setIsFromQuiz] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Check if we're coming from the maker-manager quiz
@@ -36,6 +37,45 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
     }
   }, [returnTo, location.search]);
   
+  useEffect(() => {
+    // Initialize Google One Tap button
+    if (googleButtonRef.current) {
+      const container = googleButtonRef.current;
+      container.innerHTML = '';
+      
+      // Create the Google Sign-In button
+      const googleSignInButton = document.createElement('div');
+      googleSignInButton.className = 'g_id_signin';
+      googleSignInButton.dataset.type = 'standard';
+      googleSignInButton.dataset.size = 'large';
+      googleSignInButton.dataset.theme = 'outline';
+      googleSignInButton.dataset.text = 'sign_in_with';
+      googleSignInButton.dataset.shape = 'rectangular';
+      googleSignInButton.dataset.logo_alignment = 'left';
+      googleSignInButton.dataset.width = '100%';
+      
+      container.appendChild(googleSignInButton);
+      
+      // Initialize the One Tap functionality
+      window.google?.accounts.id.initialize({
+        client_id: 'YOUR_GOOGLE_CLIENT_ID', // This should be replaced with actual client ID
+        callback: async (response) => {
+          if (response.credential) {
+            // Use the id_token from Google response
+            await signInWithProvider('google', returnTo, { idToken: response.credential });
+          }
+        },
+        auto_select: false,
+      });
+      
+      // Render the button
+      window.google?.accounts.id.renderButton(
+        googleSignInButton,
+        { theme: 'outline', size: 'large', width: container.offsetWidth }
+      );
+    }
+  }, [googleButtonRef, returnTo, signInWithProvider]);
+
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -59,17 +99,8 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         </p>
       </div>
       
-      <div className="grid grid-cols-2 gap-4">
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={() => signInWithProvider('google', returnTo)}
-          disabled={isLoading}
-        >
-          <Icons.google className="mr-2 h-4 w-4" />
-          Google
-        </Button>
+      <div className="flex flex-col gap-4">
+        <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
         
         <Button 
           variant="outline" 
@@ -79,7 +110,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
           disabled={isLoading}
         >
           <Icons.apple className="mr-2 h-4 w-4" />
-          Apple
+          Continue with Apple
         </Button>
       </div>
       
@@ -88,7 +119,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
           <Separator className="w-full" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">or continue with</span>
+          <span className="bg-card px-2 text-muted-foreground">or continue with email</span>
         </div>
       </div>
       
@@ -138,7 +169,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
           />
           
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? "Signing in..." : "Sign In with Email"}
           </Button>
         </form>
       </Form>

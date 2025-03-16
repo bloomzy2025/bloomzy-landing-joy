@@ -10,7 +10,7 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string, redirectTo?: string) => Promise<void>;
-  signInWithProvider: (provider: Provider, redirectTo?: string) => Promise<void>;
+  signInWithProvider: (provider: Provider, redirectTo?: string, options?: any) => Promise<void>;
   signOut: () => Promise<void>;
   connectionError: boolean;
 };
@@ -139,9 +139,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signInWithProvider = async (provider: Provider, redirectTo = '/') => {
+  const signInWithProvider = async (provider: Provider, redirectTo = '/', options?: any) => {
     try {
       setIsLoading(true);
+      
+      if (provider === 'google' && options?.idToken) {
+        const { error } = await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: options.idToken,
+        });
+
+        if (error) {
+          throw error;
+        }
+        
+        toast({
+          title: "Welcome!",
+          description: "You have successfully signed in with Google."
+        });
+        
+        navigate(redirectTo);
+        return;
+      }
       
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
