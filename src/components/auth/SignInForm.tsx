@@ -145,7 +145,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         });
       } catch (error) {
         console.error('Error initializing Apple Sign In:', error);
-        setAppleError('Error initializing Apple Sign In. Please try the email option.');
+        setAppleError('Apple Sign In unavailable. Please try the email option.');
       }
     } else if (!window.AppleID) {
       console.warn('Apple Sign In SDK not loaded');
@@ -204,19 +204,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
             {/* Apple Sign In button will be rendered here */}
           </div>
           
-          {/* Fallback Apple button in case JS API fails */}
-          {appleError ? (
-            <Button 
-              variant="outline" 
-              type="button" 
-              className="w-full mt-2"
-              onClick={() => signInWithProvider('apple', returnTo)}
-              disabled={isLoading}
-            >
-              <Icons.apple className="mr-2 h-4 w-4" />
-              Continue with Apple
-            </Button>
-          ) : null}
+          {/* Removed the fallback Apple button */}
         </div>
       </div>
       
