@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home, Star, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -36,7 +35,6 @@ const MakerManagerQuiz = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [result, setResult] = useState<ResultType | null>(null);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const { user } = useAuth();
   const isMobile = useIsMobile();
 
@@ -387,7 +385,7 @@ const MakerManagerQuiz = () => {
                     </ul>
                   </div>
                   <Button 
-                    onClick={handleGetPersonalizedRecommendations} 
+                    onClick={redirectToSignIn} 
                     className="w-full py-4 md:py-5 text-sm md:text-base font-semibold bg-gradient-to-r from-brand-green to-[#4ADE80] hover:from-brand-green/90 hover:to-[#4ADE80]/90 text-white shadow-lg shadow-brand-green/20 dark:shadow-accent-green/20 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                   >
                     {isMobile ? "Sign In Now" : "Sign In for Personalized Recommendations"}
@@ -439,34 +437,6 @@ const MakerManagerQuiz = () => {
             </CardFooter>
           </Card>
         </motion.div>
-        
-        <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Sign in required</DialogTitle>
-              <DialogDescription>
-                You need to sign in to view personalized productivity recommendations. It only takes a few seconds!
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter className="sm:justify-start">
-              <Button
-                type="button"
-                variant="default"
-                onClick={redirectToSignIn}
-                className="bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
-              >
-                Sign In
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowAuthDialog(false)}
-              >
-                Cancel
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
     );
   }
