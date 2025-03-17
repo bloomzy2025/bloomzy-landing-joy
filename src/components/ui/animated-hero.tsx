@@ -42,22 +42,22 @@ function Hero() {
                   className="absolute font-semibold" 
                   initial={{
                     opacity: 0,
-                    y: 15 // Keeping reduced value for less dramatic movement
+                    y: 15
                   }} 
                   transition={{
                     type: "spring",
-                    stiffness: 100, // Keeping increased stiffness for cleaner motion
-                    damping: 12, // Keeping damping for smoother animation
-                    duration: 0.3 // Keeping explicit duration for consistent transition
+                    stiffness: 100,
+                    damping: 12,
+                    duration: 0.3
                   }} 
                   animate={titleNumber === index ? {
                     y: 0,
                     opacity: 1
                   } : {
-                    y: titleNumber > index ? -15 : 15, // Keeping reduced value
+                    y: titleNumber > index ? -15 : 15,
                     opacity: 0,
                     transition: {
-                      duration: 0.2 // Keeping faster exit animation
+                      duration: 0.2
                     }
                   }}
                 >
@@ -83,7 +83,7 @@ function Hero() {
               </Button>
             ) : (
               <Button size="lg" className="gap-4" asChild>
-                <Link to="/signup">Sign up here <MoveRight className="w-4 h-4" /></Link>
+                <Link to="/signin">Sign in <MoveRight className="w-4 h-4" /></Link>
               </Button>
             )}
           </div>
