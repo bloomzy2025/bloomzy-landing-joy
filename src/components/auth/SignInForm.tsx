@@ -52,21 +52,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       });
     }
   };
-  
-  // Apple Sign-In implementation
-  const handleAppleSignIn = async () => {
-    try {
-      console.log('Starting Apple OAuth flow with standard redirect');
-      await signInWithProvider('apple', returnTo);
-    } catch (error) {
-      console.error('Apple sign in error:', error);
-      toast({
-        title: "Sign In Failed",
-        description: "Could not sign in with Apple. Please try again or use email.",
-        variant: "destructive"
-      });
-    }
-  };
 
   const renderPermissionsInfo = () => {
     return (
@@ -102,29 +87,16 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       
       {renderPermissionsInfo()}
       
-      <div className="grid grid-cols-2 gap-4">
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-        >
-          <Icons.google className="mr-2 h-4 w-4" />
-          Google
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={handleAppleSignIn}
-          disabled={isLoading}
-        >
-          <Icons.apple className="mr-2 h-4 w-4" />
-          Apple
-        </Button>
-      </div>
+      <Button 
+        variant="outline" 
+        type="button" 
+        className="w-full flex items-center justify-center gap-2"
+        onClick={handleGoogleSignIn}
+        disabled={isLoading}
+      >
+        <Icons.google className="h-5 w-5" />
+        <span>Sign in with Google</span>
+      </Button>
       
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

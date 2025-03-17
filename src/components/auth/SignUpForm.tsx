@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
+import { toast } from "@/hooks/use-toast";
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -48,15 +49,18 @@ export default function SignUpForm() {
   };
 
   // Google sign in handler
-  const handleGoogleSignIn = () => {
-    console.log('Initiating Google sign in from sign up page');
-    signInWithProvider('google');
-  };
-
-  // Apple sign in handler
-  const handleAppleSignIn = () => {
-    console.log('Initiating Apple sign in from sign up page');
-    signInWithProvider('apple');
+  const handleGoogleSignIn = async () => {
+    try {
+      console.log('Initiating Google sign in from sign up page');
+      await signInWithProvider('google');
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      toast({
+        title: "Sign In Failed",
+        description: "Could not sign in with Google. Please try again or use email.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -68,29 +72,16 @@ export default function SignUpForm() {
       
       {renderPermissionsInfo()}
       
-      <div className="grid grid-cols-2 gap-4">
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-        >
-          <Icons.google className="mr-2 h-4 w-4" />
-          Google
-        </Button>
-        
-        <Button 
-          variant="outline" 
-          type="button" 
-          className="w-full"
-          onClick={handleAppleSignIn}
-          disabled={isLoading}
-        >
-          <Icons.apple className="mr-2 h-4 w-4" />
-          Apple
-        </Button>
-      </div>
+      <Button 
+        variant="outline" 
+        type="button" 
+        className="w-full flex items-center justify-center gap-2"
+        onClick={handleGoogleSignIn}
+        disabled={isLoading}
+      >
+        <Icons.google className="h-5 w-5" />
+        <span>Sign up with Google</span>
+      </Button>
       
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

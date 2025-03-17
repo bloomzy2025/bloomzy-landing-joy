@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User, Provider } from '@supabase/supabase-js';
@@ -146,21 +145,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log(`Initiating OAuth flow for ${provider} with redirectTo: ${redirectTo}`);
       
-      // Use a consistent callback URL format
-      const callbackUrl = `${window.location.origin}/auth/callback`;
+      // Use a consistent callback URL format - make sure this matches what's configured in Supabase
+      const redirectUri = `${window.location.origin}/auth/callback`;
       
-      console.log(`Using callback URL: ${callbackUrl}`);
+      console.log(`Using redirect URL: ${redirectUri}`);
       
-      // Pass redirectTo as a parameter to be handled by the callback page
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: callbackUrl,
+          redirectTo: redirectUri,
           queryParams: {
             redirectTo: redirectTo // Pass as a query param to be picked up by callback page
-          },
-          scopes: 'email profile',
-        },
+          }
+        }
       });
 
       if (error) {
