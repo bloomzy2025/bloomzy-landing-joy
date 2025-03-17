@@ -5,14 +5,21 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserRound } from "lucide-react";
+import { UserRound, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface HeaderActionsProps {
   isMobile?: boolean;
 }
 
 export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   
   // Get user initials from email or full name if available
   const getUserInitials = () => {
@@ -45,11 +52,28 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
       {!isMobile && (
         <>
           {user ? (
-            <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
-              <AvatarFallback>
-                {getUserInitials() || <UserRound size={16} />}
-              </AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="focus:outline-none">
+                <Avatar className="h-8 w-8 bg-primary text-primary-foreground cursor-pointer hover:opacity-80 transition-opacity">
+                  <AvatarFallback>
+                    {getUserInitials() || <UserRound size={16} />}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="dark:bg-gray-800 dark:border-gray-700">
+                <DropdownMenuItem className="text-muted-foreground dark:text-gray-400">
+                  {user.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="dark:bg-gray-700" />
+                <DropdownMenuItem 
+                  onClick={() => signOut()} 
+                  className="flex items-center gap-2 text-destructive dark:text-red-400 cursor-pointer dark:hover:bg-gray-700"
+                >
+                  <LogOut size={16} />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Link to="/signin" className="text-sm font-medium dark:text-gray-200">
               Sign in
