@@ -44,56 +44,22 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
     }
   }, [returnTo, location.search]);
   
-  useEffect(() => {
-    if (googleButtonRef.current && window.google) {
-      try {
-        const container = googleButtonRef.current;
-        container.innerHTML = '';
-        
-        const googleSignInButton = document.createElement('div');
-        googleSignInButton.className = 'g_id_signin';
-        googleSignInButton.dataset.type = 'standard';
-        googleSignInButton.dataset.size = 'large';
-        googleSignInButton.dataset.theme = 'outline';
-        googleSignInButton.dataset.text = 'sign_in_with';
-        googleSignInButton.dataset.shape = 'rectangular';
-        googleSignInButton.dataset.logo_alignment = 'left';
-        googleSignInButton.dataset.width = '100%';
-        
-        container.appendChild(googleSignInButton);
-        
-        window.google?.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: async (response) => {
-            if (response.credential) {
-              await signInWithProvider('google', returnTo, { idToken: response.credential });
-            }
-          },
-          auto_select: false,
-          ux_mode: 'popup',
-          scope: 'email profile',
-        });
-        
-        window.google?.accounts.id.renderButton(
-          googleSignInButton,
-          { 
-            theme: 'outline', 
-            size: 'large', 
-            width: container.offsetWidth,
-            type: 'standard',
-            text: 'signin_with',
-            logo_alignment: 'left',
-          }
-        );
-      } catch (error) {
-        console.error('Error initializing Google Sign In:', error);
-        setGoogleError('Error initializing Google Sign In. Please try the email option.');
-      }
-    } else if (!window.google) {
-      console.warn('Google Identity Services not loaded');
-      setGoogleError('Google Sign In unavailable. Please try the email option.');
+  // Update Google Sign-In implementation to use standard OAuth flow instead of Google Identity Services
+  const handleGoogleSignIn = async () => {
+    try {
+      console.log('Starting Google OAuth flow with standard redirect');
+      await signInWithProvider('google', returnTo);
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      setGoogleError('Failed to initiate Google sign in. Please try again or use email option.');
     }
-  }, [googleButtonRef, returnTo, signInWithProvider]);
+  };
+  
+  // Legacy Google Identity Services code - kept for reference but no longer used
+  useEffect(() => {
+    // Clear any previous errors
+    setGoogleError(null);
+  }, []);
 
   // Custom Apple button implementation
   useEffect(() => {
@@ -230,12 +196,17 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       {renderPermissionsInfo()}
       
       <div className="flex flex-col gap-4">
-        <div className="w-full">
-          {googleError ? (
-            <div className="text-red-500 text-xs mb-2">{googleError}</div>
-          ) : null}
-          <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
-        </div>
+        {/* Replace Google One Tap with standard OAuth button */}
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full flex items-center justify-center"
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+        >
+          <Icons.google className="mr-2 h-4 w-4" />
+          Sign in with Google
+        </Button>
         
         <div className="w-full">
           {appleError ? (

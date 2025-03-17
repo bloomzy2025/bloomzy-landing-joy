@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User, Provider } from '@supabase/supabase-js';
@@ -17,9 +16,6 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Google OAuth client ID from provided credentials
-const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -147,9 +143,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Add information about what permissions are being requested
-      console.log(`Requesting permissions for ${provider}: email and profile information`);
-      
       if (provider === 'google' && options?.idToken) {
         try {
           console.log('Signing in with Google ID token');
@@ -182,45 +175,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
       }
       
-      if (provider === 'apple' && options?.idToken) {
-        try {
-          console.log('Signing in with Apple ID token');
-          const { error } = await supabase.auth.signInWithIdToken({
-            provider: 'apple',
-            token: options.idToken,
-          });
-
-          if (error) {
-            console.error('Apple sign in error:', error);
-            throw error;
-          }
-          
-          toast({
-            title: "Welcome!",
-            description: "You have successfully signed in with Apple."
-          });
-          
-          navigate(redirectTo);
-          return;
-        } catch (tokenError: any) {
-          console.error('Apple ID token error:', tokenError);
-          toast({
-            title: "Apple Sign In Failed",
-            description: tokenError.message || "Could not authenticate with Apple. Please try another method.",
-            variant: "destructive"
-          });
-          setIsLoading(false);
-          return;
-        }
-      }
-      
-      // For standard OAuth flow, specify options with more explicit consent information
       console.log(`Initiating OAuth flow for ${provider}`);
+      
+      const callbackUrl = new URL('/auth/callback', window.location.origin);
+      
+      callbackUrl.searchParams.append('redirectTo', redirectTo);
+      
+      console.log(`Using callback URL: ${callbackUrl.toString()}`);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
-          // Only request minimal scopes to improve user experience
+          redirectTo: callbackUrl.toString(),
           scopes: 'email profile',
         },
       });
@@ -229,9 +195,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error(`${provider} OAuth error:`, error);
         throw error;
       }
-      
-      // Note: We don't need to manually navigate or show success toast here
-      // as the OAuth flow will redirect the user back to our app after authentication
       
     } catch (error: any) {
       console.error('Provider sign in error:', error);
