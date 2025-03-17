@@ -486,6 +486,7 @@ const TimeWastersAudit = () => {
 
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
+  
   const InfoCard = () => <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-2">
@@ -530,6 +531,7 @@ const TimeWastersAudit = () => {
         </div>
       </CardContent>
     </Card>;
+    
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -872,4 +874,3 @@ const TimeWastersAudit = () => {
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Your Productivity Optimization Suggestions</h3>
                 <h4 className="text-lg font-medium">Your Top 3 Action Steps for This Week</h4>
-                <ul className="
