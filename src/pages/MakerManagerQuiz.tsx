@@ -341,7 +341,6 @@ const MakerManagerQuiz = () => {
                       <span>{rec}</span>
                     </li>
                   ))}
-                  {/* Blur effect for remaining recommendations */}
                   <div className={`space-y-3 ${!user ? "blur-sm select-none" : ""}`}>
                     {result.recommendations.slice(2).map((rec, index) => (
                       <li key={index + 2} className="flex items-start gap-3">
@@ -357,14 +356,14 @@ const MakerManagerQuiz = () => {
               
               {!user && (
                 <motion.div
-                  className="mt-10 mb-10 bg-[#F8F7FF] dark:bg-[#1A1F2C]/80 p-10 rounded-xl border border-[#9b87f5]/30 dark:border-[#9b87f5]/20 shadow-lg"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  className="mt-10 mb-10 bg-[#F5F3FF] dark:bg-[#1A1F2C]/90 p-10 rounded-2xl border-2 border-[#9b87f5]/30 dark:border-[#7E69AB]/50 shadow-xl"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <div className="flex justify-center mb-6">
-                    <div className="w-20 h-20 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center">
-                      <Trophy className="h-10 w-10 text-[#9b87f5]" />
+                  <div className="flex items-center justify-center mb-6">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#9b87f5] to-[#D946EF] flex items-center justify-center mb-1 shadow-lg shadow-[#9b87f5]/30 dark:shadow-[#D946EF]/20">
+                      <Star className="h-10 w-10 text-white" />
                     </div>
                   </div>
                   <h3 className="text-2xl font-bold text-center text-[#6E59A5] dark:text-[#D6BCFA] mb-4">
