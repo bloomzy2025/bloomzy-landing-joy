@@ -475,18 +475,13 @@ const TimeWastersAudit = () => {
 
   // All selected items for the top priorities step
   const getAllSelectedItems = () => {
-    // Get all selected items without duplicates
-    const allItems = [...formData.daily_activities, ...formData.time_wasters, 
-                     ...formData.personal_habits, ...formData.dependencies, 
-                     ...formData.planning_issues, ...formData.environmental_factors];
-    
-    // Remove duplicates by creating a Set and converting back to array
-    return [...new Set(allItems)];
-  };
+    const allSelected = [...formData.daily_activities, ...formData.time_wasters, ...formData.personal_habits, ...formData.dependencies, ...formData.planning_issues, ...formData.environmental_factors];
 
+    // Remove duplicates
+    return [...new Set(allSelected)];
+  };
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
-  
   const InfoCard = () => <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-2">
@@ -531,7 +526,6 @@ const TimeWastersAudit = () => {
         </div>
       </CardContent>
     </Card>;
-    
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -805,46 +799,26 @@ const TimeWastersAudit = () => {
             </p>
             
             <div className="space-y-6">
-              {/* Create categories of unique items */}
+              {/* Group all selected items by their original categories */}
               {[{
-                title: 'Daily Activities',
-                items: formData.daily_activities.filter(item => 
-                  !formData.time_wasters.includes(item) && 
-                  !formData.personal_habits.includes(item) && 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Time Wasters',
-                items: formData.time_wasters.filter(item => 
-                  !formData.personal_habits.includes(item) && 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Personal Habits',
-                items: formData.personal_habits.filter(item => 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Dependencies',
-                items: formData.dependencies.filter(item => 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Planning Issues',
-                items: formData.planning_issues.filter(item => 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Environmental Factors',
-                items: formData.environmental_factors
-              }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
+              title: 'Daily Activities',
+              items: formData.daily_activities
+            }, {
+              title: 'Time Wasters',
+              items: formData.time_wasters
+            }, {
+              title: 'Personal Habits',
+              items: formData.personal_habits
+            }, {
+              title: 'Dependencies',
+              items: formData.dependencies
+            }, {
+              title: 'Planning Issues',
+              items: formData.planning_issues
+            }, {
+              title: 'Environmental Factors',
+              items: formData.environmental_factors
+            }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
                   <h3 className="text-sm font-semibold text-gray-500 tracking-wide">
                     {group.title.toUpperCase()}
                   </h3>
@@ -862,10 +836,8 @@ const TimeWastersAudit = () => {
                 </div>)}
             </div>
           </div>;
-      
       case 11:
-        return (
-          <div className="space-y-6">
+        return <div className="space-y-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-center">
               Your Personalized Time Audit Report
             </h2>
@@ -874,3 +846,131 @@ const TimeWastersAudit = () => {
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Your Productivity Optimization Suggestions</h3>
                 <h4 className="text-lg font-medium">Your Top 3 Action Steps for This Week</h4>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li>Position your desk near natural light and add task lighting for clearer focus</li>
+                  <li>Use the 'split-shift' method: work core hours for meetings, then flexible hours for focused work</li>
+                  <li>Create blocks of distraction-free time by silencing notifications and using focus mode</li>
+                </ul>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold">Solutions That Work for Others Like You</h3>
+                <h4 className="text-lg font-medium">Simple Ways to Save More Time</h4>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li>Create a dedicated focus space - even a small corner can become a productivity zone</li>
+                  <li>Use natural light when possible - it helps maintain your energy throughout the day</li>
+                  <li>Keep your workspace clean and organized - it reduces mental clutter</li>
+                  <li>Take regular movement breaks - a quick stretch every hour helps maintain focus</li>
+                  <li>Adjust your workspace for comfort - good ergonomics reduce fatigue</li>
+                </ul>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold">Quick Wins You Can Try Today</h3>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li>Set up your workspace for tomorrow before finishing today</li>
+                  <li>Keep water within reach to stay hydrated during focus time</li>
+                  <li>Use a desk plant to improve air quality and reduce stress</li>
+                  <li>Position your screen at eye level to prevent neck strain</li>
+                </ul>
+              </div>
+              
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
+                <h3 className="text-xl font-semibold text-center">Get Your Complete Productivity Analysis</h3>
+                <p className="text-center">
+                  Unlock your full report with detailed AI-powered recommendations, actionable insights, and a personalized improvement roadmap.
+                </p>
+                
+                <form className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Your Name</Label>
+                    <Input id="name" placeholder="Your name" />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="email">Your Email</Label>
+                    <Input id="email" type="email" placeholder="Your email" />
+                  </div>
+                  
+                  <Button className="w-full bg-green-500 hover:bg-green-600">
+                    Get Full Report Free
+                  </Button>
+                  
+                  <p className="text-xs text-center text-gray-500">
+                    We'll email you a downloadable PDF copy for your records<br />
+                    100% Free, No Credit Card Required
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>;
+      default:
+        return null;
+    }
+  };
+  return <div className="container mx-auto py-12 px-4">
+      <div className="mb-6">
+        <Button variant="outline" onClick={() => navigate('/')} className="flex items-center gap-2">
+          <Home className="h-4 w-4" />
+          Back to Home
+        </Button>
+      </div>
+      
+      <div className={`grid ${isDesktop ? 'grid-cols-3 gap-8' : 'grid-cols-1 gap-6'}`}>
+        {isDesktop ? <>
+            <div className="col-span-1">
+              <InfoCard />
+            </div>
+            
+            <div className="col-span-2">
+              <Card className="shadow-lg">
+                <CardContent className="p-6">
+                  {renderStep()}
+                </CardContent>
+                
+                {step < 11 && <CardFooter className="flex justify-between p-6 pt-0">
+                    <Button variant="outline" onClick={handlePrevStep} disabled={step === 1} className="flex items-center gap-1">
+                      <ArrowLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
+                    
+                    {step < 10 ? <Button onClick={handleNextStep} className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1">
+                        Next
+                        <ArrowRight className="h-4 w-4" />
+                      </Button> : <Button onClick={handleSubmit} disabled={loading} className="bg-green-500 hover:bg-green-600 text-white">
+                        {loading ? 'Submitting...' : 'Submit Audit'}
+                      </Button>}
+                  </CardFooter>}
+              </Card>
+            </div>
+          </> : <>
+            <div>
+              <InfoCard />
+            </div>
+            
+            <div>
+              <Card className="shadow-lg">
+                <CardContent className="p-6">
+                  {renderStep()}
+                </CardContent>
+                
+                {step < 11 && <CardFooter className="flex justify-between p-6 pt-0">
+                    <Button variant="outline" onClick={handlePrevStep} disabled={step === 1} className="flex items-center gap-1">
+                      <ArrowLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
+                    
+                    {step < 10 ? <Button onClick={handleNextStep} className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1">
+                        Next
+                        <ArrowRight className="h-4 w-4" />
+                      </Button> : <Button onClick={handleSubmit} disabled={loading} className="bg-green-500 hover:bg-green-600 text-white">
+                        {loading ? 'Submitting...' : 'Submit Audit'}
+                      </Button>}
+                  </CardFooter>}
+              </Card>
+            </div>
+          </>}
+      </div>
+    </div>;
+};
+export default TimeWastersAudit;
