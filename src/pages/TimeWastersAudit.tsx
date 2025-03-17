@@ -1,712 +1,538 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { 
-  Form, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormControl, 
-  FormDescription, 
-  FormMessage 
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { supabase } from '@/integrations/supabase/client';
 
-// Define the questions and their options
+// Define the audit question items for reuse
 const timeWasters = [
-  { id: "emails", label: "Emails" },
-  { id: "meetings", label: "Meetings" },
-  { id: "social-media", label: "Social Media" },
-  { id: "procrastination", label: "Procrastination" },
-  { id: "multitasking", label: "Multitasking" },
-  { id: "phone-notifications", label: "Phone Notifications" },
-  { id: "team-interruptions", label: "Team Interruptions" },
-  { id: "planning-overthinking", label: "Planning/Overthinking" },
-  { id: "decision-fatigue", label: "Decision Fatigue" },
-  { id: "perfectionism", label: "Perfectionism" },
-  { id: "late-nights", label: "Late Nights" },
+  { id: 'emails', label: 'Emails' },
+  { id: 'meetings', label: 'Meetings' },
+  { id: 'social-media', label: 'Social Media' },
+  { id: 'procrastination', label: 'Procrastination' },
+  { id: 'multitasking', label: 'Multitasking' },
+  { id: 'phone-notifications', label: 'Phone Notifications' },
+  { id: 'team-interruptions', label: 'Team Interruptions' },
+  { id: 'planning-overthinking', label: 'Planning/Overthinking' },
+  { id: 'decision-fatigue', label: 'Decision Fatigue' },
+  { id: 'perfectionism', label: 'Perfectionism' },
+  { id: 'late-nights', label: 'Late Nights' }
 ];
 
 const personalHabits = [
-  { id: "procrastination", label: "Procrastination" },
-  { id: "multitasking", label: "Multitasking" },
-  { id: "late-nights", label: "Late Nights" },
-  { id: "perfectionism", label: "Perfectionism" },
+  { id: 'procrastination', label: 'Procrastination' },
+  { id: 'multitasking', label: 'Multitasking' },
+  { id: 'late-nights', label: 'Late Nights' },
+  { id: 'perfectionism', label: 'Perfectionism' }
 ];
 
 const dependencies = [
-  { id: "team-interruptions", label: "Team Interruptions" },
-  { id: "software-issues", label: "Software Issues" },
-  { id: "internet-connectivity", label: "Internet Connectivity" },
+  { id: 'team-interruptions', label: 'Team Interruptions' },
+  { id: 'software-issues', label: 'Software Issues' },
+  { id: 'internet-connectivity', label: 'Internet Connectivity' }
 ];
 
 const planningIssues = [
-  { id: "overthinking", label: "Overthinking" },
-  { id: "decision-fatigue", label: "Decision Fatigue" },
+  { id: 'overthinking', label: 'Overthinking' },
+  { id: 'decision-fatigue', label: 'Decision Fatigue' }
 ];
 
 const environmentalFactors = [
-  { id: "noise", label: "Noise" },
-  { id: "distractions-home", label: "Distractions at Home" },
-  { id: "office-interruptions", label: "Office Interruptions" },
-  { id: "lack-workspace", label: "Lack of Workspace" },
-  { id: "poor-lighting", label: "Poor Lighting" },
-  { id: "temperature-issues", label: "Temperature Issues" },
-  { id: "equipment-problems", label: "Equipment Problems" },
-  { id: "internet-connectivity", label: "Internet Connectivity" },
-  { id: "software-issues", label: "Software Issues" },
-  { id: "workspace-ergonomics", label: "Workspace Ergonomics" },
-  { id: "timezone-differences", label: "Time Zone Differences" },
+  { id: 'noise', label: 'Noise' },
+  { id: 'distractions-home', label: 'Distractions at Home' },
+  { id: 'office-interruptions', label: 'Office Interruptions' },
+  { id: 'lack-workspace', label: 'Lack of Workspace' },
+  { id: 'poor-lighting', label: 'Poor Lighting' },
+  { id: 'temperature-issues', label: 'Temperature Issues' },
+  { id: 'equipment-problems', label: 'Equipment Problems' },
+  { id: 'internet-connectivity', label: 'Internet Connectivity' },
+  { id: 'software-issues', label: 'Software Issues' },
+  { id: 'workspace-ergonomics', label: 'Workspace Ergonomics' },
+  { id: 'time-zone-differences', label: 'Time Zone Differences' }
 ];
 
-// Main component
 const TimeWastersAudit = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
-  
-  // All options combined for top priorities
-  const allOptions = [
-    ...timeWasters,
-    ...personalHabits.filter(item => !timeWasters.some(tw => tw.id === item.id)),
-    ...dependencies.filter(item => !timeWasters.some(tw => tw.id === item.id) && !personalHabits.some(ph => ph.id === item.id)),
-    ...planningIssues.filter(item => !timeWasters.some(tw => tw.id === item.id) && !personalHabits.some(ph => ph.id === item.id) && !dependencies.some(d => d.id === item.id)),
-    ...environmentalFactors.filter(item => !timeWasters.some(tw => tw.id === item.id) && !personalHabits.some(ph => ph.id === item.id) && !dependencies.some(d => d.id === item.id) && !planningIssues.some(pi => pi.id === item.id)),
-  ];
-
-  // Form structure using react-hook-form
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      email: "",
-      timeWasters: [],
-      personalHabits: [],
-      habitControl: [50],
-      workHours: "",
-      dependencies: [],
-      planningIssues: [],
-      environmentalFactors: [],
-      topPriorities: [],
-      otherHabits: "",
-      otherDependencies: "",
-      otherPlanningIssues: "",
-    }
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    time_wasters: [] as string[],
+    personal_habits: [] as string[],
+    habit_control: 50,
+    work_hours: '',
+    dependencies: [] as string[],
+    planning_issues: [] as string[],
+    environmental_factors: [] as string[],
+    top_priorities: [] as string[],
+    other_habits: '',
+    other_dependencies: '',
+    other_planning_issues: ''
   });
-
-  // Steps for the quiz
-  const steps = [
-    {
-      title: "About You",
-      description: "Tell us a bit about yourself",
-      fields: (
-        <>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Your Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We'll use this to personalize your report
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem className="mt-4">
-                <FormLabel>Your Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@example.com" type="email" {...field} />
-                </FormControl>
-                <FormDescription>
-                  We'll send your personalized recommendations to this email
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </>
-      )
-    },
-    {
-      title: "Daily Time Wasters",
-      description: "What activities waste your time daily?",
-      fields: (
-        <FormField
-          control={form.control}
-          name="timeWasters"
-          render={() => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel>Select all that apply</FormLabel>
-                <FormDescription>
-                  These are common activities that people find waste their time
-                </FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {timeWasters.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="timeWasters"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    )
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      )
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
-    },
-    {
-      title: "Personal Habits",
-      description: "What personal habits affect your productivity?",
-      fields: (
-        <>
-          <FormField
-            control={form.control}
-            name="personalHabits"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel>Select all that apply</FormLabel>
-                  <FormDescription>
-                    These habits can significantly impact your productivity
-                  </FormDescription>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {personalHabits.map((item) => (
-                    <FormField
-                      key={item.id}
-                      control={form.control}
-                      name="personalHabits"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.id}
-                            className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.id])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
-                              {item.label}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="otherHabits"
-            render={({ field }) => (
-              <FormItem className="mt-4">
-                <FormLabel>Other habits (optional)</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Enter any other personal habits that affect your productivity"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </>
-      )
-    },
-    {
-      title: "Habit Control",
-      description: "How much control do you feel over your habits?",
-      fields: (
-        <FormField
-          control={form.control}
-          name="habitControl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Control Level</FormLabel>
-              <FormControl>
-                <div className="space-y-6">
-                  <Slider
-                    defaultValue={field.value}
-                    max={100}
-                    step={1}
-                    onValueChange={field.onChange}
-                    className="mt-6"
-                  />
-                  <div className="flex justify-between">
-                    <span className="text-sm text-muted-foreground">None</span>
-                    <span className="text-sm text-muted-foreground">Complete</span>
-                  </div>
-                </div>
-              </FormControl>
-              <FormDescription>
-                Slide to indicate how much control you feel you have over your habits
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
-    },
-    {
-      title: "Work Hours",
-      description: "What are your typical work hours?",
-      fields: (
-        <FormField
-          control={form.control}
-          name="workHours"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Typical Work Hours</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g., 9 AM - 5 PM" {...field} />
-              </FormControl>
-              <FormDescription>
-                Enter your typical working hours in a format like "9 AM - 5 PM"
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
-    },
-    {
-      title: "Dependencies",
-      description: "What dependencies slow you down?",
-      fields: (
-        <>
-          <FormField
-            control={form.control}
-            name="dependencies"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel>Select all that apply</FormLabel>
-                  <FormDescription>
-                    External factors that may affect your workflow
-                  </FormDescription>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {dependencies.map((item) => (
-                    <FormField
-                      key={item.id}
-                      control={form.control}
-                      name="dependencies"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.id}
-                            className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.id])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
-                              {item.label}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="otherDependencies"
-            render={({ field }) => (
-              <FormItem className="mt-4">
-                <FormLabel>Other dependencies (optional)</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Enter any other dependencies that slow you down"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </>
-      )
-    },
-    {
-      title: "Planning Issues",
-      description: "What planning challenges do you face?",
-      fields: (
-        <>
-          <FormField
-            control={form.control}
-            name="planningIssues"
-            render={() => (
-              <FormItem>
-                <div className="mb-4">
-                  <FormLabel>Select all that apply</FormLabel>
-                  <FormDescription>
-                    Common issues that people face when planning their work
-                  </FormDescription>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {planningIssues.map((item) => (
-                    <FormField
-                      key={item.id}
-                      control={form.control}
-                      name="planningIssues"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.id}
-                            className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.id)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.id])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
-                              {item.label}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="otherPlanningIssues"
-            render={({ field }) => (
-              <FormItem className="mt-4">
-                <FormLabel>Other planning issues (optional)</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Enter any other planning challenges you face"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </>
-      )
-    },
-    {
-      title: "Environmental Factors",
-      description: "What environmental factors hinder your productivity?",
-      fields: (
-        <FormField
-          control={form.control}
-          name="environmentalFactors"
-          render={() => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel>Select all that apply</FormLabel>
-                <FormDescription>
-                  These environmental factors can impact your productivity
-                </FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {environmentalFactors.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="environmentalFactors"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    )
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      )
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
-    },
-    {
-      title: "Top Priorities",
-      description: "What are your top 3 priorities to fix?",
-      fields: (
-        <FormField
-          control={form.control}
-          name="topPriorities"
-          render={({ field }) => (
-            <FormItem>
-              <div className="mb-4">
-                <FormLabel>Select up to 3 priorities</FormLabel>
-                <FormDescription>
-                  Choose the most important issues you want to address
-                </FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {allOptions.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="topPriorities"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0 p-2 hover:bg-accent rounded-md"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              disabled={!field.value?.includes(item.id) && field.value?.length >= 3}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    )
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal cursor-pointer">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      )
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      )
-    },
+  const [loading, setLoading] = useState(false);
+  
+  // Get all possible priorities for step 8
+  const allPriorities = [
+    ...timeWasters.map(item => item.label),
+    ...personalHabits.map(item => item.label).filter(item => !formData.time_wasters.includes(item)),
+    ...dependencies.map(item => item.label).filter(item => !formData.time_wasters.includes(item) && !formData.personal_habits.includes(item)),
+    ...planningIssues.map(item => item.label).filter(item => !formData.time_wasters.includes(item) && !formData.personal_habits.includes(item) && !formData.dependencies.includes(item)),
+    ...environmentalFactors.map(item => item.label).filter(item => 
+      !formData.time_wasters.includes(item) && 
+      !formData.personal_habits.includes(item) && 
+      !formData.dependencies.includes(item) && 
+      !formData.planning_issues.includes(item)
+    )
   ];
 
-  const handleSubmit = async (data) => {
+  const handleMultiSelectChange = (field: string, value: string) => {
+    setFormData(prev => {
+      const currentValues = prev[field as keyof typeof prev] as string[];
+      if (Array.isArray(currentValues)) {
+        if (currentValues.includes(value)) {
+          return {
+            ...prev,
+            [field]: currentValues.filter(item => item !== value)
+          };
+        } else {
+          return {
+            ...prev,
+            [field]: [...currentValues, value]
+          };
+        }
+      }
+      return prev;
+    });
+  };
+
+  const handlePriorityChange = (value: string) => {
+    setFormData(prev => {
+      const currentValues = [...prev.top_priorities];
+      if (currentValues.includes(value)) {
+        return {
+          ...prev,
+          top_priorities: currentValues.filter(item => item !== value)
+        };
+      } else {
+        // Only allow 3 selections
+        if (currentValues.length < 3) {
+          return {
+            ...prev,
+            top_priorities: [...currentValues, value]
+          };
+        }
+      }
+      return prev;
+    });
+  };
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSliderChange = (value: number[]) => {
+    setFormData(prev => ({
+      ...prev,
+      habit_control: value[0]
+    }));
+  };
+
+  const handleNextStep = () => {
+    setStep(prev => prev + 1);
+  };
+
+  const handlePrevStep = () => {
+    setStep(prev => prev - 1);
+  };
+
+  const handleSubmit = async () => {
     setLoading(true);
-    
     try {
-      // Prepare data for Supabase
-      const auditData = {
-        name: data.name,
-        email: data.email,
-        time_wasters: data.timeWasters,
-        personal_habits: data.personalHabits,
-        habit_control: data.habitControl[0],
-        work_hours: data.workHours,
-        dependencies: data.dependencies,
-        planning_issues: data.planningIssues,
-        environmental_factors: data.environmentalFactors,
-        top_priorities: data.topPriorities,
-        other_habits: data.otherHabits,
-        other_dependencies: data.otherDependencies,
-        other_planning_issues: data.otherPlanningIssues,
-        user_id: user?.id || null,
-        created_at: new Date().toISOString(),
-        pdf_opened: false,
-        recommendations: "" // Will be filled by edge function
-      };
-      
-      // Save audit data to Supabase
-      const { data: savedAudit, error } = await supabase
+      // Get the current user ID if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+      const userId = user?.id;
+
+      // Insert the form data into the time_audits table
+      const { data, error } = await supabase
         .from('time_audits')
-        .insert(auditData)
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          time_wasters: formData.time_wasters,
+          personal_habits: formData.personal_habits,
+          habit_control: formData.habit_control,
+          work_hours: formData.work_hours,
+          dependencies: formData.dependencies,
+          planning_issues: formData.planning_issues,
+          environmental_factors: formData.environmental_factors,
+          top_priorities: formData.top_priorities,
+          other_habits: formData.other_habits,
+          other_dependencies: formData.other_dependencies,
+          other_planning_issues: formData.other_planning_issues,
+          user_id: userId || null
+        })
         .select();
-      
+
       if (error) {
         throw error;
       }
-      
-      // Call edge function to generate recommendations (will implement later)
-      // This would make an API call to an ML service
-      
-      toast.success("Your time audit has been submitted! We'll email you with personalized recommendations.");
-      navigate("/");
-      
+
+      toast({
+        title: "Audit Submitted Successfully!",
+        description: "We'll analyze your results and provide personalized recommendations.",
+      });
+
+      // Navigate to success page or display success message
+      setStep(10); // Show thank you step
     } catch (error) {
-      console.error("Error submitting audit:", error);
-      toast.error("Something went wrong. Please try again.");
+      console.error('Error submitting audit:', error);
+      toast({
+        title: "Error submitting audit",
+        description: "There was a problem submitting your audit. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="container max-w-3xl mx-auto py-10">
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-2xl font-bold">Time Audit - Optimize Your Productivity</CardTitle>
-          <CardDescription>
-            Identify your biggest time wasters and get personalized recommendations
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">
-                Step {currentStep + 1} of {steps.length}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {Math.round(((currentStep + 1) / steps.length) * 100)}% Complete
-              </span>
-            </div>
-            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary transition-all duration-300"
-                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-              ></div>
+  // Render the current step
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Contact Information</CardTitle>
+            <CardDescription>
+              Please provide your contact information so we can send you personalized recommendations.
+            </CardDescription>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Name</Label>
+                <Input 
+                  id="name" 
+                  name="name" 
+                  value={formData.name} 
+                  onChange={handleTextChange} 
+                  placeholder="Your name" 
+                />
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  value={formData.email} 
+                  onChange={handleTextChange} 
+                  placeholder="Your email" 
+                />
+              </div>
             </div>
           </div>
-          
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold">{steps[currentStep].title}</h2>
-                <p className="text-muted-foreground">{steps[currentStep].description}</p>
+        );
+      
+      case 2:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Daily Time Wasters</CardTitle>
+            <CardDescription>
+              What activities waste your time daily? Select all that apply.
+            </CardDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+              {timeWasters.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={item.id} 
+                    checked={formData.time_wasters.includes(item.label)}
+                    onCheckedChange={() => handleMultiSelectChange('time_wasters', item.label)}
+                  />
+                  <Label htmlFor={item.id}>{item.label}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      
+      case 3:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Personal Habits</CardTitle>
+            <CardDescription>
+              What personal habits affect your productivity? Select all that apply.
+            </CardDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+              {personalHabits.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={item.id} 
+                    checked={formData.personal_habits.includes(item.label)}
+                    onCheckedChange={() => handleMultiSelectChange('personal_habits', item.label)}
+                  />
+                  <Label htmlFor={item.id}>{item.label}</Label>
+                </div>
+              ))}
+            </div>
+            <div className="pt-3">
+              <Label htmlFor="other_habits">Other habits (optional)</Label>
+              <Textarea 
+                id="other_habits" 
+                name="other_habits" 
+                value={formData.other_habits || ''} 
+                onChange={handleTextChange} 
+                placeholder="Enter any other habits affecting your productivity"
+              />
+            </div>
+          </div>
+        );
+      
+      case 4:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Habit Control</CardTitle>
+            <CardDescription>
+              How much control do you feel over your habits?
+            </CardDescription>
+            <div className="space-y-8 pt-3">
+              <div>
+                <Slider 
+                  value={[formData.habit_control]} 
+                  onValueChange={handleSliderChange} 
+                  max={100} 
+                  step={1}
+                />
+                <div className="flex justify-between mt-2 text-sm text-muted-foreground">
+                  <span>None</span>
+                  <span>Complete</span>
+                </div>
+                <div className="text-center mt-2">
+                  Current value: {formData.habit_control}%
+                </div>
               </div>
-              
-              <div className="space-y-4">
-                {steps[currentStep].fields}
+            </div>
+          </div>
+        );
+      
+      case 5:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Work Hours</CardTitle>
+            <CardDescription>
+              What are your typical work hours?
+            </CardDescription>
+            <div className="pt-3">
+              <Label htmlFor="work_hours">Work Hours</Label>
+              <Input 
+                id="work_hours" 
+                name="work_hours" 
+                value={formData.work_hours} 
+                onChange={handleTextChange} 
+                placeholder="e.g., 9 AM - 5 PM"
+              />
+            </div>
+          </div>
+        );
+      
+      case 6:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Dependencies</CardTitle>
+            <CardDescription>
+              What dependencies slow you down? Select all that apply.
+            </CardDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+              {dependencies.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={item.id} 
+                    checked={formData.dependencies.includes(item.label)}
+                    onCheckedChange={() => handleMultiSelectChange('dependencies', item.label)}
+                  />
+                  <Label htmlFor={item.id}>{item.label}</Label>
+                </div>
+              ))}
+            </div>
+            <div className="pt-3">
+              <Label htmlFor="other_dependencies">Other dependencies (optional)</Label>
+              <Textarea 
+                id="other_dependencies" 
+                name="other_dependencies" 
+                value={formData.other_dependencies || ''} 
+                onChange={handleTextChange} 
+                placeholder="Enter any other dependencies slowing you down"
+              />
+            </div>
+          </div>
+        );
+      
+      case 7:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Planning Issues</CardTitle>
+            <CardDescription>
+              What planning challenges do you face? Select all that apply.
+            </CardDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+              {planningIssues.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={item.id} 
+                    checked={formData.planning_issues.includes(item.label)}
+                    onCheckedChange={() => handleMultiSelectChange('planning_issues', item.label)}
+                  />
+                  <Label htmlFor={item.id}>{item.label}</Label>
+                </div>
+              ))}
+            </div>
+            <div className="pt-3">
+              <Label htmlFor="other_planning_issues">Other planning issues (optional)</Label>
+              <Textarea 
+                id="other_planning_issues" 
+                name="other_planning_issues" 
+                value={formData.other_planning_issues || ''} 
+                onChange={handleTextChange} 
+                placeholder="Enter any other planning challenges you face"
+              />
+            </div>
+          </div>
+        );
+      
+      case 8:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Environmental Factors</CardTitle>
+            <CardDescription>
+              What environmental factors hinder your productivity? Select all that apply.
+            </CardDescription>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
+              {environmentalFactors.map((item) => (
+                <div key={item.id} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={item.id} 
+                    checked={formData.environmental_factors.includes(item.label)}
+                    onCheckedChange={() => handleMultiSelectChange('environmental_factors', item.label)}
+                  />
+                  <Label htmlFor={item.id}>{item.label}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      
+      case 9:
+        return (
+          <div className="space-y-4">
+            <CardTitle>Top Priorities</CardTitle>
+            <CardDescription>
+              What are your top 3 priorities to fix?
+            </CardDescription>
+            <div className="pt-2 pb-2">
+              <p className="text-sm text-muted-foreground mb-4">Selected: {formData.top_priorities.length}/3</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {allPriorities.map((item, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`priority-${index}`} 
+                      checked={formData.top_priorities.includes(item)}
+                      onCheckedChange={() => handlePriorityChange(item)}
+                      disabled={!formData.top_priorities.includes(item) && formData.top_priorities.length >= 3}
+                    />
+                    <Label htmlFor={`priority-${index}`}>{item}</Label>
+                  </div>
+                ))}
               </div>
-            </form>
-          </Form>
+            </div>
+          </div>
+        );
+      
+      case 10:
+        return (
+          <div className="space-y-4 text-center">
+            <CardTitle>Thank You!</CardTitle>
+            <CardDescription>
+              Thank you for completing the Time Wasters Audit. We'll analyze your responses and send personalized recommendations to your email.
+            </CardDescription>
+            <div className="pt-6">
+              <Button onClick={() => navigate('/')}>
+                Return to Home
+              </Button>
+            </div>
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="container max-w-screen-md mx-auto py-12 px-4">
+      <h1 className="text-3xl font-bold text-center mb-8 dark:text-white">
+        Time Audit - Optimize Your Productivity
+      </h1>
+      
+      {/* Progress indicator */}
+      {step < 10 && (
+        <div className="mb-8">
+          <div className="flex justify-between text-sm mb-1">
+            <span>Start</span>
+            <span>Complete</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div 
+              className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-500" 
+              style={{ width: `${(step / 9) * 100}%` }}
+            ></div>
+          </div>
+          <div className="text-right text-sm mt-1">
+            <span className="text-muted-foreground">Step {step} of 9</span>
+          </div>
+        </div>
+      )}
+      
+      <Card className="shadow-lg">
+        <CardHeader>
+          {/* Step content header goes here if needed */}
+        </CardHeader>
+        <CardContent>
+          {renderStep()}
         </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-            disabled={currentStep === 0}
-          >
-            Previous
-          </Button>
-          
-          {currentStep < steps.length - 1 ? (
+        {step < 10 && (
+          <CardFooter className="flex justify-between pt-6">
             <Button 
-              onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+              variant="outline" 
+              onClick={handlePrevStep}
+              disabled={step === 1}
             >
-              Next
+              Back
             </Button>
-          ) : (
-            <Button 
-              onClick={form.handleSubmit(handleSubmit)}
-              disabled={loading}
-            >
-              {loading ? "Submitting..." : "Submit Audit"}
-            </Button>
-          )}
-        </CardFooter>
+            {step < 9 ? (
+              <Button onClick={handleNextStep}>
+                Continue
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleSubmit} 
+                disabled={loading}
+              >
+                {loading ? 'Submitting...' : 'Submit Audit'}
+              </Button>
+            )}
+          </CardFooter>
+        )}
       </Card>
     </div>
   );

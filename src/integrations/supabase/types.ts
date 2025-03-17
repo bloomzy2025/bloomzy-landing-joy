@@ -51,6 +51,69 @@ export type Database = {
         }
         Relationships: []
       }
+      time_audits: {
+        Row: {
+          created_at: string | null
+          dependencies: string[] | null
+          email: string | null
+          environmental_factors: string[] | null
+          habit_control: number | null
+          id: string
+          name: string | null
+          other_dependencies: string | null
+          other_habits: string | null
+          other_planning_issues: string | null
+          pdf_opened: boolean | null
+          personal_habits: string[] | null
+          planning_issues: string[] | null
+          recommendations: string | null
+          time_wasters: string[] | null
+          top_priorities: string[] | null
+          user_id: string | null
+          work_hours: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          dependencies?: string[] | null
+          email?: string | null
+          environmental_factors?: string[] | null
+          habit_control?: number | null
+          id?: string
+          name?: string | null
+          other_dependencies?: string | null
+          other_habits?: string | null
+          other_planning_issues?: string | null
+          pdf_opened?: boolean | null
+          personal_habits?: string[] | null
+          planning_issues?: string[] | null
+          recommendations?: string | null
+          time_wasters?: string[] | null
+          top_priorities?: string[] | null
+          user_id?: string | null
+          work_hours?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          dependencies?: string[] | null
+          email?: string | null
+          environmental_factors?: string[] | null
+          habit_control?: number | null
+          id?: string
+          name?: string | null
+          other_dependencies?: string | null
+          other_habits?: string | null
+          other_planning_issues?: string | null
+          pdf_opened?: boolean | null
+          personal_habits?: string[] | null
+          planning_issues?: string[] | null
+          recommendations?: string | null
+          time_wasters?: string[] | null
+          top_priorities?: string[] | null
+          user_id?: string | null
+          work_hours?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
