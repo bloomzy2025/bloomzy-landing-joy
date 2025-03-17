@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,7 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "@/hooks/use-toast";
 
-// Google OAuth client ID from provided credentials
 const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
 
 const signInSchema = z.object({
@@ -95,13 +93,11 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
     }
   }, [googleButtonRef, returnTo, signInWithProvider]);
 
-  // Custom Apple button implementation
   useEffect(() => {
     const loadAppleButton = async () => {
       if (!appleButtonRef.current) return;
       
       try {
-        // Check if Apple JS SDK is available
         if (window.AppleID) {
           try {
             window.AppleID.auth.init({
@@ -112,7 +108,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
               usePopup: true
             });
             
-            // Create custom Apple sign-in button that matches Google's style
             const appleButton = document.createElement('button');
             appleButton.className = 'apple-signin-button';
             appleButton.style.width = '100%';
@@ -130,7 +125,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
             appleButton.style.fontWeight = '500';
             appleButton.style.color = '#3c4043';
             
-            // Apple logo
             const appleLogo = document.createElement('div');
             appleLogo.innerHTML = `
               <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -139,7 +133,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
             `;
             appleLogo.style.marginRight = '10px';
             
-            // Text span
             const textSpan = document.createElement('span');
             textSpan.textContent = 'Sign in with Apple';
             
@@ -155,7 +148,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
               }
             });
             
-            // Add listeners for success/failure
             document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
               if (event.detail.authorization && event.detail.authorization.id_token) {
                 signInWithProvider('apple', returnTo, { 
@@ -169,7 +161,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
               setAppleError('Apple Sign In failed. Please try the email option.');
             });
             
-            // Clear the container and add the button
             appleButtonRef.current.innerHTML = '';
             appleButtonRef.current.appendChild(appleButton);
             setAppleButtonLoaded(true);
@@ -190,7 +181,6 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       }
     };
     
-    // Add a small delay to ensure the Apple JS SDK has time to load
     const timer = setTimeout(loadAppleButton, 500);
     return () => clearTimeout(timer);
   }, [appleButtonRef, returnTo, signInWithProvider]);
@@ -222,7 +212,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         <h1 className="text-3xl font-bold">Sign In</h1>
         <p className="text-muted-foreground">
           {isFromQuiz 
-            ? "Sign in to unlock personalized productivity recommendations" 
+            ? "Sign in to unlock free personalized productivity recommendations" 
             : "Welcome back"}
         </p>
       </div>
