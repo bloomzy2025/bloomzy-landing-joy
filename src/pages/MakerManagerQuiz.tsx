@@ -310,7 +310,7 @@ const MakerManagerQuiz = () => {
             onClick={() => navigate("/")} 
             className="flex items-center gap-2 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
           >
-            <Home size={16} /> Back to home
+            <Home size={16} /> Back to Home
           </Button>
         </div>
         <motion.div
@@ -428,7 +428,7 @@ const MakerManagerQuiz = () => {
           onClick={() => navigate("/")} 
           className="flex items-center gap-2 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
         >
-          <Home size={16} /> Back to home
+          <Home size={16} /> Back to Home
         </Button>
       </div>
       <motion.div
