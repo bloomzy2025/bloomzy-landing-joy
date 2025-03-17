@@ -13,6 +13,9 @@ import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "@/hooks/use-toast";
 
+// Google OAuth client ID from provided credentials
+const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
+
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(1, "Password is required"),
@@ -60,7 +63,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         container.appendChild(googleSignInButton);
         
         window.google?.accounts.id.initialize({
-          client_id: '123456789012-abcdefghijklmnopqrstuvwxyz123456.apps.googleusercontent.com',
+          client_id: GOOGLE_CLIENT_ID,
           callback: async (response) => {
             if (response.credential) {
               await signInWithProvider('google', returnTo, { idToken: response.credential });
