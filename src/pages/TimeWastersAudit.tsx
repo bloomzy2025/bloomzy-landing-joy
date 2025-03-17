@@ -13,8 +13,8 @@ import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useAuth } from '@/hooks/useAuth';
 
-// Define categories and their options for Step 2
 const activityCategories = [
   {
     id: 'communication',
@@ -60,7 +60,6 @@ const activityCategories = [
   }
 ];
 
-// Define the audit question items for reuse
 const timeWasters = [
   { id: 'emails', label: 'Emails' },
   { id: 'meetings', label: 'Meetings' },
@@ -110,11 +109,11 @@ const environmentalFactors = [
 const TimeWastersAudit = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState(2); // Start at step 2 to skip intro
+  const [step, setStep] = useState(2);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
     time_wasters: [] as string[],
     personal_habits: [] as string[],
     habit_control: 50,
@@ -126,11 +125,10 @@ const TimeWastersAudit = () => {
     other_habits: '',
     other_dependencies: '',
     other_planning_issues: '',
-    daily_activities: [] as string[], // Changed from daily_activity to daily_activities array
+    daily_activities: [] as string[],
   });
   const [loading, setLoading] = useState(false);
-  
-  // Get all possible priorities for step 8
+
   const allPriorities = [
     ...timeWasters.map(item => item.label),
     ...personalHabits.map(item => item.label).filter(item => !formData.time_wasters.includes(item)),
@@ -174,7 +172,6 @@ const TimeWastersAudit = () => {
           top_priorities: currentValues.filter(item => item !== value)
         };
       } else {
-        // Only allow 3 selections
         if (currentValues.length < 3) {
           return {
             ...prev,
@@ -208,27 +205,47 @@ const TimeWastersAudit = () => {
     }));
   };
 
+  const getNextStep = (currentStep: number): number => {
+    if (currentStep === 2) {
+      return 4;
+    }
+    return currentStep + 1;
+  };
+
+  const getPrevStep = (currentStep: number): number => {
+    if (currentStep === 4) {
+      return 2;
+    }
+    return currentStep - 1;
+  };
+
   const handleNextStep = () => {
-    setStep(prev => prev + 1);
+    setStep(prevStep => getNextStep(prevStep));
   };
 
   const handlePrevStep = () => {
-    setStep(prev => prev - 1);
+    setStep(prevStep => getPrevStep(prevStep));
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Get the current user ID if logged in
-      const { data: { user } } = await supabase.auth.getUser();
-      const userId = user?.id;
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const userId = currentUser?.id || user?.id;
 
-      // Insert the form data into the time_audits table
+      if (!userId) {
+        toast({
+          title: "Sign in required",
+          description: "Please sign in to save your audit results.",
+          variant: "destructive"
+        });
+        navigate('/signin?redirect=/time-wasters-audit');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('time_audits')
         .insert({
-          name: formData.name,
-          email: formData.email,
           time_wasters: formData.time_wasters,
           personal_habits: formData.personal_habits,
           habit_control: formData.habit_control,
@@ -240,8 +257,8 @@ const TimeWastersAudit = () => {
           other_habits: formData.other_habits,
           other_dependencies: formData.other_dependencies,
           other_planning_issues: formData.other_planning_issues,
-          daily_activities: formData.daily_activities, // Updated field name
-          user_id: userId || null
+          daily_activities: formData.daily_activities,
+          user_id: userId
         })
         .select();
 
@@ -254,8 +271,7 @@ const TimeWastersAudit = () => {
         description: "We'll analyze your results and provide personalized recommendations.",
       });
 
-      // Navigate to success page or display success message
-      setStep(10); // Show thank you step
+      setStep(10);
     } catch (error) {
       console.error('Error submitting audit:', error);
       toast({
@@ -268,10 +284,8 @@ const TimeWastersAudit = () => {
     }
   };
 
-  // Calculate progress percentage
-  const progressPercentage = ((step - 1) / 9) * 100;
+  const progressPercentage = ((step - 1) / 8) * 100;
 
-  // Info card component to display on all steps
   const InfoCard = () => (
     <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
@@ -312,18 +326,17 @@ const TimeWastersAudit = () => {
             ></div>
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-500">
-            <span>Step {step - 1} of 9</span>
-            <span>{9 - (step - 1)} questions remaining</span>
+            <span>Step {step - 1} of 8</span>
+            <span>{8 - (step - 1)} questions remaining</span>
           </div>
         </div>
       </CardContent>
     </Card>
   );
 
-  // Render the current step
   const renderStep = () => {
     switch (step) {
-      case 1: // Keeping intro step in case we want to reactivate it
+      case 1:
         return (
           <div className="space-y-6">
             <div className="space-y-2">
@@ -400,39 +413,6 @@ const TimeWastersAudit = () => {
                   )}
                 </div>
               ))}
-            </div>
-          </div>
-        );
-      
-      case 3:
-        return (
-          <div className="space-y-4">
-            <CardTitle>Contact Information</CardTitle>
-            <CardDescription>
-              Please provide your contact information so we can send you personalized recommendations.
-            </CardDescription>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name</Label>
-                <Input 
-                  id="name" 
-                  name="name" 
-                  value={formData.name} 
-                  onChange={handleTextChange} 
-                  placeholder="Your name" 
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  name="email" 
-                  type="email" 
-                  value={formData.email} 
-                  onChange={handleTextChange} 
-                  placeholder="Your email" 
-                />
-              </div>
             </div>
           </div>
         );
@@ -618,7 +598,6 @@ const TimeWastersAudit = () => {
 
   return (
     <div className="container mx-auto py-12 px-4">
-      {/* Back to home button */}
       <div className="mb-6">
         <Button 
           variant="outline" 
@@ -631,19 +610,16 @@ const TimeWastersAudit = () => {
       </div>
       
       <div className={`grid ${isDesktop ? 'grid-cols-3 gap-8' : 'grid-cols-1 gap-6'}`}>
-        {/* Info card */}
         <div className={isDesktop ? "col-span-1" : ""}>
           <InfoCard />
         </div>
         
-        {/* Question content */}
         <div className={isDesktop ? "col-span-2" : ""}>
           <Card className="shadow-lg">
             <CardContent className={step === 1 ? 'p-8' : 'p-6'}>
               {renderStep()}
             </CardContent>
             
-            {/* Navigation buttons for steps 2-9 */}
             {step > 1 && step < 10 && (
               <CardFooter className="flex justify-between p-6 pt-0">
                 <Button 
