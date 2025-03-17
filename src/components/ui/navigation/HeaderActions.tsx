@@ -5,21 +5,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserRound, LogOut } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { UserRound } from "lucide-react";
 
 interface HeaderActionsProps {
   isMobile?: boolean;
 }
 
 export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   
   // Get user initials from email or full name if available
   const getUserInitials = () => {
@@ -51,29 +44,16 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
     <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
       {!isMobile && (
         <>
+          <Link to="/demo" className="text-sm font-medium dark:text-gray-200">
+            Book a demo
+          </Link>
+          
           {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger className="focus:outline-none">
-                <Avatar className="h-8 w-8 bg-primary text-primary-foreground cursor-pointer hover:opacity-80 transition-opacity">
-                  <AvatarFallback>
-                    {getUserInitials() || <UserRound size={16} />}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="dark:bg-gray-800 dark:border-gray-700">
-                <DropdownMenuItem className="text-muted-foreground dark:text-gray-400">
-                  {user.email}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="dark:bg-gray-700" />
-                <DropdownMenuItem 
-                  onClick={() => signOut()} 
-                  className="flex items-center gap-2 text-destructive dark:text-red-400 cursor-pointer dark:hover:bg-gray-700"
-                >
-                  <LogOut size={16} />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
+              <AvatarFallback>
+                {getUserInitials() || <UserRound size={16} />}
+              </AvatarFallback>
+            </Avatar>
           ) : (
             <Link to="/signin" className="text-sm font-medium dark:text-gray-200">
               Sign in
@@ -87,12 +67,12 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        <Link to={user ? "/demo" : "/signup"} className={cn(buttonVariants({
+        <Link to={user ? "/dashboard" : "/signup"} className={cn(buttonVariants({
           variant: "default", 
           size: isMobile ? "sm" : "default"
         }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
           {user 
-            ? (isMobile ? "Demo" : "Book a Demo") 
+            ? (isMobile ? "Dashboard" : "Go to Dashboard") 
             : (isMobile ? "Start" : "Get started")
           }
         </Link>

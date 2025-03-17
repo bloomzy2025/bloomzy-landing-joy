@@ -7,21 +7,15 @@ import { toast } from "@/hooks/use-toast";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+  const redirectTo = searchParams.get('redirectTo') || '/';
+
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        console.log("Auth callback handling session check");
-        
-        // Check for redirectTo param from the URL
-        const redirectTo = searchParams.get('redirectTo') || '/';
-        console.log("Redirect destination:", redirectTo);
-        
         // Get session and check for errors
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error("Auth callback error:", error);
           toast({
             title: "Authentication error",
             description: error.message,
@@ -33,14 +27,13 @@ export default function AuthCallback() {
         
         // If we have a session, authentication was successful
         if (data.session) {
-          console.log("Auth successful, redirecting to:", redirectTo);
           toast({
             title: "Success",
             description: "You have successfully signed in!",
           });
           
           // Check if we're coming from the quiz
-          if (redirectTo && redirectTo.includes('/maker-manager-quiz')) {
+          if (redirectTo.includes('/maker-manager-quiz')) {
             // Clear stored result type as it's no longer needed after sign-in
             sessionStorage.removeItem('quizResultType');
           }
@@ -48,7 +41,6 @@ export default function AuthCallback() {
           navigate(redirectTo);
         } else {
           // No session found, redirect to sign in
-          console.log("No session found, redirecting to sign in");
           navigate('/signin');
         }
       } catch (error: any) {
@@ -62,13 +54,8 @@ export default function AuthCallback() {
       }
     };
 
-    // Slight delay to ensure Supabase has time to process the auth callback
-    const timer = setTimeout(() => {
-      handleAuthCallback();
-    }, 700); // Increased delay to give more time for session processing
-
-    return () => clearTimeout(timer);
-  }, [navigate, searchParams]);
+    handleAuthCallback();
+  }, [navigate, redirectTo]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

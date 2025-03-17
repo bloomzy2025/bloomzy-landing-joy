@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +12,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "@/hooks/use-toast";
+
+// Google OAuth client ID from provided credentials
+const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -29,28 +32,168 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const [isFromQuiz, setIsFromQuiz] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
+  const appleButtonRef = useRef<HTMLDivElement>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
+  const [appleError, setAppleError] = useState<string | null>(null);
+  const [appleButtonLoaded, setAppleButtonLoaded] = useState(false);
   
-  // Check if user is coming from quiz
   useEffect(() => {
     if (returnTo.includes('/maker-manager-quiz') || location.search.includes('returnTo=/maker-manager-quiz')) {
       setIsFromQuiz(true);
     }
   }, [returnTo, location.search]);
   
-  // Google Sign-In implementation
-  const handleGoogleSignIn = async () => {
-    try {
-      console.log('Starting Google OAuth flow with returnTo:', returnTo);
-      await signInWithProvider('google', returnTo);
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      toast({
-        title: "Sign In Failed",
-        description: "Could not sign in with Google. Please try again or use email.",
-        variant: "destructive"
-      });
+  useEffect(() => {
+    if (googleButtonRef.current && window.google) {
+      try {
+        const container = googleButtonRef.current;
+        container.innerHTML = '';
+        
+        const googleSignInButton = document.createElement('div');
+        googleSignInButton.className = 'g_id_signin';
+        googleSignInButton.dataset.type = 'standard';
+        googleSignInButton.dataset.size = 'large';
+        googleSignInButton.dataset.theme = 'outline';
+        googleSignInButton.dataset.text = 'sign_in_with';
+        googleSignInButton.dataset.shape = 'rectangular';
+        googleSignInButton.dataset.logo_alignment = 'left';
+        googleSignInButton.dataset.width = '100%';
+        
+        container.appendChild(googleSignInButton);
+        
+        window.google?.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: async (response) => {
+            if (response.credential) {
+              await signInWithProvider('google', returnTo, { idToken: response.credential });
+            }
+          },
+          auto_select: false,
+          ux_mode: 'popup',
+          scope: 'email profile',
+        });
+        
+        window.google?.accounts.id.renderButton(
+          googleSignInButton,
+          { 
+            theme: 'outline', 
+            size: 'large', 
+            width: container.offsetWidth,
+            type: 'standard',
+            text: 'signin_with',
+            logo_alignment: 'left',
+          }
+        );
+      } catch (error) {
+        console.error('Error initializing Google Sign In:', error);
+        setGoogleError('Error initializing Google Sign In. Please try the email option.');
+      }
+    } else if (!window.google) {
+      console.warn('Google Identity Services not loaded');
+      setGoogleError('Google Sign In unavailable. Please try the email option.');
     }
-  };
+  }, [googleButtonRef, returnTo, signInWithProvider]);
+
+  // Custom Apple button implementation
+  useEffect(() => {
+    const loadAppleButton = async () => {
+      if (!appleButtonRef.current) return;
+      
+      try {
+        // Check if Apple JS SDK is available
+        if (window.AppleID) {
+          try {
+            window.AppleID.auth.init({
+              clientId: 'com.your.app.id',
+              scope: 'name email',
+              redirectURI: window.location.origin + '/auth/callback?redirectTo=' + returnTo,
+              state: 'signin',
+              usePopup: true
+            });
+            
+            // Create custom Apple sign-in button that matches Google's style
+            const appleButton = document.createElement('button');
+            appleButton.className = 'apple-signin-button';
+            appleButton.style.width = '100%';
+            appleButton.style.height = '40px';
+            appleButton.style.borderRadius = '4px';
+            appleButton.style.border = '1px solid #dadce0';
+            appleButton.style.backgroundColor = 'white';
+            appleButton.style.cursor = 'pointer';
+            appleButton.style.display = 'flex';
+            appleButton.style.alignItems = 'center';
+            appleButton.style.justifyContent = 'center';
+            appleButton.style.padding = '0 12px';
+            appleButton.style.fontFamily = 'Roboto, Arial, sans-serif';
+            appleButton.style.fontSize = '14px';
+            appleButton.style.fontWeight = '500';
+            appleButton.style.color = '#3c4043';
+            
+            // Apple logo
+            const appleLogo = document.createElement('div');
+            appleLogo.innerHTML = `
+              <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.4-1.09-.41-2.09-.37-3.24 0-1.44.47-2.2.33-3.06-.4-4.28-4.28-3.2-10.97 1.84-11.21 1.58-.08 2.48.74 3.3.74.83 0 2.31-.9 4.15-.77.71.02 2.67.27 3.94 2.08-3.38 2.08-2.84 6.13.15 7.87-.77 1.54-1.8 3.06-4 3.29zm-5.03-16.05c.31-1.48 1.9-2.83 3.2-2.91.15 1.2-.35 2.4-1.04 3.29-.72.91-1.73 1.61-3.2 1.52-.18-1.13.47-2.35 1.04-2.9z" fill="#000"/>
+              </svg>
+            `;
+            appleLogo.style.marginRight = '10px';
+            
+            // Text span
+            const textSpan = document.createElement('span');
+            textSpan.textContent = 'Sign in with Apple';
+            
+            appleButton.appendChild(appleLogo);
+            appleButton.appendChild(textSpan);
+            
+            appleButton.addEventListener('click', () => {
+              try {
+                window.AppleID.auth.signIn();
+              } catch (err) {
+                console.error('Error during Apple Sign In:', err);
+                setAppleError('Apple Sign In failed. Please try the email option.');
+              }
+            });
+            
+            // Add listeners for success/failure
+            document.addEventListener('AppleIDSignInOnSuccess', (event: any) => {
+              if (event.detail.authorization && event.detail.authorization.id_token) {
+                signInWithProvider('apple', returnTo, { 
+                  idToken: event.detail.authorization.id_token 
+                });
+              }
+            });
+            
+            document.addEventListener('AppleIDSignInOnFailure', (event: any) => {
+              console.error('Apple Sign In failed:', event.detail.error);
+              setAppleError('Apple Sign In failed. Please try the email option.');
+            });
+            
+            // Clear the container and add the button
+            appleButtonRef.current.innerHTML = '';
+            appleButtonRef.current.appendChild(appleButton);
+            setAppleButtonLoaded(true);
+          } catch (error) {
+            console.error('Error initializing Apple Sign In:', error);
+            setAppleError('Apple Sign In unavailable. Please try the email option.');
+            setAppleButtonLoaded(false);
+          }
+        } else {
+          console.warn('Apple Sign In SDK not loaded');
+          setAppleError('Apple Sign In unavailable. Please try the email option.');
+          setAppleButtonLoaded(false);
+        }
+      } catch (error) {
+        console.error('Error with Apple Sign In:', error);
+        setAppleError('Apple Sign In unavailable. Please try the email option.');
+        setAppleButtonLoaded(false);
+      }
+    };
+    
+    // Add a small delay to ensure the Apple JS SDK has time to load
+    const timer = setTimeout(loadAppleButton, 500);
+    return () => clearTimeout(timer);
+  }, [appleButtonRef, returnTo, signInWithProvider]);
 
   const renderPermissionsInfo = () => {
     return (
@@ -86,21 +229,21 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       
       {renderPermissionsInfo()}
       
-      <button 
-        type="button" 
-        className="w-full h-10 flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        onClick={handleGoogleSignIn}
-        disabled={isLoading}
-      >
-        <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-          <path fill="none" d="M0 0h48v48H0z"/>
-        </svg>
-        <span>Sign in with Google</span>
-      </button>
+      <div className="flex flex-col gap-4">
+        <div className="w-full">
+          {googleError ? (
+            <div className="text-red-500 text-xs mb-2">{googleError}</div>
+          ) : null}
+          <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
+        </div>
+        
+        <div className="w-full">
+          {appleError ? (
+            <div className="text-red-500 text-xs mb-2">{appleError}</div>
+          ) : null}
+          <div ref={appleButtonRef} className="w-full h-10 flex justify-center"></div>
+        </div>
+      </div>
       
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

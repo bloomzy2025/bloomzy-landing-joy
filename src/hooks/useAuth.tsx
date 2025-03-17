@@ -11,12 +11,15 @@ type AuthContextType = {
   isLoading: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signIn: (email: string, password: string, redirectTo?: string) => Promise<void>;
-  signInWithProvider: (provider: Provider, redirectTo?: string) => Promise<void>;
+  signInWithProvider: (provider: Provider, redirectTo?: string, options?: any) => Promise<void>;
   signOut: () => Promise<void>;
   connectionError: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Google OAuth client ID from provided credentials
+const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -140,35 +143,86 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signInWithProvider = async (provider: Provider, redirectTo = '/') => {
+  const signInWithProvider = async (provider: Provider, redirectTo = '/', options?: any) => {
     try {
       setIsLoading(true);
       
-      console.log(`Initiating OAuth flow for ${provider} with redirectTo: ${redirectTo}`);
+      // Add information about what permissions are being requested
+      console.log(`Requesting permissions for ${provider}: email and profile information`);
       
-      // Get the current URL's origin to construct the callback URL
-      // Use window.location.origin for development and specific domains for production
-      const currentOrigin = window.location.origin;
-      const redirectUri = `${currentOrigin}/auth/callback`;
-      
-      console.log(`Using origin: ${currentOrigin}`);
-      console.log(`Using redirect URL: ${redirectUri}`);
-      
-      // Construct query params to be sent to the callback
-      const queryParams: Record<string, string> = {};
-      if (redirectTo && redirectTo !== '/') {
-        queryParams.redirectTo = redirectTo;
+      if (provider === 'google' && options?.idToken) {
+        try {
+          console.log('Signing in with Google ID token');
+          const { error } = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: options.idToken,
+          });
+
+          if (error) {
+            console.error('Google sign in error:', error);
+            throw error;
+          }
+          
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in with Google."
+          });
+          
+          navigate(redirectTo);
+          return;
+        } catch (tokenError: any) {
+          console.error('Google ID token error:', tokenError);
+          toast({
+            title: "Google Sign In Failed",
+            description: tokenError.message || "Could not authenticate with Google. Please try another method.",
+            variant: "destructive"
+          });
+          setIsLoading(false);
+          return;
+        }
       }
       
-      // Use Supabase auth to sign in with the provider
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      if (provider === 'apple' && options?.idToken) {
+        try {
+          console.log('Signing in with Apple ID token');
+          const { error } = await supabase.auth.signInWithIdToken({
+            provider: 'apple',
+            token: options.idToken,
+          });
+
+          if (error) {
+            console.error('Apple sign in error:', error);
+            throw error;
+          }
+          
+          toast({
+            title: "Welcome!",
+            description: "You have successfully signed in with Apple."
+          });
+          
+          navigate(redirectTo);
+          return;
+        } catch (tokenError: any) {
+          console.error('Apple ID token error:', tokenError);
+          toast({
+            title: "Apple Sign In Failed",
+            description: tokenError.message || "Could not authenticate with Apple. Please try another method.",
+            variant: "destructive"
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      // For standard OAuth flow, specify options with more explicit consent information
+      console.log(`Initiating OAuth flow for ${provider}`);
+      const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: redirectUri,
-          queryParams,
-          // Request minimal permissions for Google
+          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
+          // Only request minimal scopes to improve user experience
           scopes: 'email profile',
-        }
+        },
       });
 
       if (error) {
@@ -176,14 +230,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw error;
       }
       
-      if (data?.url) {
-        console.log(`Redirecting to OAuth URL: ${data.url}`);
-        // Let the browser handle the redirect
-        window.location.href = data.url;
-      } else {
-        console.error("No URL returned from signInWithOAuth");
-        throw new Error("Authentication failed. No redirect URL provided.");
-      }
+      // Note: We don't need to manually navigate or show success toast here
+      // as the OAuth flow will redirect the user back to our app after authentication
       
     } catch (error: any) {
       console.error('Provider sign in error:', error);
