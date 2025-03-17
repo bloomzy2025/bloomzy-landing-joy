@@ -147,6 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(`Initiating OAuth flow for ${provider} with redirectTo: ${redirectTo}`);
       
       // Get the current URL's origin to construct the callback URL
+      // Use window.location.origin for development and specific domains for production
       const currentOrigin = window.location.origin;
       const redirectUri = `${currentOrigin}/auth/callback`;
       
@@ -165,7 +166,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         options: {
           redirectTo: redirectUri,
           queryParams,
-          // Add scopes to request minimal permissions to address 403 errors
+          // Request minimal permissions for Google
           scopes: 'email profile',
         }
       });

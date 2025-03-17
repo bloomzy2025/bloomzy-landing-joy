@@ -65,7 +65,7 @@ export default function AuthCallback() {
     // Slight delay to ensure Supabase has time to process the auth callback
     const timer = setTimeout(() => {
       handleAuthCallback();
-    }, 500);
+    }, 700); // Increased delay to give more time for session processing
 
     return () => clearTimeout(timer);
   }, [navigate, searchParams]);
