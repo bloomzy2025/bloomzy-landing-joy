@@ -11,7 +11,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight } from "lucide-react";
+import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 // Define categories and their options for Step 2
 const activityCategories = [
@@ -109,7 +110,8 @@ const environmentalFactors = [
 const TimeWastersAudit = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2); // Start at step 2 to skip intro
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -267,12 +269,61 @@ const TimeWastersAudit = () => {
   };
 
   // Calculate progress percentage
-  const progressPercentage = (step / 9) * 100;
+  const progressPercentage = ((step - 1) / 9) * 100;
+
+  // Info card component to display on all steps
+  const InfoCard = () => (
+    <Card className="bg-white dark:bg-gray-800 shadow-lg">
+      <CardContent className="p-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold">Biggest Time Wasters Audit</h1>
+          <div className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+            Free Tool
+          </div>
+        </div>
+        
+        <div className="space-y-4 mt-6">
+          <div className="flex items-center gap-3 text-green-600">
+            <Clock className="h-5 w-5" />
+            <span className="text-sm md:text-base">5-Minute Quick Test</span>
+          </div>
+          
+          <div className="flex items-center gap-3 text-green-600">
+            <Zap className="h-5 w-5" />
+            <span className="text-sm md:text-base">Discover your biggest productivity bottlenecks instantly</span>
+          </div>
+          
+          <div className="flex items-center gap-3 text-green-600">
+            <Brain className="h-5 w-5" />
+            <span className="text-sm md:text-base">Get AI-powered solutions tailored to your workflow</span>
+          </div>
+          
+          <div className="flex items-center gap-3 text-green-600">
+            <Gift className="h-5 w-5" />
+            <span className="text-sm md:text-base">Includes 1 week free of Bloomzy's AI scheduling</span>
+          </div>
+        </div>
+        
+        <div className="mt-8">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div 
+              className="bg-green-500 h-2 rounded-full" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+          <div className="flex justify-between mt-2 text-sm text-gray-500">
+            <span>Step {step - 1} of 9</span>
+            <span>{9 - (step - 1)} questions remaining</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   // Render the current step
   const renderStep = () => {
     switch (step) {
-      case 1:
+      case 1: // Keeping intro step in case we want to reactivate it
         return (
           <div className="space-y-6">
             <div className="space-y-2">
@@ -566,60 +617,66 @@ const TimeWastersAudit = () => {
   };
 
   return (
-    <div className="container max-w-screen-md mx-auto py-12 px-4">
-      {step < 10 && (
-        <>
-          {/* Progress bar for steps 2-9 */}
-          {step > 1 && (
-            <div className="mb-8">
-              <Progress value={progressPercentage} className="h-2" />
-              <div className="flex justify-between items-center mt-2 text-sm">
-                <span>Step {step - 1} of 9</span>
-                <span>{9 - (step - 1)} questions remaining</span>
-              </div>
-            </div>
-          )}
-        </>
-      )}
+    <div className="container mx-auto py-12 px-4">
+      {/* Back to home button */}
+      <div className="mb-6">
+        <Button 
+          variant="outline" 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2"
+        >
+          <Home className="h-4 w-4" />
+          Back to Home
+        </Button>
+      </div>
       
-      {/* Step content container */}
-      <Card className={`shadow-lg ${step === 1 ? 'bg-white dark:bg-gray-800 border-0 shadow-xl rounded-2xl' : ''}`}>
-        <CardContent className={step === 1 ? 'p-8' : 'p-6'}>
-          {renderStep()}
-        </CardContent>
+      <div className={`grid ${isDesktop ? 'grid-cols-3 gap-8' : 'grid-cols-1 gap-6'}`}>
+        {/* Info card */}
+        <div className={isDesktop ? "col-span-1" : ""}>
+          <InfoCard />
+        </div>
         
-        {/* Navigation buttons for steps 2-9 */}
-        {step > 1 && step < 10 && (
-          <CardFooter className="flex justify-between p-6 pt-0">
-            <Button 
-              variant="outline" 
-              onClick={handlePrevStep}
-              className="flex items-center gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Previous
-            </Button>
+        {/* Question content */}
+        <div className={isDesktop ? "col-span-2" : ""}>
+          <Card className="shadow-lg">
+            <CardContent className={step === 1 ? 'p-8' : 'p-6'}>
+              {renderStep()}
+            </CardContent>
             
-            {step < 9 ? (
-              <Button 
-                onClick={handleNextStep}
-                className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1"
-              >
-                Next
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button 
-                onClick={handleSubmit} 
-                disabled={loading}
-                className="bg-green-500 hover:bg-green-600 text-white"
-              >
-                {loading ? 'Submitting...' : 'Submit Audit'}
-              </Button>
+            {/* Navigation buttons for steps 2-9 */}
+            {step > 1 && step < 10 && (
+              <CardFooter className="flex justify-between p-6 pt-0">
+                <Button 
+                  variant="outline" 
+                  onClick={handlePrevStep}
+                  className="flex items-center gap-1"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                
+                {step < 9 ? (
+                  <Button 
+                    onClick={handleNextStep}
+                    className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1"
+                  >
+                    Next
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={handleSubmit} 
+                    disabled={loading}
+                    className="bg-green-500 hover:bg-green-600 text-white"
+                  >
+                    {loading ? 'Submitting...' : 'Submit Audit'}
+                  </Button>
+                )}
+              </CardFooter>
             )}
-          </CardFooter>
-        )}
-      </Card>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
