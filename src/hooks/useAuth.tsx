@@ -144,43 +144,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // If using Google ID token (no longer used but kept for reference)
-      if (provider === 'google' && options?.idToken) {
-        try {
-          console.log('Signing in with Google ID token');
-          const { error } = await supabase.auth.signInWithIdToken({
-            provider: 'google',
-            token: options.idToken,
-          });
-
-          if (error) {
-            console.error('Google sign in error:', error);
-            throw error;
-          }
-          
-          toast({
-            title: "Welcome!",
-            description: "You have successfully signed in with Google."
-          });
-          
-          navigate(redirectTo);
-          return;
-        } catch (tokenError: any) {
-          console.error('Google ID token error:', tokenError);
-          toast({
-            title: "Google Sign In Failed",
-            description: tokenError.message || "Could not authenticate with Google. Please try another method.",
-            variant: "destructive"
-          });
-          setIsLoading(false);
-          return;
-        }
-      }
+      console.log(`Initiating OAuth flow for ${provider} with redirectTo: ${redirectTo}`);
       
-      console.log(`Initiating OAuth flow for ${provider}`);
-      
-      // Use a consistent callback URL format that matches what's configured in Google Cloud Console
-      // This is the critical part that needs to be fixed
+      // Use a consistent callback URL format
       const callbackUrl = `${window.location.origin}/auth/callback`;
       
       console.log(`Using callback URL: ${callbackUrl}`);

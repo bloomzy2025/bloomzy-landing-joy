@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
+import { toast } from "@/hooks/use-toast";
 
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -30,19 +31,25 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   const [isFromQuiz, setIsFromQuiz] = useState(false);
   
   // Check if user is coming from quiz
-  useState(() => {
+  useEffect(() => {
     if (returnTo.includes('/maker-manager-quiz') || location.search.includes('returnTo=/maker-manager-quiz')) {
       setIsFromQuiz(true);
     }
-  });
+  }, [returnTo, location.search]);
   
-  // Google Sign-In implementation using standard OAuth flow
+  // Google Sign-In implementation
   const handleGoogleSignIn = async () => {
     try {
       console.log('Starting Google OAuth flow with standard redirect');
       await signInWithProvider('google', returnTo);
+      // The actual redirect happens in the signInWithProvider function
     } catch (error) {
       console.error('Google sign in error:', error);
+      toast({
+        title: "Sign In Failed",
+        description: "Could not sign in with Google. Please try again or use email.",
+        variant: "destructive"
+      });
     }
   };
   
@@ -53,6 +60,11 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       await signInWithProvider('apple', returnTo);
     } catch (error) {
       console.error('Apple sign in error:', error);
+      toast({
+        title: "Sign In Failed",
+        description: "Could not sign in with Apple. Please try again or use email.",
+        variant: "destructive"
+      });
     }
   };
 
