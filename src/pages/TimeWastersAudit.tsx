@@ -862,7 +862,8 @@ const TimeWastersAudit = () => {
           </div>;
       
       case 11:
-        return <div className="space-y-6">
+        return (
+          <div className="space-y-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-center">
               Your Personalized Time Audit Report
             </h2>
@@ -871,4 +872,4 @@ const TimeWastersAudit = () => {
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold">Your Productivity Optimization Suggestions</h3>
                 <h4 className="text-lg font-medium">Your Top 3 Action Steps for This Week</h4>
-                <ul className="space-y
+                <ul className="
