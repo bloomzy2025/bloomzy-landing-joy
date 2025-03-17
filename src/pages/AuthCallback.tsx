@@ -7,12 +7,14 @@ import { toast } from "@/hooks/use-toast";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/';
-
+  
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
         console.log("Auth callback handling session check");
+        
+        // Check for redirectTo param from the URL
+        const redirectTo = searchParams.get('redirectTo') || '/';
         console.log("Redirect destination:", redirectTo);
         
         // Get session and check for errors
@@ -43,7 +45,7 @@ export default function AuthCallback() {
             sessionStorage.removeItem('quizResultType');
           }
           
-          navigate(redirectTo || '/');
+          navigate(redirectTo);
         } else {
           // No session found, redirect to sign in
           console.log("No session found, redirecting to sign in");
@@ -60,8 +62,13 @@ export default function AuthCallback() {
       }
     };
 
-    handleAuthCallback();
-  }, [navigate, redirectTo]);
+    // Slight delay to ensure Supabase has time to process the auth callback
+    const timer = setTimeout(() => {
+      handleAuthCallback();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [navigate, searchParams]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

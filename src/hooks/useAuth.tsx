@@ -146,26 +146,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log(`Initiating OAuth flow for ${provider} with redirectTo: ${redirectTo}`);
       
-      // Use origin for consistent callback URL
-      const originUrl = window.location.origin;
-      const redirectUri = `${originUrl}/auth/callback`;
+      // Get the current URL's origin to construct the callback URL
+      const currentOrigin = window.location.origin;
+      const redirectUri = `${currentOrigin}/auth/callback`;
       
-      console.log(`Using origin: ${originUrl}`);
+      console.log(`Using origin: ${currentOrigin}`);
       console.log(`Using redirect URL: ${redirectUri}`);
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      // Construct query params to be sent to the callback
+      const queryParams: Record<string, string> = {};
+      if (redirectTo && redirectTo !== '/') {
+        queryParams.redirectTo = redirectTo;
+      }
+      
+      // Use Supabase auth to sign in with the provider
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: redirectUri,
-          queryParams: {
-            redirectTo: redirectTo // Pass as a query param to be picked up by callback page
-          }
+          queryParams,
+          // Add scopes to request minimal permissions to address 403 errors
+          scopes: 'email profile',
         }
       });
 
       if (error) {
         console.error(`${provider} OAuth error:`, error);
         throw error;
+      }
+      
+      if (data?.url) {
+        console.log(`Redirecting to OAuth URL: ${data.url}`);
+        // Let the browser handle the redirect
+        window.location.href = data.url;
+      } else {
+        console.error("No URL returned from signInWithOAuth");
+        throw new Error("Authentication failed. No redirect URL provided.");
       }
       
     } catch (error: any) {
