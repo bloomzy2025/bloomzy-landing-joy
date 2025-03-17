@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction"], []);
+  const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction", "Startup Chaos"], []);
   const { user } = useAuth();
   const isMobile = useIsMobile();
   
