@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home } from "lucide-react";
+import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home, Star, Trophy, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -357,21 +356,51 @@ const MakerManagerQuiz = () => {
               </div>
               
               {!user && (
-                <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20 animate-pulse">
-                  <div className="flex items-center mb-3">
-                    <LockKeyhole className="h-5 w-5 text-brand-green dark:text-accent-green mr-2" />
-                    <h4 className="text-lg font-medium dark:text-gray-100">Unlock all recommendations in seconds!</h4>
+                <motion.div
+                  className="mt-10 mb-10 bg-gradient-to-r from-[#8B5CF6]/10 to-[#D946EF]/10 p-8 rounded-xl border-2 border-[#8B5CF6]/30 dark:border-[#D946EF]/30 shadow-xl"
+                  initial={{ scale: 0.95 }}
+                  animate={{ scale: 1 }}
+                  transition={{ 
+                    duration: 0.5,
+                    repeat: 3,
+                    repeatType: "reverse",
+                    repeatDelay: 2
+                  }}
+                >
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-[#8B5CF6]/20 dark:bg-[#D946EF]/20 flex items-center justify-center mb-2">
+                      <Trophy className="h-8 w-8 text-[#8B5CF6] dark:text-[#D946EF]" />
+                    </div>
                   </div>
-                  <p className="text-sm dark:text-gray-300 mb-4">
-                    Sign in <span className="font-semibold">takes just a few seconds</span> and gives you access to extended personalized productivity recommendations tailored for your {result.type} profile.
-                  </p>
+                  <h3 className="text-2xl font-bold text-center text-[#8B5CF6] dark:text-[#D946EF] mb-3">
+                    Unlock all recommendations in seconds!
+                  </h3>
+                  <div className="text-center mb-6 text-gray-700 dark:text-gray-200">
+                    <p className="text-lg mb-2">
+                      <span className="font-semibold">Sign in takes just a few seconds</span> and gives you access to:
+                    </p>
+                    <ul className="space-y-2 text-left max-w-md mx-auto mt-4">
+                      <li className="flex items-center">
+                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
+                        <span>Extended personalized productivity recommendations</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
+                        <span>Tailored strategies for your {result.type} profile</span>
+                      </li>
+                      <li className="flex items-center">
+                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
+                        <span>Save your results and track your progress</span>
+                      </li>
+                    </ul>
+                  </div>
                   <Button 
                     onClick={handleGetPersonalizedRecommendations} 
-                    className="w-full bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
+                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:from-[#8B5CF6]/90 hover:to-[#D946EF]/90 shadow-lg dark:text-white"
                   >
                     Sign In for Personalized Recommendations
                   </Button>
-                </div>
+                </motion.div>
               )}
               
               {user && result.extendedRecommendations && (
@@ -525,3 +554,4 @@ const MakerManagerQuiz = () => {
 };
 
 export default MakerManagerQuiz;
+
