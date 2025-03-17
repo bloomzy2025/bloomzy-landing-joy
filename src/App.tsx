@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import Waitlist from "./pages/Waitlist";
 import Pricing from "./pages/Pricing";
 import EnterpriseContact from "./pages/EnterpriseContact";
 import MakerManagerQuiz from "./pages/MakerManagerQuiz";
+import TimeWastersAudit from "./pages/TimeWastersAudit";
 import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
@@ -36,6 +38,7 @@ function App() {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/enterprise" element={<EnterpriseContact />} />
               <Route path="/maker-manager-quiz" element={<MakerManagerQuiz />} />
+              <Route path="/time-wasters-audit" element={<TimeWastersAudit />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
