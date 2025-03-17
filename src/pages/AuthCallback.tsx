@@ -13,6 +13,8 @@ export default function AuthCallback() {
     const handleAuthCallback = async () => {
       try {
         console.log("Auth callback handling session check");
+        console.log("Redirect destination:", redirectTo);
+        
         // Get session and check for errors
         const { data, error } = await supabase.auth.getSession();
         
@@ -36,12 +38,12 @@ export default function AuthCallback() {
           });
           
           // Check if we're coming from the quiz
-          if (redirectTo.includes('/maker-manager-quiz')) {
+          if (redirectTo && redirectTo.includes('/maker-manager-quiz')) {
             // Clear stored result type as it's no longer needed after sign-in
             sessionStorage.removeItem('quizResultType');
           }
           
-          navigate(redirectTo);
+          navigate(redirectTo || '/');
         } else {
           // No session found, redirect to sign in
           console.log("No session found, redirecting to sign in");

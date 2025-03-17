@@ -40,9 +40,8 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
   // Google Sign-In implementation
   const handleGoogleSignIn = async () => {
     try {
-      console.log('Starting Google OAuth flow with standard redirect');
+      console.log('Starting Google OAuth flow with returnTo:', returnTo);
       await signInWithProvider('google', returnTo);
-      // The actual redirect happens in the signInWithProvider function
     } catch (error) {
       console.error('Google sign in error:', error);
       toast({
@@ -90,7 +89,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
       <Button 
         variant="outline" 
         type="button" 
-        className="w-full flex items-center justify-center gap-2"
+        className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50"
         onClick={handleGoogleSignIn}
         disabled={isLoading}
       >

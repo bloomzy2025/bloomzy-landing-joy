@@ -75,7 +75,7 @@ export default function SignUpForm() {
       <Button 
         variant="outline" 
         type="button" 
-        className="w-full flex items-center justify-center gap-2"
+        className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50"
         onClick={handleGoogleSignIn}
         disabled={isLoading}
       >
