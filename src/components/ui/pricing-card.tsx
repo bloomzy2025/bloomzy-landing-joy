@@ -63,7 +63,7 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
                 "text-5xl font-bold text-gray-900 dark:text-gray-100",
                 tier.highlighted && "text-brand-green dark:text-accent-green"
               )}>${price}</span>
-              <span className="text-gray-600 ml-2 dark:text-gray-400">/{paymentFrequency.replace('ly', '')}</span>
+              <span className="text-gray-600 ml-2 dark:text-gray-400">/month</span>
             </div>
           ) : (
             <span className={cn(
