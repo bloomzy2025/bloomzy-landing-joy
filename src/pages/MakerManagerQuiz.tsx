@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home, Star, Trophy, Sparkles } from "lucide-react";
+import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home, Star, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type QuestionType = {
   id: string;
@@ -37,6 +38,7 @@ const MakerManagerQuiz = () => {
   const [result, setResult] = useState<ResultType | null>(null);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const { user } = useAuth();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (user && location.pathname === '/maker-manager-quiz') {
@@ -346,49 +348,49 @@ const MakerManagerQuiz = () => {
               
               {!user && (
                 <motion.div
-                  className="my-4 bg-[#F2FCE2] dark:bg-[#1A2E1E]/90 p-6 md:p-10 rounded-2xl border-2 border-brand-green/30 dark:border-accent-green/30 shadow-xl"
+                  className="my-4 bg-[#F2FCE2] dark:bg-[#1A2E1E]/90 p-4 md:p-8 rounded-2xl border-2 border-brand-green/30 dark:border-accent-green/30 shadow-xl"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
-                  <div className="flex items-center justify-center mb-6">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-brand-green to-[#4ADE80] flex items-center justify-center mb-1 shadow-lg shadow-brand-green/30 dark:shadow-accent-green/20">
-                      <Star className="h-8 w-8 md:h-10 md:w-10 text-white" />
+                  <div className="flex items-center justify-center mb-4 md:mb-6">
+                    <div className="w-14 h-14 md:w-18 md:h-18 rounded-full bg-gradient-to-br from-brand-green to-[#4ADE80] flex items-center justify-center mb-1 shadow-lg shadow-brand-green/30 dark:shadow-accent-green/20">
+                      <Star className="h-7 w-7 md:h-9 md:w-9 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-center text-brand-green dark:text-accent-green mb-4">
-                    Unlock all recommendations in seconds!
+                  <h3 className="text-lg md:text-xl font-bold text-center text-brand-green dark:text-accent-green mb-3">
+                    Unlock full recommendations!
                   </h3>
-                  <div className="text-center mb-6 text-gray-700 dark:text-gray-200">
-                    <p className="text-base md:text-lg mb-4">
-                      <span className="font-semibold">Sign in takes just a few seconds</span> and gives you access to:
+                  <div className="text-center mb-5 text-gray-700 dark:text-gray-200">
+                    <p className="text-sm md:text-base mb-3">
+                      <span className="font-semibold">Sign in takes just seconds</span> and gives you:
                     </p>
-                    <ul className="space-y-3 text-left max-w-md mx-auto mt-4">
+                    <ul className="space-y-2 text-left max-w-md mx-auto mt-3">
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
-                          <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-brand-green dark:text-accent-green" />
+                        <div className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Extended personalized productivity recommendations</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] text-sm md:text-base font-medium">Extended productivity recommendations</span>
                       </li>
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
-                          <Star className="h-4 w-4 md:h-5 md:w-5 text-brand-green dark:text-accent-green" />
+                        <div className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Star className="h-3 w-3 md:h-4 md:w-4 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Tailored strategies for your {result.type} profile</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] text-sm md:text-base font-medium">Tailored strategies for your {result.type} profile</span>
                       </li>
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
-                          <Sparkles className="h-4 w-4 md:h-5 md:w-5 text-brand-green dark:text-accent-green" />
+                        <div className="flex-shrink-0 w-6 h-6 md:w-7 md:h-7 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-3 w-3 md:h-4 md:w-4 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Save your results and track your progress</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] text-sm md:text-base font-medium">Save your results and track your progress</span>
                       </li>
                     </ul>
                   </div>
                   <Button 
                     onClick={handleGetPersonalizedRecommendations} 
-                    className="w-full py-5 md:py-6 text-base md:text-lg font-semibold bg-gradient-to-r from-brand-green to-[#4ADE80] hover:from-brand-green/90 hover:to-[#4ADE80]/90 text-white shadow-lg shadow-brand-green/20 dark:shadow-accent-green/20 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+                    className="w-full py-4 md:py-5 text-sm md:text-base font-semibold bg-gradient-to-r from-brand-green to-[#4ADE80] hover:from-brand-green/90 hover:to-[#4ADE80]/90 text-white shadow-lg shadow-brand-green/20 dark:shadow-accent-green/20 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                   >
-                    Sign In for Personalized Recommendations
+                    {isMobile ? "Sign In Now" : "Sign In for Personalized Recommendations"}
                   </Button>
                 </motion.div>
               )}
