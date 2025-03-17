@@ -1,7 +1,7 @@
 
 import * as React from "react";
 import { useLocation } from "react-router-dom";
-import { Brain, Wrench } from "lucide-react";
+import { Brain, Wrench, Clock } from "lucide-react";
 import { NavigationLink } from "./NavigationLink";
 import { DropdownMenu } from "./DropdownMenu";
 import { DropdownItem } from "./DropdownItem";
@@ -92,6 +92,13 @@ export function HeaderNavigation({
           iconColor="text-blue-500 dark:text-blue-400"
         >
           Maker vs. Manager Quiz
+        </DropdownItem>
+        <DropdownItem 
+          to="/time-wasters-audit" 
+          icon={Clock}
+          iconColor="text-green-500 dark:text-green-400"
+        >
+          Time Wasters Audit
         </DropdownItem>
         <DropdownItem to="/tools/seo-checker" icon={Wrench}>
           SEO Checker
