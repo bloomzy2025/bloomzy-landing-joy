@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -287,7 +288,8 @@ const MakerManagerQuiz = () => {
   
   const handleGetPersonalizedRecommendations = () => {
     if (!user) {
-      setShowAuthDialog(true);
+      // Instead of setting showAuthDialog to true, redirect directly to the sign in page
+      redirectToSignIn();
     }
   };
 
