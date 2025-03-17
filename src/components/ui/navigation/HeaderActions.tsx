@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -73,14 +72,11 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        <Link to={user ? "/dashboard" : "/signup"} className={cn(buttonVariants({
+        <Link to="/demo" className={cn(buttonVariants({
           variant: "default", 
           size: isMobile ? "sm" : "default"
         }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
-          {user 
-            ? (isMobile ? "Dashboard" : "Go to Dashboard") 
-            : (isMobile ? "Start" : "Get started")
-          }
+          {isMobile ? "Demo" : "Book a Demo"}
         </Link>
       </motion.div>
     </div>
