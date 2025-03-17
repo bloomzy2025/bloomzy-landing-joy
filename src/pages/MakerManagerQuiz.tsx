@@ -357,46 +357,47 @@ const MakerManagerQuiz = () => {
               
               {!user && (
                 <motion.div
-                  className="mt-10 mb-10 bg-gradient-to-r from-[#8B5CF6]/10 to-[#D946EF]/10 p-8 rounded-xl border-2 border-[#8B5CF6]/30 dark:border-[#D946EF]/30 shadow-xl"
-                  initial={{ scale: 0.95 }}
-                  animate={{ scale: 1 }}
-                  transition={{ 
-                    duration: 0.5,
-                    repeat: 3,
-                    repeatType: "reverse",
-                    repeatDelay: 2
-                  }}
+                  className="mt-10 mb-10 bg-[#F8F7FF] dark:bg-[#1A1F2C]/80 p-10 rounded-xl border border-[#9b87f5]/30 dark:border-[#9b87f5]/20 shadow-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6 }}
                 >
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="w-16 h-16 rounded-full bg-[#8B5CF6]/20 dark:bg-[#D946EF]/20 flex items-center justify-center mb-2">
-                      <Trophy className="h-8 w-8 text-[#8B5CF6] dark:text-[#D946EF]" />
+                  <div className="flex justify-center mb-6">
+                    <div className="w-20 h-20 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center">
+                      <Trophy className="h-10 w-10 text-[#9b87f5]" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-center text-[#8B5CF6] dark:text-[#D946EF] mb-3">
+                  <h3 className="text-2xl font-bold text-center text-[#6E59A5] dark:text-[#D6BCFA] mb-4">
                     Unlock all recommendations in seconds!
                   </h3>
-                  <div className="text-center mb-6 text-gray-700 dark:text-gray-200">
-                    <p className="text-lg mb-2">
-                      <span className="font-semibold">Sign in takes just a few seconds</span> and gives you access to:
+                  <div className="mb-8 text-gray-700 dark:text-gray-200">
+                    <p className="text-lg font-medium text-center mb-5">
+                      Sign in takes just a few seconds <span className="text-[#6E59A5] dark:text-[#9b87f5]">and gives you access to:</span>
                     </p>
-                    <ul className="space-y-2 text-left max-w-md mx-auto mt-4">
+                    <ul className="space-y-4 mt-6">
                       <li className="flex items-center">
-                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
-                        <span>Extended personalized productivity recommendations</span>
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        </div>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Extended personalized productivity recommendations</span>
                       </li>
                       <li className="flex items-center">
-                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
-                        <span>Tailored strategies for your {result.type} profile</span>
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        </div>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Tailored strategies for your {result.type} profile</span>
                       </li>
                       <li className="flex items-center">
-                        <Sparkles className="h-5 w-5 text-[#D946EF] mr-2 flex-shrink-0" />
-                        <span>Save your results and track your progress</span>
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        </div>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Save your results and track your progress</span>
                       </li>
                     </ul>
                   </div>
                   <Button 
                     onClick={handleGetPersonalizedRecommendations} 
-                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] hover:from-[#8B5CF6]/90 hover:to-[#D946EF]/90 shadow-lg dark:text-white"
+                    className="w-full py-6 text-lg font-semibold bg-[#9b87f5] hover:bg-[#8B5CF6] text-white shadow-md transition-all duration-300 hover:shadow-lg"
                   >
                     Sign In for Personalized Recommendations
                   </Button>
@@ -554,4 +555,3 @@ const MakerManagerQuiz = () => {
 };
 
 export default MakerManagerQuiz;
-
