@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -282,6 +283,7 @@ const MakerManagerQuiz = () => {
     setCurrentQuestionIndex(0);
     setShowResults(false);
     setResult(null);
+    sessionStorage.removeItem('quizResultType');
   };
   
   const handleGetPersonalizedRecommendations = () => {
@@ -332,7 +334,7 @@ const MakerManagerQuiz = () => {
               <div className="mb-6 dark:text-gray-200">
                 <h3 className="text-xl font-semibold mb-4 dark:text-gray-100">Recommendations:</h3>
                 <ul className="space-y-3">
-                  {result.recommendations.map((rec, index) => (
+                  {result.recommendations.slice(0, 2).map((rec, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="mt-1 flex-shrink-0">
                         <Check className="h-5 w-5 text-brand-green dark:text-accent-green" />
@@ -340,17 +342,28 @@ const MakerManagerQuiz = () => {
                       <span>{rec}</span>
                     </li>
                   ))}
+                  {/* Blur effect for remaining recommendations */}
+                  <div className={`space-y-3 ${!user ? "blur-sm select-none" : ""}`}>
+                    {result.recommendations.slice(2).map((rec, index) => (
+                      <li key={index + 2} className="flex items-start gap-3">
+                        <div className="mt-1 flex-shrink-0">
+                          <Check className="h-5 w-5 text-brand-green dark:text-accent-green" />
+                        </div>
+                        <span>{rec}</span>
+                      </li>
+                    ))}
+                  </div>
                 </ul>
               </div>
               
               {!user && (
-                <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20">
+                <div className="mt-8 bg-brand-green/5 dark:bg-accent-green/10 p-5 rounded-lg border border-brand-green/20 dark:border-accent-green/20 animate-pulse">
                   <div className="flex items-center mb-3">
                     <LockKeyhole className="h-5 w-5 text-brand-green dark:text-accent-green mr-2" />
-                    <h4 className="text-lg font-medium dark:text-gray-100">Want personalized recommendations?</h4>
+                    <h4 className="text-lg font-medium dark:text-gray-100">Unlock all recommendations in seconds!</h4>
                   </div>
                   <p className="text-sm dark:text-gray-300 mb-4">
-                    Sign in to unlock extended personalized productivity recommendations based on your {result.type} profile.
+                    Sign in <span className="font-semibold">takes just a few seconds</span> and gives you access to extended personalized productivity recommendations tailored for your {result.type} profile.
                   </p>
                   <Button 
                     onClick={handleGetPersonalizedRecommendations} 
@@ -378,10 +391,17 @@ const MakerManagerQuiz = () => {
               )}
             </CardContent>
             <CardFooter className="flex justify-between pt-4">
-              <Button variant="outline" onClick={handleRestart} className="dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+              <Button 
+                variant="outline" 
+                onClick={handleRestart} 
+                className="dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+              >
                 Restart Quiz
               </Button>
-              <Button onClick={() => navigate("/")} className="bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90">
+              <Button 
+                onClick={() => navigate("/")} 
+                className="bg-brand-green hover:bg-brand-green/90 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90"
+              >
                 Return Home
               </Button>
             </CardFooter>
@@ -393,7 +413,7 @@ const MakerManagerQuiz = () => {
             <DialogHeader>
               <DialogTitle>Sign in required</DialogTitle>
               <DialogDescription>
-                You need to sign in to view personalized productivity recommendations.
+                You need to sign in to view personalized productivity recommendations. It only takes a few seconds!
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="sm:justify-start">
