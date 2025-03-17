@@ -12,9 +12,18 @@ import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
-import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home } from "lucide-react";
+import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home, Loader, ExternalLink, CheckCircle } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuth } from '@/hooks/useAuth';
+import { 
+  ActionStepsSection, 
+  SolutionsSection, 
+  SimpleWaysSection, 
+  QuickWinsSection,
+  WorkHoursSection,
+  SummarySection,
+  PriorityTags
+} from '@/components/time-audit/ReportSection';
 
 // Daily activities categories and options
 const activityCategories = [{
@@ -300,16 +309,13 @@ const timeLostOptions = [{
   value: '4hours+',
   label: '4+ hours'
 }];
+
 const TimeWastersAudit = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const {
-    user
-  } = useAuth();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     daily_activities: [] as string[],
     time_wasters: [] as string[],
@@ -327,6 +333,13 @@ const TimeWastersAudit = () => {
     other_environmental: ''
   });
   const [loading, setLoading] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportData, setReportData] = useState<{
+    actionSteps: { title: string; description: string }[];
+    solutions: string[];
+    quickWins: string[];
+    simpleWays: string[];
+  } | null>(null);
 
   // Filter time wasters based on selected daily activities
   const getTimeWasterOptions = () => {
@@ -396,10 +409,7 @@ const TimeWastersAudit = () => {
     });
   };
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const {
-      name,
-      value
-    } = e.target;
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -420,12 +430,9 @@ const TimeWastersAudit = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const {
-        data: {
-          user: currentUser
-        }
-      } = await supabase.auth.getUser();
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
       const userId = currentUser?.id || user?.id;
+      
       if (!userId) {
         toast({
           title: "Sign in required",
@@ -435,10 +442,8 @@ const TimeWastersAudit = () => {
         navigate('/signin?redirect=/time-wasters-audit');
         return;
       }
-      const {
-        data,
-        error
-      } = await supabase.from('time_audits').insert({
+      
+      const { data, error } = await supabase.from('time_audits').insert({
         time_wasters: formData.time_wasters,
         personal_habits: formData.personal_habits,
         habit_control: formData.habit_control,
@@ -453,13 +458,20 @@ const TimeWastersAudit = () => {
         daily_activities: formData.daily_activities,
         user_id: userId
       }).select();
+      
       if (error) {
         throw error;
       }
+      
       toast({
         title: "Audit Submitted Successfully!",
         description: "We'll analyze your results and provide personalized recommendations."
       });
+      
+      // Generate personalized report
+      setReportLoading(true);
+      await generatePersonalizedReport();
+      
       setStep(11);
     } catch (error) {
       console.error('Error submitting audit:', error);
@@ -473,6 +485,68 @@ const TimeWastersAudit = () => {
     }
   };
 
+  const generatePersonalizedReport = async () => {
+    try {
+      const response = await supabase.functions.invoke('generate-time-audit-report', {
+        body: { formData }
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message);
+      }
+
+      setReportData(response.data);
+    } catch (error) {
+      console.error('Error generating report:', error);
+      toast({
+        title: "Error generating personalized report",
+        description: "We encountered an issue creating your personalized report. Using default recommendations instead.",
+        variant: "destructive"
+      });
+      
+      // Set fallback report data
+      setReportData({
+        actionSteps: [
+          { title: "Set up a separate workspace", description: "Away from high-traffic areas, use a room divider if needed" },
+          { title: "Log out of all social accounts", description: "The extra step of logging in gives you time to think: 'Do I really need this now?'" },
+          { title: "Use a timer for each task", description: "When it rings, your work is 'good enough' - time to move on" }
+        ],
+        solutions: [
+          "Create a dedicated focus space - even a small corner can become a productivity zone",
+          "Use natural light when possible - it helps maintain your energy throughout the day",
+          "Keep your workspace clean and organized - it reduces mental clutter",
+          "Take regular movement breaks - a quick stretch every hour helps maintain focus",
+          "Adjust your workspace for comfort - good ergonomics reduce fatigue"
+        ],
+        quickWins: [
+          "Set up your workspace for tomorrow before finishing today",
+          "Keep water within reach to stay hydrated during focus time",
+          "Use a desk plant to improve air quality and reduce stress",
+          "Position your screen at eye level to prevent neck strain"
+        ],
+        simpleWays: [
+          "Block distracting websites during focus hours",
+          "Use noise-cancelling headphones or ambient background sounds",
+          "Work in 25-minute focused blocks with 5-minute breaks",
+          "Create a pre-work ritual to mentally prepare for focused work"
+        ]
+      });
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const getTimeLostMap = () => {
+    const timeLostMap: Record<string, string> = {};
+    Object.entries(formData.time_lost).forEach(([activity, code]) => {
+      const option = timeLostOptions.find(opt => opt.value === code);
+      if (option) {
+        timeLostMap[activity] = option.label;
+      }
+    });
+    return timeLostMap;
+  };
+
   // All selected items for the top priorities step
   const getAllSelectedItems = () => {
     const allSelected = [...formData.daily_activities, ...formData.time_wasters, ...formData.personal_habits, ...formData.dependencies, ...formData.planning_issues, ...formData.environmental_factors];
@@ -482,7 +556,9 @@ const TimeWastersAudit = () => {
   };
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
-  const InfoCard = () => <Card className="bg-white dark:bg-gray-800 shadow-lg">
+
+  const InfoCard = () => (
+    <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">&quot;Biggest Time Wasters&quot; Audit</h1>
@@ -516,8 +592,8 @@ const TimeWastersAudit = () => {
         <div className="mt-8">
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full" style={{
-            width: `${progressPercentage}%`
-          }}></div>
+              width: `${progressPercentage}%`
+            }}></div>
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-500">
             <span>Step {step} of {totalSteps}</span>
@@ -525,8 +601,11 @@ const TimeWastersAudit = () => {
           </div>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
+
   const renderStep = () => {
+    
     switch (step) {
       case 1:
         return <div className="space-y-6">
@@ -799,178 +878,7 @@ const TimeWastersAudit = () => {
             </p>
             
             <div className="space-y-6">
-              {/* Group all selected items by their original categories */}
+              {/* Create categories of unique items */}
               {[{
-              title: 'Daily Activities',
-              items: formData.daily_activities
-            }, {
-              title: 'Time Wasters',
-              items: formData.time_wasters
-            }, {
-              title: 'Personal Habits',
-              items: formData.personal_habits
-            }, {
-              title: 'Dependencies',
-              items: formData.dependencies
-            }, {
-              title: 'Planning Issues',
-              items: formData.planning_issues
-            }, {
-              title: 'Environmental Factors',
-              items: formData.environmental_factors
-            }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
-                  <h3 className="text-sm font-semibold text-gray-500 tracking-wide">
-                    {group.title.toUpperCase()}
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    {group.items.map((item, idx) => <div key={idx} className="flex items-center space-x-2 py-1">
-                        <Checkbox id={`priority-${index}-${idx}`} checked={formData.top_priorities.includes(item)} onCheckedChange={() => handlePriorityChange(item)} disabled={!formData.top_priorities.includes(item) && formData.top_priorities.length >= 3} />
-                        <Label htmlFor={`priority-${index}-${idx}`} className="text-base">
-                          {item}
-                        </Label>
-                      </div>)}
-                  </div>
-                  
-                  <Separator className="mt-4" />
-                </div>)}
-            </div>
-          </div>;
-      case 11:
-        return <div className="space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center">
-              Your Personalized Time Audit Report
-            </h2>
-            
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Your Productivity Optimization Suggestions</h3>
-                <h4 className="text-lg font-medium">Your Top 3 Action Steps for This Week</h4>
-                <ul className="space-y-2 list-disc pl-5">
-                  <li>Position your desk near natural light and add task lighting for clearer focus</li>
-                  <li>Use the 'split-shift' method: work core hours for meetings, then flexible hours for focused work</li>
-                  <li>Create blocks of distraction-free time by silencing notifications and using focus mode</li>
-                </ul>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Solutions That Work for Others Like You</h3>
-                <h4 className="text-lg font-medium">Simple Ways to Save More Time</h4>
-                <ul className="space-y-2 list-disc pl-5">
-                  <li>Create a dedicated focus space - even a small corner can become a productivity zone</li>
-                  <li>Use natural light when possible - it helps maintain your energy throughout the day</li>
-                  <li>Keep your workspace clean and organized - it reduces mental clutter</li>
-                  <li>Take regular movement breaks - a quick stretch every hour helps maintain focus</li>
-                  <li>Adjust your workspace for comfort - good ergonomics reduce fatigue</li>
-                </ul>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Quick Wins You Can Try Today</h3>
-                <ul className="space-y-2 list-disc pl-5">
-                  <li>Set up your workspace for tomorrow before finishing today</li>
-                  <li>Keep water within reach to stay hydrated during focus time</li>
-                  <li>Use a desk plant to improve air quality and reduce stress</li>
-                  <li>Position your screen at eye level to prevent neck strain</li>
-                </ul>
-              </div>
-              
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
-                <h3 className="text-xl font-semibold text-center">Get Your Complete Productivity Analysis</h3>
-                <p className="text-center">
-                  Unlock your full report with detailed AI-powered recommendations, actionable insights, and a personalized improvement roadmap.
-                </p>
-                
-                <form className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Your Name</Label>
-                    <Input id="name" placeholder="Your name" />
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="email">Your Email</Label>
-                    <Input id="email" type="email" placeholder="Your email" />
-                  </div>
-                  
-                  <Button className="w-full bg-green-500 hover:bg-green-600">
-                    Get Full Report Free
-                  </Button>
-                  
-                  <p className="text-xs text-center text-gray-500">
-                    We'll email you a downloadable PDF copy for your records<br />
-                    100% Free, No Credit Card Required
-                  </p>
-                </form>
-              </div>
-            </div>
-          </div>;
-      default:
-        return null;
-    }
-  };
-  return <div className="container mx-auto py-12 px-4">
-      <div className="mb-6">
-        <Button variant="outline" onClick={() => navigate('/')} className="flex items-center gap-2">
-          <Home className="h-4 w-4" />
-          Back to Home
-        </Button>
-      </div>
-      
-      <div className={`grid ${isDesktop ? 'grid-cols-3 gap-8' : 'grid-cols-1 gap-6'}`}>
-        {isDesktop ? <>
-            <div className="col-span-1">
-              <InfoCard />
-            </div>
-            
-            <div className="col-span-2">
-              <Card className="shadow-lg">
-                <CardContent className="p-6">
-                  {renderStep()}
-                </CardContent>
-                
-                {step < 11 && <CardFooter className="flex justify-between p-6 pt-0">
-                    <Button variant="outline" onClick={handlePrevStep} disabled={step === 1} className="flex items-center gap-1">
-                      <ArrowLeft className="h-4 w-4" />
-                      Previous
-                    </Button>
-                    
-                    {step < 10 ? <Button onClick={handleNextStep} className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1">
-                        Next
-                        <ArrowRight className="h-4 w-4" />
-                      </Button> : <Button onClick={handleSubmit} disabled={loading} className="bg-green-500 hover:bg-green-600 text-white">
-                        {loading ? 'Submitting...' : 'Submit Audit'}
-                      </Button>}
-                  </CardFooter>}
-              </Card>
-            </div>
-          </> : <>
-            <div>
-              <InfoCard />
-            </div>
-            
-            <div>
-              <Card className="shadow-lg">
-                <CardContent className="p-6">
-                  {renderStep()}
-                </CardContent>
-                
-                {step < 11 && <CardFooter className="flex justify-between p-6 pt-0">
-                    <Button variant="outline" onClick={handlePrevStep} disabled={step === 1} className="flex items-center gap-1">
-                      <ArrowLeft className="h-4 w-4" />
-                      Previous
-                    </Button>
-                    
-                    {step < 10 ? <Button onClick={handleNextStep} className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1">
-                        Next
-                        <ArrowRight className="h-4 w-4" />
-                      </Button> : <Button onClick={handleSubmit} disabled={loading} className="bg-green-500 hover:bg-green-600 text-white">
-                        {loading ? 'Submitting...' : 'Submit Audit'}
-                      </Button>}
-                  </CardFooter>}
-              </Card>
-            </div>
-          </>}
-      </div>
-    </div>;
-};
-export default TimeWastersAudit;
+                title: 'Daily Activities',
+                items:
