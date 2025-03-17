@@ -10,7 +10,56 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
+import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight } from "lucide-react";
+
+// Define categories and their options for Step 2
+const activityCategories = [
+  {
+    id: 'communication',
+    label: 'COMMUNICATION',
+    options: [
+      { id: 'meetings', label: 'Meetings' },
+      { id: 'emails', label: 'Emails' },
+      { id: 'phone-calls', label: 'Phone Calls' },
+      { id: 'client-interactions', label: 'Client Interactions' },
+      { id: 'team-coordination', label: 'Team Coordination' },
+    ]
+  },
+  {
+    id: 'focus',
+    label: 'FOCUS & PRODUCTIVITY',
+    options: [
+      { id: 'social-media', label: 'Social Media' },
+    ]
+  },
+  {
+    id: 'task',
+    label: 'TASK MANAGEMENT',
+    options: [
+      { id: 'administrative-tasks', label: 'Administrative Tasks' },
+      { id: 'planning', label: 'Planning' },
+      { id: 'problem-solving', label: 'Problem-Solving' },
+    ]
+  },
+  {
+    id: 'time',
+    label: 'TIME & ENERGY',
+    options: [
+      { id: 'travel-commute', label: 'Travel/Commute' },
+      { id: 'breaks', label: 'Breaks' },
+    ]
+  },
+  {
+    id: 'other',
+    label: 'OTHER',
+    options: [
+      { id: 'other', label: 'Other' },
+    ]
+  }
+];
 
 // Define the audit question items for reuse
 const timeWasters = [
@@ -76,7 +125,8 @@ const TimeWastersAudit = () => {
     top_priorities: [] as string[],
     other_habits: '',
     other_dependencies: '',
-    other_planning_issues: ''
+    other_planning_issues: '',
+    daily_activity: '',
   });
   const [loading, setLoading] = useState(false);
   
@@ -143,6 +193,13 @@ const TimeWastersAudit = () => {
     }));
   };
 
+  const handleRadioChange = (value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      daily_activity: value
+    }));
+  };
+
   const handleSliderChange = (value: number[]) => {
     setFormData(prev => ({
       ...prev,
@@ -182,6 +239,7 @@ const TimeWastersAudit = () => {
           other_habits: formData.other_habits,
           other_dependencies: formData.other_dependencies,
           other_planning_issues: formData.other_planning_issues,
+          daily_activity: formData.daily_activity,
           user_id: userId || null
         })
         .select();
@@ -209,10 +267,98 @@ const TimeWastersAudit = () => {
     }
   };
 
+  // Calculate progress percentage
+  const progressPercentage = (step / 9) * 100;
+
   // Render the current step
   const renderStep = () => {
     switch (step) {
       case 1:
+        return (
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <h1 className="text-3xl sm:text-4xl font-bold">Biggest Time Wasters Audit</h1>
+              <div className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                Free Tool
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 text-green-600">
+                <Clock className="h-5 w-5" />
+                <span className="text-lg">5-Minute Quick Test</span>
+              </div>
+              
+              <div className="flex items-center gap-3 text-green-600">
+                <Zap className="h-5 w-5" />
+                <span className="text-lg">Discover your biggest productivity bottlenecks instantly</span>
+              </div>
+              
+              <div className="flex items-center gap-3 text-green-600">
+                <Brain className="h-5 w-5" />
+                <span className="text-lg">Get AI-powered solutions tailored to your workflow</span>
+              </div>
+              
+              <div className="flex items-center gap-3 text-green-600">
+                <Gift className="h-5 w-5" />
+                <span className="text-lg">Includes 1 week free of Bloomzy's AI scheduling</span>
+              </div>
+            </div>
+            
+            <div className="pt-6">
+              <Button onClick={handleNextStep} className="w-full sm:w-auto">
+                Start Audit
+              </Button>
+            </div>
+          </div>
+        );
+      
+      case 2:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              Which tasks or activities do you spend the most time on daily?
+            </h2>
+            
+            <div className="space-y-6">
+              {activityCategories.map((category) => (
+                <div key={category.id} className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-500 tracking-wide">
+                    {category.label}
+                  </h3>
+                  
+                  <div className="space-y-2">
+                    {category.options.map((option) => (
+                      <div key={option.id} className="flex items-center space-x-2 py-1">
+                        <RadioGroup 
+                          value={formData.daily_activity} 
+                          onValueChange={handleRadioChange}
+                          className="flex"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem 
+                              value={option.id} 
+                              id={option.id}
+                            />
+                            <Label htmlFor={option.id} className="text-base">
+                              {option.label}
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {category.id !== 'other' && (
+                    <Separator className="mt-4" />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      
+      case 3:
         return (
           <div className="space-y-4">
             <CardTitle>Contact Information</CardTitle>
@@ -245,7 +391,7 @@ const TimeWastersAudit = () => {
           </div>
         );
       
-      case 2:
+      case 4:
         return (
           <div className="space-y-4">
             <CardTitle>Daily Time Wasters</CardTitle>
@@ -267,7 +413,7 @@ const TimeWastersAudit = () => {
           </div>
         );
       
-      case 3:
+      case 5:
         return (
           <div className="space-y-4">
             <CardTitle>Personal Habits</CardTitle>
@@ -299,7 +445,7 @@ const TimeWastersAudit = () => {
           </div>
         );
       
-      case 4:
+      case 6:
         return (
           <div className="space-y-4">
             <CardTitle>Habit Control</CardTitle>
@@ -326,7 +472,7 @@ const TimeWastersAudit = () => {
           </div>
         );
       
-      case 5:
+      case 7:
         return (
           <div className="space-y-4">
             <CardTitle>Work Hours</CardTitle>
@@ -346,7 +492,7 @@ const TimeWastersAudit = () => {
           </div>
         );
       
-      case 6:
+      case 8:
         return (
           <div className="space-y-4">
             <CardTitle>Dependencies</CardTitle>
@@ -374,60 +520,6 @@ const TimeWastersAudit = () => {
                 onChange={handleTextChange} 
                 placeholder="Enter any other dependencies slowing you down"
               />
-            </div>
-          </div>
-        );
-      
-      case 7:
-        return (
-          <div className="space-y-4">
-            <CardTitle>Planning Issues</CardTitle>
-            <CardDescription>
-              What planning challenges do you face? Select all that apply.
-            </CardDescription>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
-              {planningIssues.map((item) => (
-                <div key={item.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={item.id} 
-                    checked={formData.planning_issues.includes(item.label)}
-                    onCheckedChange={() => handleMultiSelectChange('planning_issues', item.label)}
-                  />
-                  <Label htmlFor={item.id}>{item.label}</Label>
-                </div>
-              ))}
-            </div>
-            <div className="pt-3">
-              <Label htmlFor="other_planning_issues">Other planning issues (optional)</Label>
-              <Textarea 
-                id="other_planning_issues" 
-                name="other_planning_issues" 
-                value={formData.other_planning_issues || ''} 
-                onChange={handleTextChange} 
-                placeholder="Enter any other planning challenges you face"
-              />
-            </div>
-          </div>
-        );
-      
-      case 8:
-        return (
-          <div className="space-y-4">
-            <CardTitle>Environmental Factors</CardTitle>
-            <CardDescription>
-              What environmental factors hinder your productivity? Select all that apply.
-            </CardDescription>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3">
-              {environmentalFactors.map((item) => (
-                <div key={item.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={item.id} 
-                    checked={formData.environmental_factors.includes(item.label)}
-                    onCheckedChange={() => handleMultiSelectChange('environmental_factors', item.label)}
-                  />
-                  <Label htmlFor={item.id}>{item.label}</Label>
-                </div>
-              ))}
             </div>
           </div>
         );
@@ -480,53 +572,52 @@ const TimeWastersAudit = () => {
 
   return (
     <div className="container max-w-screen-md mx-auto py-12 px-4">
-      <h1 className="text-3xl font-bold text-center mb-8 dark:text-white">
-        Time Audit - Optimize Your Productivity
-      </h1>
-      
-      {/* Progress indicator */}
       {step < 10 && (
-        <div className="mb-8">
-          <div className="flex justify-between text-sm mb-1">
-            <span>Start</span>
-            <span>Complete</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-            <div 
-              className="bg-blue-600 h-2.5 rounded-full dark:bg-blue-500" 
-              style={{ width: `${(step / 9) * 100}%` }}
-            ></div>
-          </div>
-          <div className="text-right text-sm mt-1">
-            <span className="text-muted-foreground">Step {step} of 9</span>
-          </div>
-        </div>
+        <>
+          {/* Progress bar for steps 2-9 */}
+          {step > 1 && (
+            <div className="mb-8">
+              <Progress value={progressPercentage} className="h-2" />
+              <div className="flex justify-between items-center mt-2 text-sm">
+                <span>Step {step - 1} of 9</span>
+                <span>{9 - (step - 1)} questions remaining</span>
+              </div>
+            </div>
+          )}
+        </>
       )}
       
-      <Card className="shadow-lg">
-        <CardHeader>
-          {/* Step content header goes here if needed */}
-        </CardHeader>
-        <CardContent>
+      {/* Step content container */}
+      <Card className={`shadow-lg ${step === 1 ? 'bg-white dark:bg-gray-800 border-0 shadow-xl rounded-2xl' : ''}`}>
+        <CardContent className={step === 1 ? 'p-8' : 'p-6'}>
           {renderStep()}
         </CardContent>
-        {step < 10 && (
-          <CardFooter className="flex justify-between pt-6">
+        
+        {/* Navigation buttons for steps 2-9 */}
+        {step > 1 && step < 10 && (
+          <CardFooter className="flex justify-between p-6 pt-0">
             <Button 
               variant="outline" 
               onClick={handlePrevStep}
-              disabled={step === 1}
+              className="flex items-center gap-1"
             >
-              Back
+              <ArrowLeft className="h-4 w-4" />
+              Previous
             </Button>
+            
             {step < 9 ? (
-              <Button onClick={handleNextStep}>
-                Continue
+              <Button 
+                onClick={handleNextStep}
+                className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-1"
+              >
+                Next
+                <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
               <Button 
                 onClick={handleSubmit} 
                 disabled={loading}
+                className="bg-green-500 hover:bg-green-600 text-white"
               >
                 {loading ? 'Submitting...' : 'Submit Audit'}
               </Button>
