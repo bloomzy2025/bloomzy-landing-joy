@@ -25,7 +25,6 @@ import {
   PriorityTags
 } from '@/components/time-audit/ReportSection';
 
-// Daily activities categories and options
 const activityCategories = [{
   id: 'communication',
   label: 'COMMUNICATION',
@@ -84,7 +83,6 @@ const activityCategories = [{
   }]
 }];
 
-// Habits that affect productivity
 const habitCategories = [{
   id: 'communication',
   label: 'COMMUNICATION',
@@ -127,7 +125,6 @@ const habitCategories = [{
   }]
 }];
 
-// Dependencies categories
 const dependencyCategories = [{
   id: 'team',
   label: 'TEAM & PROCESS',
@@ -181,7 +178,6 @@ const dependencyCategories = [{
   }]
 }];
 
-// Planning and prioritization issues
 const planningIssueCategories = [{
   id: 'planning',
   label: 'PLANNING & GOALS',
@@ -235,7 +231,6 @@ const planningIssueCategories = [{
   }]
 }];
 
-// Environmental factors
 const environmentalFactorCategories = [{
   id: 'time-energy',
   label: 'TIME & ENERGY',
@@ -289,7 +284,6 @@ const environmentalFactorCategories = [{
   }]
 }];
 
-// Time lost options
 const timeLostOptions = [{
   value: '15min',
   label: '15 minutes'
@@ -341,7 +335,6 @@ const TimeWastersAudit = () => {
     simpleWays: string[];
   } | null>(null);
 
-  // Filter time wasters based on selected daily activities
   const getTimeWasterOptions = () => {
     const filteredOptions: {
       category: string;
@@ -361,6 +354,7 @@ const TimeWastersAudit = () => {
     });
     return filteredOptions;
   };
+
   const handleMultiSelectChange = (field: string, value: string) => {
     setFormData(prev => {
       const currentValues = prev[field as keyof typeof prev] as string[];
@@ -380,6 +374,7 @@ const TimeWastersAudit = () => {
       return prev;
     });
   };
+
   const handleTimeLostChange = (activity: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -389,6 +384,7 @@ const TimeWastersAudit = () => {
       }
     }));
   };
+
   const handlePriorityChange = (value: string) => {
     setFormData(prev => {
       const currentValues = [...prev.top_priorities];
@@ -408,6 +404,7 @@ const TimeWastersAudit = () => {
       return prev;
     });
   };
+
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -415,18 +412,22 @@ const TimeWastersAudit = () => {
       [name]: value
     }));
   };
+
   const handleSliderChange = (value: number[]) => {
     setFormData(prev => ({
       ...prev,
       habit_control: value[0]
     }));
   };
+
   const handleNextStep = () => {
     setStep(prevStep => prevStep + 1);
   };
+
   const handlePrevStep = () => {
     setStep(prevStep => prevStep - 1);
   };
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -468,7 +469,6 @@ const TimeWastersAudit = () => {
         description: "We'll analyze your results and provide personalized recommendations."
       });
       
-      // Generate personalized report
       setReportLoading(true);
       await generatePersonalizedReport();
       
@@ -504,7 +504,6 @@ const TimeWastersAudit = () => {
         variant: "destructive"
       });
       
-      // Set fallback report data
       setReportData({
         actionSteps: [
           { title: "Set up a separate workspace", description: "Away from high-traffic areas, use a room divider if needed" },
@@ -547,13 +546,12 @@ const TimeWastersAudit = () => {
     return timeLostMap;
   };
 
-  // All selected items for the top priorities step
   const getAllSelectedItems = () => {
     const allSelected = [...formData.daily_activities, ...formData.time_wasters, ...formData.personal_habits, ...formData.dependencies, ...formData.planning_issues, ...formData.environmental_factors];
 
-    // Remove duplicates
     return [...new Set(allSelected)];
   };
+
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
 
@@ -605,7 +603,6 @@ const TimeWastersAudit = () => {
   );
 
   const renderStep = () => {
-    
     switch (step) {
       case 1:
         return <div className="space-y-6">
@@ -878,8 +875,211 @@ const TimeWastersAudit = () => {
             </p>
             
             <div className="space-y-6">
-              {/* Create categories of unique items */}
               {[{
                 title: 'Daily Activities',
-                items:
-                  activity
+                items: formData.daily_activities.filter(item => 
+                  !formData.time_wasters.includes(item) && 
+                  !formData.personal_habits.includes(item) && 
+                  !formData.dependencies.includes(item) && 
+                  !formData.planning_issues.includes(item) && 
+                  !formData.environmental_factors.includes(item)
+                )
+              }, {
+                title: 'Time Wasters',
+                items: formData.time_wasters.filter(item => 
+                  !formData.personal_habits.includes(item) && 
+                  !formData.dependencies.includes(item) && 
+                  !formData.planning_issues.includes(item) && 
+                  !formData.environmental_factors.includes(item)
+                )
+              }, {
+                title: 'Personal Habits',
+                items: formData.personal_habits.filter(item => 
+                  !formData.dependencies.includes(item) && 
+                  !formData.planning_issues.includes(item) && 
+                  !formData.environmental_factors.includes(item)
+                )
+              }, {
+                title: 'Dependencies',
+                items: formData.dependencies.filter(item => 
+                  !formData.planning_issues.includes(item) && 
+                  !formData.environmental_factors.includes(item)
+                )
+              }, {
+                title: 'Planning Issues',
+                items: formData.planning_issues.filter(item => 
+                  !formData.environmental_factors.includes(item)
+                )
+              }, {
+                title: 'Environmental Factors',
+                items: formData.environmental_factors
+              }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
+                  <h3 className="text-sm font-semibold text-gray-500 tracking-wide">
+                    {group.title.toUpperCase()}
+                  </h3>
+                  
+                  <div className="space-y-2">
+                    {group.items.map((item, idx) => <div key={idx} className="flex items-center space-x-2 py-1">
+                        <Checkbox id={`priority-${index}-${idx}`} checked={formData.top_priorities.includes(item)} onCheckedChange={() => handlePriorityChange(item)} disabled={!formData.top_priorities.includes(item) && formData.top_priorities.length >= 3} />
+                        <Label htmlFor={`priority-${index}-${idx}`} className="text-base">
+                          {item}
+                        </Label>
+                      </div>)}
+                  </div>
+                  
+                  <Separator className="mt-4" />
+                </div>)}
+            </div>
+          </div>;
+      
+      case 11:
+        return <div className="space-y-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center">
+            Your Personalized Time Audit Report
+          </h2>
+          
+          <div className="space-y-8">
+            {reportLoading ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Loader className="h-12 w-12 animate-spin text-green-600 mb-4" />
+                <p className="text-lg font-medium">Generating your personalized report...</p>
+                <p className="text-gray-500">This may take a few moments</p>
+              </div>
+            ) : (
+              <>
+                {reportData && (
+                  <>
+                    <ActionStepsSection steps={reportData.actionSteps} />
+                    <SolutionsSection solutions={reportData.solutions} />
+                    <QuickWinsSection wins={reportData.quickWins} />
+                    <SimpleWaysSection ways={reportData.simpleWays} />
+                    
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="flex-1">
+                        <PriorityTags priorities={formData.top_priorities} />
+                      </div>
+                      <div className="flex-1">
+                        <WorkHoursSection hours={formData.work_hours} />
+                      </div>
+                    </div>
+                    
+                    <SummarySection 
+                      dailyActivities={formData.daily_activities}
+                      timeWasters={formData.time_wasters}
+                      unplannedTime={getTimeLostMap()}
+                      personalHabits={formData.personal_habits}
+                      dependencies={formData.dependencies}
+                      planningIssues={formData.planning_issues}
+                    />
+                    
+                    <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-6">
+                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        Next Steps
+                      </h3>
+                      <p className="text-gray-700 dark:text-gray-300 mb-4">
+                        Try implementing your top 3 action steps this week and see how they impact your productivity. You can revisit this report anytime to refresh your memory or update your priorities.
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                        <Button variant="default" className="gap-2" onClick={() => navigate('/')}>
+                          <Home className="h-4 w-4" />
+                          Go to Dashboard
+                        </Button>
+                        <Button variant="outline" className="gap-2" onClick={() => window.print()}>
+                          <ExternalLink className="h-4 w-4" />
+                          Print Report
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </div>;
+      
+      default:
+        return <div>Unknown step</div>;
+    }
+  };
+
+  return (
+    <div className="container max-w-6xl mx-auto p-4 md:p-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {isDesktop && (
+          <div className="lg:w-1/3">
+            <div className="sticky top-8">
+              <InfoCard />
+            </div>
+          </div>
+        )}
+        
+        <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+          {!isDesktop && <InfoCard />}
+          
+          <div className="py-6">
+            {renderStep()}
+          </div>
+          
+          <div className="flex justify-between pt-6">
+            <Button
+              variant="outline"
+              onClick={handlePrevStep}
+              disabled={step === 1}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Previous
+            </Button>
+            
+            {step < totalSteps ? (
+              <Button
+                onClick={handleNextStep}
+                className="gap-2"
+                disabled={
+                  (step === 2 && formData.time_wasters.length === 0) ||
+                  (step === 3 && Object.keys(formData.time_lost).length !== formData.time_wasters.length) ||
+                  (step === 6 && !formData.work_hours) ||
+                  (step === 10 && formData.top_priorities.length === 0)
+                }
+              >
+                Next
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            ) : (
+              <Button
+                onClick={() => navigate('/')}
+                className="gap-2"
+              >
+                Finish
+                <Home className="h-4 w-4" />
+              </Button>
+            )}
+            
+            {step === 10 && (
+              <Button
+                onClick={handleSubmit}
+                className="gap-2 bg-green-600 hover:bg-green-700"
+                disabled={loading || formData.top_priorities.length === 0}
+              >
+                {loading ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Submit
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TimeWastersAudit;
