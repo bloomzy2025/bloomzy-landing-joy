@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -118,7 +119,7 @@ export default function SignInForm({ returnTo = '/' }: SignInFormProps) {
         <p className="text-muted-foreground">
           {isFromQuiz 
             ? "Sign in to unlock free personalized productivity recommendations" 
-            : "Welcome back"}
+            : ""}
         </p>
       </div>
       
