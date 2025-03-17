@@ -44,10 +44,6 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
     <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
       {!isMobile && (
         <>
-          <Link to="/demo" className="text-sm font-medium dark:text-gray-200">
-            Book a demo
-          </Link>
-          
           {user ? (
             <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
               <AvatarFallback>
@@ -67,12 +63,12 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
-        <Link to={user ? "/dashboard" : "/signup"} className={cn(buttonVariants({
+        <Link to={user ? "/demo" : "/signup"} className={cn(buttonVariants({
           variant: "default", 
           size: isMobile ? "sm" : "default"
         }), "bg-brand-green hover:bg-brand-green/90 dark:bg-[#82c29e] dark:hover:bg-[#82c29e]/90")}>
           {user 
-            ? (isMobile ? "Dashboard" : "Go to Dashboard") 
+            ? (isMobile ? "Demo" : "Book a Demo") 
             : (isMobile ? "Start" : "Get started")
           }
         </Link>
