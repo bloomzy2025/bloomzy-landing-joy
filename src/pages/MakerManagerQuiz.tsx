@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -356,47 +357,47 @@ const MakerManagerQuiz = () => {
               
               {!user && (
                 <motion.div
-                  className="mt-10 mb-10 bg-[#F5F3FF] dark:bg-[#1A1F2C]/90 p-10 rounded-2xl border-2 border-[#9b87f5]/30 dark:border-[#7E69AB]/50 shadow-xl"
+                  className="mt-10 mb-10 bg-[#F2FCE2] dark:bg-[#1A2E1E]/90 p-10 rounded-2xl border-2 border-brand-green/30 dark:border-accent-green/30 shadow-xl"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6 }}
                 >
                   <div className="flex items-center justify-center mb-6">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#9b87f5] to-[#D946EF] flex items-center justify-center mb-1 shadow-lg shadow-[#9b87f5]/30 dark:shadow-[#D946EF]/20">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-green to-[#4ADE80] flex items-center justify-center mb-1 shadow-lg shadow-brand-green/30 dark:shadow-accent-green/20">
                       <Star className="h-10 w-10 text-white" />
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-center text-[#6E59A5] dark:text-[#D6BCFA] mb-4">
+                  <h3 className="text-2xl font-bold text-center text-brand-green dark:text-accent-green mb-4">
                     Unlock all recommendations in seconds!
                   </h3>
-                  <div className="mb-8 text-gray-700 dark:text-gray-200">
-                    <p className="text-lg font-medium text-center mb-5">
-                      Sign in takes just a few seconds <span className="text-[#6E59A5] dark:text-[#9b87f5]">and gives you access to:</span>
+                  <div className="text-center mb-8 text-gray-700 dark:text-gray-200">
+                    <p className="text-lg mb-4">
+                      <span className="font-semibold">Sign in takes just a few seconds</span> and gives you access to:
                     </p>
-                    <ul className="space-y-4 mt-6">
+                    <ul className="space-y-4 text-left max-w-md mx-auto mt-6">
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
-                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-5 w-5 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Extended personalized productivity recommendations</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Extended personalized productivity recommendations</span>
                       </li>
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
-                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Star className="h-5 w-5 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Tailored strategies for your {result.type} profile</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Tailored strategies for your {result.type} profile</span>
                       </li>
                       <li className="flex items-center">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#E5DEFF] dark:bg-[#6E59A5]/30 flex items-center justify-center mr-3">
-                          <Sparkles className="h-4 w-4 text-[#9b87f5]" />
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#DCFCE7] dark:bg-brand-green/30 flex items-center justify-center mr-3">
+                          <Sparkles className="h-5 w-5 text-brand-green dark:text-accent-green" />
                         </div>
-                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF]">Save your results and track your progress</span>
+                        <span className="text-[#1A1F2C] dark:text-[#E5DEFF] font-medium">Save your results and track your progress</span>
                       </li>
                     </ul>
                   </div>
                   <Button 
                     onClick={handleGetPersonalizedRecommendations} 
-                    className="w-full py-6 text-lg font-semibold bg-[#9b87f5] hover:bg-[#8B5CF6] text-white shadow-md transition-all duration-300 hover:shadow-lg"
+                    className="w-full py-6 text-lg font-semibold bg-gradient-to-r from-brand-green to-[#4ADE80] hover:from-brand-green/90 hover:to-[#4ADE80]/90 text-white shadow-lg shadow-brand-green/20 dark:shadow-accent-green/20 rounded-xl transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
                   >
                     Sign In for Personalized Recommendations
                   </Button>
