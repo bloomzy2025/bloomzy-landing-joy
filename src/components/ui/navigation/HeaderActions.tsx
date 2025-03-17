@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRound } from "lucide-react";
+import AuthButton from "@/components/auth/AuthButton";
 
 interface HeaderActionsProps {
   isMobile?: boolean;
@@ -48,16 +49,21 @@ export function HeaderActions({ isMobile = false }: HeaderActionsProps) {
             Book a demo
           </Link>
           
-          {user ? (
-            <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
-              <AvatarFallback>
-                {getUserInitials() || <UserRound size={16} />}
-              </AvatarFallback>
-            </Avatar>
-          ) : (
+          {!user && (
             <Link to="/signin" className="text-sm font-medium dark:text-gray-200">
               Sign in
             </Link>
+          )}
+          
+          {user && (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
+                <AvatarFallback>
+                  {getUserInitials() || <UserRound size={16} />}
+                </AvatarFallback>
+              </Avatar>
+              <AuthButton />
+            </div>
           )}
         </>
       )}
