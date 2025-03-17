@@ -882,3 +882,4 @@ const TimeWastersAudit = () => {
               {[{
                 title: 'Daily Activities',
                 items:
+                  activity
