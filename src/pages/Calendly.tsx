@@ -1,12 +1,15 @@
+
 import { useEffect, useState } from "react";
 import { Header1 } from "@/components/ui/header";
 import { Footerdemo } from "@/components/ui/footer-section";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 const Calendly = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<any>(null);
+  
   useEffect(() => {
     // Get user data from session storage
     const storedData = sessionStorage.getItem('demoFormData');
@@ -26,6 +29,7 @@ const Calendly = () => {
       }
     };
   }, []);
+  
   return <div className="min-h-screen flex flex-col">
       {/* Header */}
       <Header1 />
@@ -45,7 +49,7 @@ const Calendly = () => {
             </p>
           </div>
           
-          <div className="calendly-inline-widget" data-url="https://calendly.com/bloomzy-info/bloomzy-discovery-call-1?hide_event_type_details=1&hide_gdpr_banner=1" style={{
+          <div className="calendly-inline-widget" data-url="https://calendly.com/bloomzy-info/bloomzy-enterprise-discovery-call?hide_event_type_details=1&hide_gdpr_banner=1" style={{
           minWidth: '320px',
           height: '700px'
         }}>
@@ -63,4 +67,5 @@ const Calendly = () => {
       <Footerdemo />
     </div>;
 };
+
 export default Calendly;
