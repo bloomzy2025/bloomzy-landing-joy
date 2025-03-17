@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole } from "lucide-react";
+import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -303,6 +303,16 @@ const MakerManagerQuiz = () => {
   if (showResults && result) {
     return (
       <div className="container mx-auto px-4 py-12 max-w-3xl">
+        <div className="mb-4">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate("/")} 
+            className="flex items-center gap-2 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+          >
+            <Home size={16} /> Back to home
+          </Button>
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -411,6 +421,16 @@ const MakerManagerQuiz = () => {
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-3xl">
+      <div className="mb-4">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => navigate("/")} 
+          className="flex items-center gap-2 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+        >
+          <Home size={16} /> Back to home
+        </Button>
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
