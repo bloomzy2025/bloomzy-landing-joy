@@ -99,7 +99,7 @@ const Demo = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="h-14 text-lg font-normal border-2 rounded-lg"
+                  className="h-14 text-lg font-normal border-2 rounded-lg bg-background"
                 />
               </div>
               <div>
@@ -109,7 +109,7 @@ const Demo = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="h-14 text-lg font-normal border-2 rounded-lg"
+                  className="h-14 text-lg font-normal border-2 rounded-lg bg-background"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ const Demo = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="h-14 text-lg font-normal border-2 rounded-lg"
+                className="h-14 text-lg font-normal border-2 rounded-lg bg-background"
               />
             </div>
             
