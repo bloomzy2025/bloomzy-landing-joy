@@ -47,6 +47,18 @@ export default function SignUpForm() {
     await signUp(values.email, values.password, values.fullName);
   };
 
+  // Google sign in handler
+  const handleGoogleSignIn = () => {
+    console.log('Initiating Google sign in from sign up page');
+    signInWithProvider('google');
+  };
+
+  // Apple sign in handler
+  const handleAppleSignIn = () => {
+    console.log('Initiating Apple sign in from sign up page');
+    signInWithProvider('apple');
+  };
+
   return (
     <div className="mx-auto w-full max-w-md space-y-6 p-6 bg-card rounded-lg border shadow">
       <div className="space-y-2 text-center">
@@ -61,10 +73,7 @@ export default function SignUpForm() {
           variant="outline" 
           type="button" 
           className="w-full"
-          onClick={() => {
-            console.log('Initiating Google sign in from sign up page');
-            signInWithProvider('google');
-          }}
+          onClick={handleGoogleSignIn}
           disabled={isLoading}
         >
           <Icons.google className="mr-2 h-4 w-4" />
@@ -75,10 +84,7 @@ export default function SignUpForm() {
           variant="outline" 
           type="button" 
           className="w-full"
-          onClick={() => {
-            console.log('Initiating Apple sign in from sign up page');
-            signInWithProvider('apple');
-          }}
+          onClick={handleAppleSignIn}
           disabled={isLoading}
         >
           <Icons.apple className="mr-2 h-4 w-4" />

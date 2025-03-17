@@ -12,10 +12,12 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        console.log("Auth callback handling session check");
         // Get session and check for errors
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
+          console.error("Auth callback error:", error);
           toast({
             title: "Authentication error",
             description: error.message,
@@ -27,6 +29,7 @@ export default function AuthCallback() {
         
         // If we have a session, authentication was successful
         if (data.session) {
+          console.log("Auth successful, redirecting to:", redirectTo);
           toast({
             title: "Success",
             description: "You have successfully signed in!",
@@ -41,6 +44,7 @@ export default function AuthCallback() {
           navigate(redirectTo);
         } else {
           // No session found, redirect to sign in
+          console.log("No session found, redirecting to sign in");
           navigate('/signin');
         }
       } catch (error: any) {

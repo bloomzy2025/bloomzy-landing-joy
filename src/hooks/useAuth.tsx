@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Session, User, Provider } from '@supabase/supabase-js';
@@ -143,6 +144,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
+      // If using Google ID token (no longer used but kept for reference)
       if (provider === 'google' && options?.idToken) {
         try {
           console.log('Signing in with Google ID token');
@@ -177,16 +179,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       console.log(`Initiating OAuth flow for ${provider}`);
       
-      const callbackUrl = new URL('/auth/callback', window.location.origin);
+      // Use a consistent callback URL format that matches what's configured in Google Cloud Console
+      // This is the critical part that needs to be fixed
+      const callbackUrl = `${window.location.origin}/auth/callback`;
       
-      callbackUrl.searchParams.append('redirectTo', redirectTo);
+      console.log(`Using callback URL: ${callbackUrl}`);
       
-      console.log(`Using callback URL: ${callbackUrl.toString()}`);
-      
+      // Pass redirectTo as a parameter to be handled by the callback page
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: callbackUrl.toString(),
+          redirectTo: callbackUrl,
+          queryParams: {
+            redirectTo: redirectTo // Pass as a query param to be picked up by callback page
+          },
           scopes: 'email profile',
         },
       });
