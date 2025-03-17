@@ -10,7 +10,6 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Demo from "./pages/Demo";
-import Contact from "./pages/Contact";
 import Calendly from "./pages/Calendly";
 import Waitlist from "./pages/Waitlist";
 import Pricing from "./pages/Pricing";
@@ -34,7 +33,6 @@ function App() {
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/demo" element={<Demo />} />
-              <Route path="/contact" element={<Contact />} />
               <Route path="/calendly" element={<Calendly />} />
               <Route path="/waitlist" element={<Waitlist />} />
               <Route path="/pricing" element={<Pricing />} />
