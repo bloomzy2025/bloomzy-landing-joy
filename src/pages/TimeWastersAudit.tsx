@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,7 +9,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight } from "lucide-react";
@@ -126,7 +124,7 @@ const TimeWastersAudit = () => {
     other_habits: '',
     other_dependencies: '',
     other_planning_issues: '',
-    daily_activity: '',
+    daily_activities: [] as string[], // Changed from daily_activity to daily_activities array
   });
   const [loading, setLoading] = useState(false);
   
@@ -136,7 +134,8 @@ const TimeWastersAudit = () => {
     ...personalHabits.map(item => item.label).filter(item => !formData.time_wasters.includes(item)),
     ...dependencies.map(item => item.label).filter(item => !formData.time_wasters.includes(item) && !formData.personal_habits.includes(item)),
     ...planningIssues.map(item => item.label).filter(item => !formData.time_wasters.includes(item) && !formData.personal_habits.includes(item) && !formData.dependencies.includes(item)),
-    ...environmentalFactors.map(item => item.label).filter(item => 
+    ...environmentalFactors.map(item => 
+      item.label).filter(item => 
       !formData.time_wasters.includes(item) && 
       !formData.personal_habits.includes(item) && 
       !formData.dependencies.includes(item) && 
@@ -239,7 +238,7 @@ const TimeWastersAudit = () => {
           other_habits: formData.other_habits,
           other_dependencies: formData.other_dependencies,
           other_planning_issues: formData.other_planning_issues,
-          daily_activity: formData.daily_activity,
+          daily_activities: formData.daily_activities, // Updated field name
           user_id: userId || null
         })
         .select();
@@ -319,6 +318,9 @@ const TimeWastersAudit = () => {
             <h2 className="text-2xl sm:text-3xl font-bold">
               Which tasks or activities do you spend the most time on daily?
             </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Select all that apply.
+            </p>
             
             <div className="space-y-6">
               {activityCategories.map((category) => (
@@ -330,21 +332,14 @@ const TimeWastersAudit = () => {
                   <div className="space-y-2">
                     {category.options.map((option) => (
                       <div key={option.id} className="flex items-center space-x-2 py-1">
-                        <RadioGroup 
-                          value={formData.daily_activity} 
-                          onValueChange={handleRadioChange}
-                          className="flex"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem 
-                              value={option.id} 
-                              id={option.id}
-                            />
-                            <Label htmlFor={option.id} className="text-base">
-                              {option.label}
-                            </Label>
-                          </div>
-                        </RadioGroup>
+                        <Checkbox 
+                          id={option.id} 
+                          checked={formData.daily_activities.includes(option.label)}
+                          onCheckedChange={() => handleMultiSelectChange('daily_activities', option.label)}
+                        />
+                        <Label htmlFor={option.id} className="text-base">
+                          {option.label}
+                        </Label>
                       </div>
                     ))}
                   </div>
