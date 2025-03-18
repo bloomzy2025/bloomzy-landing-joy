@@ -89,7 +89,7 @@ export function HeaderNavigation({
         <DropdownItem 
           to="/maker-manager-quiz" 
           icon={Brain} 
-          iconColor="text-green-700 dark:text-green-600"
+          iconColor="text-green-900 dark:text-green-800"
         >
           <span className="inline-block whitespace-normal">Maker vs. Manager Quiz</span>
         </DropdownItem>
@@ -98,7 +98,7 @@ export function HeaderNavigation({
           icon={Clock}
           iconColor="text-green-500 dark:text-green-400"
         >
-          Time Wasters Audit
+          <span className="inline-block whitespace-normal">Time Wasters Audit</span>
         </DropdownItem>
       </DropdownMenu>
     </div>
