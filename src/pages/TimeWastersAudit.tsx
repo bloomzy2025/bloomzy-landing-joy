@@ -15,16 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home, Loader, ExternalLink, CheckCircle } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuth } from '@/hooks/useAuth';
-import { 
-  ActionStepsSection, 
-  SolutionsSection, 
-  SimpleWaysSection, 
-  QuickWinsSection,
-  WorkHoursSection,
-  SummarySection,
-  PriorityTags
-} from '@/components/time-audit/ReportSection';
-
+import { ActionStepsSection, SolutionsSection, SimpleWaysSection, QuickWinsSection, WorkHoursSection, SummarySection, PriorityTags } from '@/components/time-audit/ReportSection';
 const activityCategories = [{
   id: 'communication',
   label: 'COMMUNICATION',
@@ -82,7 +73,6 @@ const activityCategories = [{
     label: 'Other'
   }]
 }];
-
 const habitCategories = [{
   id: 'communication',
   label: 'COMMUNICATION',
@@ -124,7 +114,6 @@ const habitCategories = [{
     label: 'Other'
   }]
 }];
-
 const dependencyCategories = [{
   id: 'team',
   label: 'TEAM & PROCESS',
@@ -177,7 +166,6 @@ const dependencyCategories = [{
     label: 'Other'
   }]
 }];
-
 const planningIssueCategories = [{
   id: 'planning',
   label: 'PLANNING & GOALS',
@@ -230,7 +218,6 @@ const planningIssueCategories = [{
     label: 'Other'
   }]
 }];
-
 const environmentalFactorCategories = [{
   id: 'time-energy',
   label: 'TIME & ENERGY',
@@ -283,7 +270,6 @@ const environmentalFactorCategories = [{
     label: 'Other'
   }]
 }];
-
 const timeLostOptions = [{
   value: '15min',
   label: '15 minutes'
@@ -303,13 +289,16 @@ const timeLostOptions = [{
   value: '4hours+',
   label: '4+ hours'
 }];
-
 const TimeWastersAudit = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const { user } = useAuth();
+  const {
+    user
+  } = useAuth();
   const [formData, setFormData] = useState({
     daily_activities: [] as string[],
     time_wasters: [] as string[],
@@ -329,12 +318,14 @@ const TimeWastersAudit = () => {
   const [loading, setLoading] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportData, setReportData] = useState<{
-    actionSteps: { title: string; description: string }[];
+    actionSteps: {
+      title: string;
+      description: string;
+    }[];
     solutions: string[];
     quickWins: string[];
     simpleWays: string[];
   } | null>(null);
-
   const getTimeWasterOptions = () => {
     const filteredOptions: {
       category: string;
@@ -354,7 +345,6 @@ const TimeWastersAudit = () => {
     });
     return filteredOptions;
   };
-
   const handleMultiSelectChange = (field: string, value: string) => {
     setFormData(prev => {
       const currentValues = prev[field as keyof typeof prev] as string[];
@@ -374,7 +364,6 @@ const TimeWastersAudit = () => {
       return prev;
     });
   };
-
   const handleTimeLostChange = (activity: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -384,7 +373,6 @@ const TimeWastersAudit = () => {
       }
     }));
   };
-
   const handlePriorityChange = (value: string) => {
     setFormData(prev => {
       const currentValues = [...prev.top_priorities];
@@ -404,36 +392,37 @@ const TimeWastersAudit = () => {
       return prev;
     });
   };
-
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const {
+      name,
+      value
+    } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
-
   const handleSliderChange = (value: number[]) => {
     setFormData(prev => ({
       ...prev,
       habit_control: value[0]
     }));
   };
-
   const handleNextStep = () => {
     setStep(prevStep => prevStep + 1);
   };
-
   const handlePrevStep = () => {
     setStep(prevStep => prevStep - 1);
   };
-
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const {
+        data: {
+          user: currentUser
+        }
+      } = await supabase.auth.getUser();
       const userId = currentUser?.id || user?.id;
-      
       if (!userId) {
         toast({
           title: "Sign in required",
@@ -443,8 +432,10 @@ const TimeWastersAudit = () => {
         navigate('/signin?redirect=/time-wasters-audit');
         return;
       }
-      
-      const { data, error } = await supabase.from('time_audits').insert({
+      const {
+        data,
+        error
+      } = await supabase.from('time_audits').insert({
         time_wasters: formData.time_wasters,
         personal_habits: formData.personal_habits,
         habit_control: formData.habit_control,
@@ -459,19 +450,15 @@ const TimeWastersAudit = () => {
         daily_activities: formData.daily_activities,
         user_id: userId
       }).select();
-      
       if (error) {
         throw error;
       }
-      
       toast({
         title: "Audit Submitted Successfully!",
         description: "We'll analyze your results and provide personalized recommendations."
       });
-      
       setReportLoading(true);
       await generatePersonalizedReport();
-      
       setStep(11);
     } catch (error) {
       console.error('Error submitting audit:', error);
@@ -484,17 +471,16 @@ const TimeWastersAudit = () => {
       setLoading(false);
     }
   };
-
   const generatePersonalizedReport = async () => {
     try {
       const response = await supabase.functions.invoke('generate-time-audit-report', {
-        body: { formData }
+        body: {
+          formData
+        }
       });
-
       if (response.error) {
         throw new Error(response.error.message);
       }
-
       setReportData(response.data);
     } catch (error) {
       console.error('Error generating report:', error);
@@ -503,38 +489,25 @@ const TimeWastersAudit = () => {
         description: "We encountered an issue creating your personalized report. Using default recommendations instead.",
         variant: "destructive"
       });
-      
       setReportData({
-        actionSteps: [
-          { title: "Set up a separate workspace", description: "Away from high-traffic areas, use a room divider if needed" },
-          { title: "Log out of all social accounts", description: "The extra step of logging in gives you time to think: 'Do I really need this now?'" },
-          { title: "Use a timer for each task", description: "When it rings, your work is 'good enough' - time to move on" }
-        ],
-        solutions: [
-          "Create a dedicated focus space - even a small corner can become a productivity zone",
-          "Use natural light when possible - it helps maintain your energy throughout the day",
-          "Keep your workspace clean and organized - it reduces mental clutter",
-          "Take regular movement breaks - a quick stretch every hour helps maintain focus",
-          "Adjust your workspace for comfort - good ergonomics reduce fatigue"
-        ],
-        quickWins: [
-          "Set up your workspace for tomorrow before finishing today",
-          "Keep water within reach to stay hydrated during focus time",
-          "Use a desk plant to improve air quality and reduce stress",
-          "Position your screen at eye level to prevent neck strain"
-        ],
-        simpleWays: [
-          "Block distracting websites during focus hours",
-          "Use noise-cancelling headphones or ambient background sounds",
-          "Work in 25-minute focused blocks with 5-minute breaks",
-          "Create a pre-work ritual to mentally prepare for focused work"
-        ]
+        actionSteps: [{
+          title: "Set up a separate workspace",
+          description: "Away from high-traffic areas, use a room divider if needed"
+        }, {
+          title: "Log out of all social accounts",
+          description: "The extra step of logging in gives you time to think: 'Do I really need this now?'"
+        }, {
+          title: "Use a timer for each task",
+          description: "When it rings, your work is 'good enough' - time to move on"
+        }],
+        solutions: ["Create a dedicated focus space - even a small corner can become a productivity zone", "Use natural light when possible - it helps maintain your energy throughout the day", "Keep your workspace clean and organized - it reduces mental clutter", "Take regular movement breaks - a quick stretch every hour helps maintain focus", "Adjust your workspace for comfort - good ergonomics reduce fatigue"],
+        quickWins: ["Set up your workspace for tomorrow before finishing today", "Keep water within reach to stay hydrated during focus time", "Use a desk plant to improve air quality and reduce stress", "Position your screen at eye level to prevent neck strain"],
+        simpleWays: ["Block distracting websites during focus hours", "Use noise-cancelling headphones or ambient background sounds", "Work in 25-minute focused blocks with 5-minute breaks", "Create a pre-work ritual to mentally prepare for focused work"]
       });
     } finally {
       setReportLoading(false);
     }
   };
-
   const getTimeLostMap = () => {
     const timeLostMap: Record<string, string> = {};
     Object.entries(formData.time_lost).forEach(([activity, code]) => {
@@ -545,18 +518,13 @@ const TimeWastersAudit = () => {
     });
     return timeLostMap;
   };
-
   const getAllSelectedItems = () => {
     const allSelected = [...formData.daily_activities, ...formData.time_wasters, ...formData.personal_habits, ...formData.dependencies, ...formData.planning_issues, ...formData.environmental_factors];
-
     return [...new Set(allSelected)];
   };
-
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
-
-  const InfoCard = () => (
-    <Card className="bg-white dark:bg-gray-800 shadow-lg">
+  const InfoCard = () => <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">&quot;Biggest Time Wasters&quot; Audit</h1>
@@ -590,8 +558,8 @@ const TimeWastersAudit = () => {
         <div className="mt-8">
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full" style={{
-              width: `${progressPercentage}%`
-            }}></div>
+            width: `${progressPercentage}%`
+          }}></div>
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-500">
             <span>Step {step} of {totalSteps}</span>
@@ -599,9 +567,7 @@ const TimeWastersAudit = () => {
           </div>
         </div>
       </CardContent>
-    </Card>
-  );
-
+    </Card>;
   const renderStep = () => {
     switch (step) {
       case 1:
@@ -876,44 +842,24 @@ const TimeWastersAudit = () => {
             
             <div className="space-y-6">
               {[{
-                title: 'Daily Activities',
-                items: formData.daily_activities.filter(item => 
-                  !formData.time_wasters.includes(item) && 
-                  !formData.personal_habits.includes(item) && 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Time Wasters',
-                items: formData.time_wasters.filter(item => 
-                  !formData.personal_habits.includes(item) && 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Personal Habits',
-                items: formData.personal_habits.filter(item => 
-                  !formData.dependencies.includes(item) && 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Dependencies',
-                items: formData.dependencies.filter(item => 
-                  !formData.planning_issues.includes(item) && 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Planning Issues',
-                items: formData.planning_issues.filter(item => 
-                  !formData.environmental_factors.includes(item)
-                )
-              }, {
-                title: 'Environmental Factors',
-                items: formData.environmental_factors
-              }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
+              title: 'Daily Activities',
+              items: formData.daily_activities.filter(item => !formData.time_wasters.includes(item) && !formData.personal_habits.includes(item) && !formData.dependencies.includes(item) && !formData.planning_issues.includes(item) && !formData.environmental_factors.includes(item))
+            }, {
+              title: 'Time Wasters',
+              items: formData.time_wasters.filter(item => !formData.personal_habits.includes(item) && !formData.dependencies.includes(item) && !formData.planning_issues.includes(item) && !formData.environmental_factors.includes(item))
+            }, {
+              title: 'Personal Habits',
+              items: formData.personal_habits.filter(item => !formData.dependencies.includes(item) && !formData.planning_issues.includes(item) && !formData.environmental_factors.includes(item))
+            }, {
+              title: 'Dependencies',
+              items: formData.dependencies.filter(item => !formData.planning_issues.includes(item) && !formData.environmental_factors.includes(item))
+            }, {
+              title: 'Planning Issues',
+              items: formData.planning_issues.filter(item => !formData.environmental_factors.includes(item))
+            }, {
+              title: 'Environmental Factors',
+              items: formData.environmental_factors
+            }].filter(group => group.items.length > 0).map((group, index) => <div key={index} className="space-y-3">
                   <h3 className="text-sm font-semibold text-gray-500 tracking-wide">
                     {group.title.toUpperCase()}
                   </h3>
@@ -931,7 +877,6 @@ const TimeWastersAudit = () => {
                 </div>)}
             </div>
           </div>;
-      
       case 11:
         return <div className="space-y-6">
           <h2 className="text-2xl sm:text-3xl font-bold text-center">
@@ -939,16 +884,12 @@ const TimeWastersAudit = () => {
           </h2>
           
           <div className="space-y-8">
-            {reportLoading ? (
-              <div className="flex flex-col items-center justify-center py-12">
+            {reportLoading ? <div className="flex flex-col items-center justify-center py-12">
                 <Loader className="h-12 w-12 animate-spin text-green-600 mb-4" />
                 <p className="text-lg font-medium">Generating your personalized report...</p>
                 <p className="text-gray-500">This may take a few moments</p>
-              </div>
-            ) : (
-              <>
-                {reportData && (
-                  <>
+              </div> : <>
+                {reportData && <>
                     <ActionStepsSection steps={reportData.actionSteps} />
                     <SolutionsSection solutions={reportData.solutions} />
                     <QuickWinsSection wins={reportData.quickWins} />
@@ -963,14 +904,7 @@ const TimeWastersAudit = () => {
                       </div>
                     </div>
                     
-                    <SummarySection 
-                      dailyActivities={formData.daily_activities}
-                      timeWasters={formData.time_wasters}
-                      unplannedTime={getTimeLostMap()}
-                      personalHabits={formData.personal_habits}
-                      dependencies={formData.dependencies}
-                      planningIssues={formData.planning_issues}
-                    />
+                    <SummarySection dailyActivities={formData.daily_activities} timeWasters={formData.time_wasters} unplannedTime={getTimeLostMap()} personalHabits={formData.personal_habits} dependencies={formData.dependencies} planningIssues={formData.planning_issues} />
                     
                     <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-6">
                       <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
@@ -991,28 +925,21 @@ const TimeWastersAudit = () => {
                         </Button>
                       </div>
                     </div>
-                  </>
-                )}
-              </>
-            )}
+                  </>}
+              </>}
           </div>
         </div>;
-      
       default:
         return <div>Unknown step</div>;
     }
   };
-
-  return (
-    <div className="container max-w-6xl mx-auto p-4 md:p-8">
+  return <div className="container max-w-6xl mx-auto p-4 md:p-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {isDesktop && (
-          <div className="lg:w-1/3">
+        {isDesktop && <div className="lg:w-1/3">
             <div className="sticky top-8">
               <InfoCard />
             </div>
-          </div>
-        )}
+          </div>}
         
         <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           {!isDesktop && <InfoCard />}
@@ -1022,64 +949,31 @@ const TimeWastersAudit = () => {
           </div>
           
           <div className="flex justify-between pt-6">
-            <Button
-              variant="outline"
-              onClick={handlePrevStep}
-              disabled={step === 1}
-              className="gap-2"
-            >
+            <Button variant="outline" onClick={handlePrevStep} disabled={step === 1} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Previous
             </Button>
             
-            {step < totalSteps ? (
-              <Button
-                onClick={handleNextStep}
-                className="gap-2"
-                disabled={
-                  (step === 2 && formData.time_wasters.length === 0) ||
-                  (step === 3 && Object.keys(formData.time_lost).length !== formData.time_wasters.length) ||
-                  (step === 6 && !formData.work_hours) ||
-                  (step === 10 && formData.top_priorities.length === 0)
-                }
-              >
+            {step < totalSteps ? <Button onClick={handleNextStep} className="gap-2" disabled={step === 2 && formData.time_wasters.length === 0 || step === 3 && Object.keys(formData.time_lost).length !== formData.time_wasters.length || step === 6 && !formData.work_hours || step === 10 && formData.top_priorities.length === 0}>
                 Next
                 <ArrowRight className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                onClick={() => navigate('/')}
-                className="gap-2"
-              >
+              </Button> : <Button onClick={() => navigate('/')} className="gap-2">
                 Finish
                 <Home className="h-4 w-4" />
-              </Button>
-            )}
+              </Button>}
             
-            {step === 10 && (
-              <Button
-                onClick={handleSubmit}
-                className="gap-2 bg-green-600 hover:bg-green-700"
-                disabled={loading || formData.top_priorities.length === 0}
-              >
-                {loading ? (
-                  <>
+            {step === 10 && <Button onClick={handleSubmit} className="gap-2 bg-green-600 hover:bg-green-700" disabled={loading || formData.top_priorities.length === 0}>
+                {loading ? <>
                     <Loader className="h-4 w-4 animate-spin" />
                     Submitting...
-                  </>
-                ) : (
-                  <>
+                  </> : <>
                     Submit
                     <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            )}
+                  </>}
+              </Button>}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default TimeWastersAudit;
