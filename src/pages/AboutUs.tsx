@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Header1 } from "@/components/ui/header";
-import { Footer } from "@/components/ui/footer-section";
+import { Footerdemo } from "@/components/ui/footer-section";
 import { Separator } from "@/components/ui/separator";
 
 export default function AboutUs() {
@@ -38,7 +38,7 @@ export default function AboutUs() {
         </div>
       </main>
       
-      <Footer />
+      <Footerdemo />
     </div>
   );
 }
