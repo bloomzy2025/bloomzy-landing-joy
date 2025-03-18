@@ -592,6 +592,18 @@ const TimeWastersAudit = () => {
             <span>{totalSteps - step} questions remaining</span>
           </div>
         </div>
+
+        {/* Add Back to Home button */}
+        <div className="mt-6">
+          <Button 
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={() => navigate('/')}
+          >
+            <Home className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -989,6 +1001,18 @@ const TimeWastersAudit = () => {
 
   return (
     <div className="container max-w-6xl mx-auto p-4 md:p-8">
+      {/* Add Back to Home button for mobile at the top */}
+      {!isDesktop && (
+        <Button 
+          variant="outline"
+          className="mb-4 flex items-center justify-center gap-2"
+          onClick={() => navigate('/')}
+        >
+          <Home className="h-4 w-4" />
+          Back to Home
+        </Button>
+      )}
+      
       <div className="flex flex-col lg:flex-row gap-8">
         {isDesktop && (
           <div className="lg:w-1/3">
