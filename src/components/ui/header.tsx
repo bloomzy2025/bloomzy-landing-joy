@@ -9,12 +9,14 @@ import { NavigationLink } from "./navigation/NavigationLink";
 import { HeaderNavigation } from "./navigation/HeaderNavigation";
 import { Logo } from "./navigation/Logo";
 import { HeaderActions } from "./navigation/HeaderActions";
+import { useLocation } from "react-router-dom";
 
 function Header1() {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [activeSection, setActiveSection] = React.useState<string | null>(null);
   const isMobile = useIsMobile();
+  const location = useLocation();
   
   React.useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +44,11 @@ function Header1() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Reset menu state on location change
+  React.useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
   
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
