@@ -1,7 +1,8 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-const GROK_API_KEY = Deno.env.get('GROK_API_KEY');
+// Use the API key from the .env file
+const GROK_API_KEY = "xai-F3G3G1aPZ1hmi6ZD1IttzBxXC1AhnHOfQAtv8HUm00QBF6p9yD2ef8fH5scjEkL96POpDIHqqyEpfXq6";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
