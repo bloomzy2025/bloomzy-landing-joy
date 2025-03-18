@@ -16,6 +16,7 @@ import { Clock, Zap, Brain, Gift, ArrowLeft, ArrowRight, Home, Loader, ExternalL
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useAuth } from '@/hooks/useAuth';
 import { ActionStepsSection, SolutionsSection, SimpleWaysSection, QuickWinsSection, WorkHoursSection, SummarySection, PriorityTags } from '@/components/time-audit/ReportSection';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const activityCategories = [{
   id: 'communication',
@@ -329,6 +330,7 @@ const TimeWastersAudit = () => {
     quickWins: string[];
     simpleWays: string[];
   } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const getTimeWasterOptions = () => {
     const filteredOptions: {
@@ -420,9 +422,11 @@ const TimeWastersAudit = () => {
 
   const handleNextStep = () => {
     if (step === 10) {
-      handleSubmit();
+      setStep(prevStep => prevStep + 1);
+      generatePersonalizedReport();
+    } else {
+      setStep(prevStep => prevStep + 1);
     }
-    setStep(prevStep => prevStep + 1);
   };
 
   const handlePrevStep = () => {
@@ -445,6 +449,7 @@ const TimeWastersAudit = () => {
         return;
       }
 
+      /*
       const { data, error } = await supabase.from('time_audits').insert({
         time_wasters: formData.time_wasters,
         personal_habits: formData.personal_habits,
@@ -464,16 +469,16 @@ const TimeWastersAudit = () => {
       if (error) {
         throw error;
       }
+      */
 
       toast({
         title: "Audit Submitted Successfully!",
         description: "We'll analyze your results and provide personalized recommendations."
       });
       
-      setReportLoading(true);
-      await generatePersonalizedReport();
     } catch (error) {
       console.error('Error submitting audit:', error);
+      setError("There was a problem submitting your audit. Please try again.");
       toast({
         title: "Error submitting audit",
         description: "There was a problem submitting your audit. Please try again.",
@@ -485,6 +490,8 @@ const TimeWastersAudit = () => {
   };
 
   const generatePersonalizedReport = async () => {
+    setReportLoading(true);
+    setError(null);
     try {
       const response = await supabase.functions.invoke('generate-time-audit-report', {
         body: {
@@ -497,6 +504,7 @@ const TimeWastersAudit = () => {
       setReportData(response.data);
     } catch (error) {
       console.error('Error generating report:', error);
+      setError("We encountered an issue creating your personalized report. Using default recommendations instead.");
       toast({
         title: "Error generating personalized report",
         description: "We encountered an issue creating your personalized report. Using default recommendations instead.",
@@ -541,7 +549,8 @@ const TimeWastersAudit = () => {
   const totalSteps = 11;
   const progressPercentage = step / totalSteps * 100;
 
-  const InfoCard = () => <Card className="bg-white dark:bg-gray-800 shadow-lg">
+  const InfoCard = () => (
+    <Card className="bg-white dark:bg-gray-800 shadow-lg">
       <CardContent className="p-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">&quot;Biggest Time Wasters&quot; Audit</h1>
@@ -575,8 +584,8 @@ const TimeWastersAudit = () => {
         <div className="mt-8">
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <div className="bg-green-500 h-2 rounded-full" style={{
-            width: `${progressPercentage}%`
-          }}></div>
+              width: `${progressPercentage}%`
+            }}></div>
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-500">
             <span>Step {step} of {totalSteps}</span>
@@ -584,7 +593,8 @@ const TimeWastersAudit = () => {
           </div>
         </div>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 
   const renderStep = () => {
     switch (step) {
@@ -896,70 +906,82 @@ const TimeWastersAudit = () => {
             </div>
           </div>;
       case 11:
-        return <div className="space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-center">
-            Your Personalized Time Audit Report
-          </h2>
-          
-          <div className="space-y-8">
-            {reportLoading ? (
-              <div className="flex flex-col items-center justify-center py-12">
-                <Loader className="h-12 w-12 animate-spin text-green-600 mb-4" />
-                <p className="text-lg font-medium">Generating your personalized report...</p>
-                <p className="text-gray-500">This may take a few moments</p>
-              </div>
-            ) : (
-              <>
-                {reportData && (
-                  <>
-                    <ActionStepsSection steps={reportData.actionSteps} />
-                    <SolutionsSection solutions={reportData.solutions} />
-                    <QuickWinsSection wins={reportData.quickWins} />
-                    <SimpleWaysSection ways={reportData.simpleWays} />
-                    
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <div className="flex-1">
-                        <PriorityTags priorities={formData.top_priorities} />
-                      </div>
-                      <div className="flex-1">
-                        <WorkHoursSection hours={formData.work_hours} />
-                      </div>
-                    </div>
-                    
-                    <SummarySection 
-                      dailyActivities={formData.daily_activities} 
-                      timeWasters={formData.time_wasters} 
-                      unplannedTime={getTimeLostMap()} 
-                      personalHabits={formData.personal_habits} 
-                      dependencies={formData.dependencies} 
-                      planningIssues={formData.planning_issues} 
-                    />
-                    
-                    <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-6">
-                      <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        Next Steps
-                      </h3>
-                      <p className="text-gray-700 dark:text-gray-300 mb-4">
-                        Try implementing your top 3 action steps this week and see how they impact your productivity. You can revisit this report anytime to refresh your memory or update your priorities.
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                        <Button variant="default" className="gap-2" onClick={() => navigate('/')}>
-                          <Home className="h-4 w-4" />
-                          Go to Dashboard
-                        </Button>
-                        <Button variant="outline" className="gap-2" onClick={() => window.print()}>
-                          <ExternalLink className="h-4 w-4" />
-                          Print Report
-                        </Button>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </>
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center">
+              Your Personalized Time Audit Report
+            </h2>
+            <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
+              Based on your responses, we've analyzed your productivity patterns and created personalized recommendations to help you optimize your time.
+            </p>
+            
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertTitle>Error submitting audit</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
+            
+            <div className="space-y-8">
+              {reportLoading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Loader className="h-12 w-12 animate-spin text-green-600 mb-4" />
+                  <p className="text-lg font-medium">Generating your personalized report...</p>
+                  <p className="text-gray-500">This may take a few moments</p>
+                </div>
+              ) : (
+                <>
+                  {reportData && (
+                    <>
+                      <ActionStepsSection steps={reportData.actionSteps} />
+                      <SolutionsSection solutions={reportData.solutions} />
+                      <QuickWinsSection wins={reportData.quickWins} />
+                      <SimpleWaysSection ways={reportData.simpleWays} />
+                      
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="flex-1">
+                          <PriorityTags priorities={formData.top_priorities} />
+                        </div>
+                        <div className="flex-1">
+                          <WorkHoursSection hours={formData.work_hours} />
+                        </div>
+                      </div>
+                      
+                      <SummarySection 
+                        dailyActivities={formData.daily_activities} 
+                        timeWasters={formData.time_wasters} 
+                        unplannedTime={getTimeLostMap()} 
+                        personalHabits={formData.personal_habits} 
+                        dependencies={formData.dependencies} 
+                        planningIssues={formData.planning_issues} 
+                      />
+                      
+                      <div className="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-6">
+                        <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600" />
+                          Next Steps
+                        </h3>
+                        <p className="text-gray-700 dark:text-gray-300 mb-4">
+                          Try implementing your top 3 action steps this week and see how they impact your productivity. You can revisit this report anytime to refresh your memory or update your priorities.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                          <Button variant="default" className="gap-2" onClick={() => navigate('/')}>
+                            <Home className="h-4 w-4" />
+                            Go to Dashboard
+                          </Button>
+                          <Button variant="outline" className="gap-2" onClick={() => window.print()}>
+                            <ExternalLink className="h-4 w-4" />
+                            Print Report
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>;
+        );
       default:
         return <div>Unknown step</div>;
     }
