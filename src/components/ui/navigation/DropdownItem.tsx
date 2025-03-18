@@ -36,7 +36,7 @@ export function DropdownItem({
           )}
         >
           {Icon && <Icon className={`h-4 w-4 min-w-4 ${iconColor} flex-shrink-0`} />}
-          <span className="truncate">{children}</span>
+          <span className="inline-block whitespace-normal">{children}</span>
         </button>
       ) : (
         <Link 
@@ -47,7 +47,7 @@ export function DropdownItem({
           )}
         >
           {Icon && <Icon className={`h-4 w-4 min-w-4 ${iconColor} flex-shrink-0`} />}
-          <span className="truncate">{children}</span>
+          <span className="inline-block whitespace-normal">{children}</span>
         </Link>
       )}
     </motion.div>
