@@ -80,7 +80,7 @@ export function HeaderNavigation({
         <DropdownItem to="/blog">
           Blog
         </DropdownItem>
-        <DropdownItem to="/contact">
+        <DropdownItem to="/calendly">
           Contact
         </DropdownItem>
       </DropdownMenu>
