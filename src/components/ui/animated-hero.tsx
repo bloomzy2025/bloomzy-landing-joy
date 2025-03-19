@@ -24,7 +24,7 @@ function Hero() {
   }, [titleNumber, titles]);
   return <div className="w-full">
       <div className="container mx-auto">
-        <div className="flex gap-8 py-20 items-center justify-center flex-col lg:py-[60px]">
+        <div className="flex gap-8 items-center justify-center flex-col lg:py-[60px] py-[10px]">
           <div>
             <Button variant="secondary" size="sm" className="gap-4">
               Read our launch article <MoveRight className="w-4 h-4" />
