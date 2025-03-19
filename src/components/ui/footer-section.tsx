@@ -8,11 +8,14 @@ import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CheckCircle2, Calendar, ListTodo, Leaf, Target, Brain, Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
+
 function Footerdemo() {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const {
     toast
   } = useToast();
+  
   React.useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
@@ -20,6 +23,7 @@ function Footerdemo() {
       document.documentElement.classList.remove("dark");
     }
   }, [isDarkMode]);
+  
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
@@ -27,6 +31,7 @@ function Footerdemo() {
       description: "You'll receive our latest updates and news."
     });
   };
+  
   const scrollToSection = (sectionId: string, e: React.MouseEvent) => {
     e.preventDefault();
     const element = document.getElementById(sectionId);
@@ -35,13 +40,13 @@ function Footerdemo() {
         behavior: 'smooth'
       });
 
-      // Add highlight animation
       element.classList.add('section-highlight');
       setTimeout(() => {
         element.classList.remove('section-highlight');
       }, 2000);
     }
   };
+  
   return <footer className="relative border-t bg-brand-green dark:bg-[#1A1F2C] text-white transition-colors duration-300">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
@@ -157,12 +162,12 @@ function Footerdemo() {
             © 2024 Bloomzy. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm">
-            <a href="#" className="transition-colors hover:text-accent-green">
+            <Link to="/privacy-policy" className="transition-colors hover:text-accent-green">
               Privacy Policy
-            </a>
-            <a href="#" className="transition-colors hover:text-accent-green">
+            </Link>
+            <Link to="/terms" className="transition-colors hover:text-accent-green">
               Terms of Service
-            </a>
+            </Link>
             <a href="#" className="transition-colors hover:text-accent-green">
               Cookie Settings
             </a>

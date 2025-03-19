@@ -18,6 +18,7 @@ import MakerManagerQuiz from "./pages/MakerManagerQuiz";
 import TimeWastersAudit from "./pages/TimeWastersAudit";
 import AuthCallback from "./pages/AuthCallback";
 import AboutUs from "./pages/AboutUs";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ function App() {
               <Route path="/time-wasters-audit" element={<TimeWastersAudit />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/about" element={<AboutUs />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
