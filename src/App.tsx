@@ -20,6 +20,7 @@ import AuthCallback from "./pages/AuthCallback";
 import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
+import CookieSettings from "./pages/CookieSettings";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ function App() {
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/cookie-settings" element={<CookieSettings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

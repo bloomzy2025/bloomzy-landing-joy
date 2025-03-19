@@ -168,9 +168,9 @@ function Footerdemo() {
             <Link to="/terms" className="transition-colors hover:text-accent-green">
               Terms of Service
             </Link>
-            <a href="#" className="transition-colors hover:text-accent-green">
+            <Link to="/cookie-settings" className="transition-colors hover:text-accent-green">
               Cookie Settings
-            </a>
+            </Link>
           </nav>
         </div>
       </div>
