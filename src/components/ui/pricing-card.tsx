@@ -34,6 +34,11 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
   // Determine the link destination based on the tier ID
   const linkDestination = tier.id === "enterprise" ? "/enterprise" : "/waitlist"
 
+  // Special case for Growth tier with monthly payment
+  const displayPrice = (tier.id === "growth" && paymentFrequency === "monthly") 
+    ? 299 
+    : price
+
   return (
     <Card className={cn(
       "flex flex-col h-full", 
@@ -62,14 +67,14 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
               <span className={cn(
                 "text-5xl font-bold text-gray-900 dark:text-gray-100",
                 tier.highlighted && "text-brand-green dark:text-accent-green"
-              )}>$299</span>
+              )}>${displayPrice}</span>
               <span className="text-gray-600 ml-2 dark:text-gray-400">/month</span>
             </div>
           ) : (
             <span className={cn(
               "text-5xl font-bold text-gray-900 dark:text-gray-100",
               tier.highlighted && "text-brand-green dark:text-accent-green"
-            )}>{price}</span>
+            )}>{displayPrice}</span>
           )}
         </div>
         <ul className="space-y-4 flex-1">
