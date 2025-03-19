@@ -34,10 +34,15 @@ export function PricingCard({ tier, paymentFrequency }: PricingCardProps) {
   // Determine the link destination based on the tier ID
   const linkDestination = tier.id === "enterprise" ? "/enterprise" : "/waitlist"
 
-  // Special case for Growth tier with monthly payment
-  const displayPrice = (tier.id === "growth" && paymentFrequency === "monthly") 
-    ? 299 
-    : price
+  // Special case for Growth tier pricing
+  let displayPrice = price
+  if (tier.id === "growth") {
+    if (paymentFrequency === "monthly") {
+      displayPrice = 299
+    } else if (paymentFrequency === "yearly") {
+      displayPrice = 239
+    }
+  }
 
   return (
     <Card className={cn(
