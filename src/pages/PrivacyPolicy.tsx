@@ -32,7 +32,7 @@ export default function PrivacyPolicy() {
           <section className="mb-8">
             <h2 className="text-xl font-semibold mb-4">1. Introduction</h2>
             <p>
-              Welcome to Bloomzy ("we," "our," or "us"). We are committed to protecting your privacy and providing you with a safe online experience. 
+              Welcome to Bloomzy! We are committed to protecting your privacy and providing you with a safe online experience. 
               This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
             </p>
             <p>
