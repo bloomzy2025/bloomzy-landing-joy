@@ -13,11 +13,11 @@ const PRICING_TIERS = [
     },
     description: "Perfect for trying out Bloomzy's features",
     features: [
-      "Basic task prioritization",
-      "Limited Habitree visualization",
-      "Core integrations",
+      "Limited Habitree Visualisation",
       "Community support",
-      "1 tree planted monthly"
+      "Basic task prioritization",
+      "Up to 1 tree planted monthly",
+      "Calendar integrations"
     ],
     cta: "Get Started",
   },
@@ -31,10 +31,11 @@ const PRICING_TIERS = [
     description: "Perfect for solo founders and early-stage startups",
     features: [
       "Task prioritization",
-      "Basic Habitree visualization", 
+      "Bloomzy growth assistant",
       "Core integrations",
-      "Email support",
-      "5 trees planted monthly"
+      "Community support",
+      "Basic Habitree visualisation",
+      "Up to 3 trees planted monthly"
     ],
     cta: "Get Started",
   },
@@ -48,12 +49,12 @@ const PRICING_TIERS = [
     description: "Ideal for growing startups with increasing complexity",
     features: [
       "Advanced task prioritization",
-      "Full AI guidance system",
+      "Full startup guidance system",
       "All integrations",
       "Priority support",
       "ROI breakdown reports",
-      "Custom Habitree themes",
-      "15 trees planted monthly"
+      "Custom Habitree Themes",
+      "Up to 15 trees planted monthly"
     ],
     cta: "Get Started",
     popular: true,
@@ -73,7 +74,7 @@ const PRICING_TIERS = [
       "Custom integrations",
       "Enhanced analytics dashboard",
       "VIP support",
-      "50 trees planted monthly"
+      "50+ trees planted monthly"
     ],
     cta: "Contact Sales",
     highlighted: true,
