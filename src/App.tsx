@@ -19,6 +19,7 @@ import TimeWastersAudit from "./pages/TimeWastersAudit";
 import AuthCallback from "./pages/AuthCallback";
 import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ function App() {
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
