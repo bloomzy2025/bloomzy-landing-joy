@@ -39,7 +39,7 @@ export function HeaderActions({
       {!isMobile && (
         <>
           {!user && (
-            <Link to="/signin" className="text-sm font-medium dark:text-gray-200 hover:text-brand-green dark:hover:text-accent-green transition-colors">
+            <Link to="/signin" className="text-sm font-medium dark:text-gray-200 hover:text-brand-green dark:hover:text-accent-green transition-colors px-4 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-transparent">
               Login
             </Link>
           )}
