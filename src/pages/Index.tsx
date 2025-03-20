@@ -127,7 +127,7 @@ const Index = () => {
       duration: 0.5
     }} viewport={{
       once: true
-    }} className="pt-20 py-[40px]">
+    }} className="pt-20 py-[30px]">
         <Hero />
       </motion.div>
 
