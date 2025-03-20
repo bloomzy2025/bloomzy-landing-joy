@@ -2,6 +2,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PricingSection } from '@/components/ui/pricing-section';
+import { Header1 } from '@/components/ui/header';
+import { Footerdemo } from '@/components/ui/footer-section';
 
 const PRICING_TIERS = [
   {
@@ -85,9 +87,11 @@ const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
 
 const Pricing = () => {
   return (
-    <div className="flex flex-col items-center min-h-screen bg-background pt-24 pb-16">
+    <div className="flex flex-col items-center min-h-screen bg-background">
+      <Header1 />
+      
       <motion.div 
-        className="w-full max-w-7xl px-4"
+        className="w-full max-w-7xl px-4 pt-24 pb-16"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -99,6 +103,8 @@ const Pricing = () => {
           frequencies={PAYMENT_FREQUENCIES}
         />
       </motion.div>
+      
+      <Footerdemo />
     </div>
   );
 };
