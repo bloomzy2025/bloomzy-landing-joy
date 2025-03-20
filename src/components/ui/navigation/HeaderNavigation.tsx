@@ -57,32 +57,6 @@ export function HeaderNavigation({
             Features
           </DropdownItem>
         )}
-        
-        {location.pathname === '/' ? (
-          <DropdownItem 
-            to="#pricing" 
-            onClick={() => scrollToSection('pricing')} 
-            isActive={isActive('pricing')}
-          >
-            Pricing
-          </DropdownItem>
-        ) : (
-          <DropdownItem to="/#pricing">
-            Pricing
-          </DropdownItem>
-        )}
-      </DropdownMenu>
-      
-      <DropdownMenu title="Company" isMobile={isMobile}>
-        <DropdownItem to="/about">
-          About Us
-        </DropdownItem>
-        <DropdownItem to="/blog">
-          Blog
-        </DropdownItem>
-        <DropdownItem to="/calendly">
-          Contact
-        </DropdownItem>
       </DropdownMenu>
       
       <DropdownMenu title="Free Tools" isMobile={isMobile}>
