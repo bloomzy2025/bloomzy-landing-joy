@@ -63,7 +63,7 @@ export function HeaderActions({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Link 
-          to="/waitlist" 
+          to="/calendly" 
           className={cn(
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "default" }), 
             "bg-[#1A1A1A] hover:bg-[#333333] text-white dark:bg-[#1A1A1A] dark:hover:bg-[#333333] dark:text-white font-medium"
