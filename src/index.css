@@ -32,20 +32,20 @@
 
 /* Responsive section padding */
 .py-[100px] {
-  @apply py-[100px] md:py-[100px];
+  @apply py-[40px] md:py-[40px];
 }
 
 /* On mobile screens, reduce vertical padding */
 @media (max-width: 768px) {
   .py-[100px] {
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
   }
   
   /* Hero section specific padding */
   .py-20 {
-    padding-top: 40px;
-    padding-bottom: 40px;
+    padding-top: 30px;
+    padding-bottom: 30px;
   }
 
   /* Dropdown menu adjustments for mobile */

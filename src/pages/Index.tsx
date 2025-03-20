@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -127,11 +128,11 @@ const Index = () => {
       duration: 0.5
     }} viewport={{
       once: true
-    }} className="pt-20 py-[30px]">
+    }} className="pt-10 py-[20px]">
         <Hero />
       </motion.div>
 
-      <motion.section id="features" ref={featuresRef} className="py-[100px] bg-gray-50 dark:bg-gray-800 transition-colors duration-300" initial={{
+      <motion.section id="features" ref={featuresRef} className="py-[40px] bg-gray-50 dark:bg-gray-800 transition-colors duration-300" initial={{
       opacity: 0,
       y: 20
     }} whileInView={{
@@ -144,7 +145,7 @@ const Index = () => {
       once: true
     }}>
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8 text-brand-green dark:text-accent-green">
+          <h2 className="text-3xl font-bold text-center mb-6 text-brand-green dark:text-accent-green">
             How Bloomzy Works
           </h2>
           <FeaturesSectionWithHoverEffects />
@@ -161,11 +162,11 @@ const Index = () => {
       duration: 0.5
     }} viewport={{
       once: true
-    }}>
+    }} className="py-[40px]">
         <TestimonialsSection title="Trusted by Founders" description="Join over a hundred startup founders who are already scaling with clarity and consistency using Bloomzy" testimonials={testimonials} />
       </motion.div>
 
-      <motion.section id="pricing" ref={pricingRef} className="py-[100px] bg-gray-50 dark:bg-gray-900 transition-colors duration-300" initial={{
+      <motion.section id="pricing" ref={pricingRef} className="py-[40px] bg-gray-50 dark:bg-gray-900 transition-colors duration-300" initial={{
       opacity: 0,
       y: 20
     }} whileInView={{
