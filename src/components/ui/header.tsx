@@ -80,7 +80,7 @@ function Header1() {
       scrolled ? "shadow-md dark:shadow-gray-800/20" : ""
     )}>
       <div className="container flex justify-between items-center rounded-lg bg-zinc-50 dark:bg-gray-900 p-2 sm:p-4">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center">
           <Logo isMobile={isMobile} />
           
           {isMobile && (
@@ -91,7 +91,9 @@ function Header1() {
               {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           )}
-          
+        </div>
+        
+        <div className="flex items-center gap-6">
           {!isMobile && (
             <HeaderNavigation
               isMobile={isMobile}
@@ -101,6 +103,8 @@ function Header1() {
               isActive={isActive}
             />
           )}
+          
+          <HeaderActions isMobile={isMobile} />
         </div>
         
         {isMobile && (
@@ -112,8 +116,6 @@ function Header1() {
             isActive={isActive}
           />
         )}
-        
-        <HeaderActions isMobile={isMobile} />
       </div>
     </div>
   );
