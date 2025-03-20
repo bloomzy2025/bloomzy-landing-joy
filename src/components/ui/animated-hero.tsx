@@ -1,11 +1,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { MoveRight, PhoneCall } from "lucide-react";
+import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction", "Startup Chaos"], []);
@@ -13,6 +14,7 @@ function Hero() {
     user
   } = useAuth();
   const isMobile = useIsMobile();
+  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -23,6 +25,7 @@ function Hero() {
     }, 2000); // Set back to 2000ms as requested
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
+  
   return <div className="w-full">
       <div className="container mx-auto">
         <div className="flex gap-6 items-center justify-center flex-col lg:py-[40px] py-[10px]">
@@ -60,18 +63,14 @@ function Hero() {
             <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">Startup founders have to juggle a lot - our mission is to make their lives easier.
 Bloomzy helps take on the chaos of building a business from the ground up, giving you small, doable steps daily that add up to real results, all while preserving your sanity.</p>
           </div>
-          <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline" asChild>
-              <Link to="/calendly">Jump on a call <PhoneCall className="w-4 h-4" /></Link>
+          <div className="flex flex-row">
+            <Button size="lg" className="gap-4" asChild>
+              <Link to="/calendly">Get early access <MoveRight className="w-4 h-4" /></Link>
             </Button>
-            {user ? <Button size="lg" className="gap-4">
-                Dashboard <MoveRight className="w-4 h-4" />
-              </Button> : <Button size="lg" className="gap-4" asChild>
-                <Link to="/signin">Sign in <MoveRight className="w-4 h-4" /></Link>
-              </Button>}
           </div>
         </div>
       </div>
     </div>;
 }
+
 export { Hero };
