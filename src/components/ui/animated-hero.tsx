@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight, PhoneCall } from "lucide-react";
@@ -5,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction", "Startup Chaos"], []);
@@ -12,6 +14,7 @@ function Hero() {
     user
   } = useAuth();
   const isMobile = useIsMobile();
+  
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (titleNumber === titles.length - 1) {
@@ -22,6 +25,7 @@ function Hero() {
     }, 2000); // Set back to 2000ms as requested
     return () => clearTimeout(timeoutId);
   }, [titleNumber, titles]);
+  
   return <div className="w-full">
       <div className="container mx-auto">
         <div className="flex gap-8 items-center justify-center flex-col lg:py-[60px] py-[10px]">
@@ -37,17 +41,17 @@ function Hero() {
                 &nbsp;
                 {titles.map((title, index) => <motion.span key={index} className="absolute font-semibold" initial={{
                 opacity: 0,
-                y: 15
+                y: 30
               }} transition={{
                 type: "spring",
                 stiffness: 100,
-                damping: 12,
+                damping: 20,
                 duration: 0.3
               }} animate={titleNumber === index ? {
                 y: 0,
                 opacity: 1
               } : {
-                y: titleNumber > index ? -15 : 15,
+                y: 30,
                 opacity: 0,
                 transition: {
                   duration: 0.2
@@ -75,4 +79,5 @@ Bloomzy helps take on the chaos of building a business from the ground up, givin
       </div>
     </div>;
 }
+
 export { Hero };
