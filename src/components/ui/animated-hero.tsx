@@ -60,8 +60,7 @@ function Hero() {
               </span>
             </h1>
 
-            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">Startup founders have to juggle a lot - our mission is to make their lives easier.
-Bloomzy helps take on the chaos of building a business from the ground up, giving you small, doable steps daily that add up to real results, all while preserving your sanity.</p>
+            <p className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center">Startup life can be chaotic - Bloomzy makes it easier with simple daily steps that build real results - without the stress.</p>
           </div>
           <div className="flex flex-row">
             <Button size="lg" className="gap-4" asChild>
