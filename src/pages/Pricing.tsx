@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PricingSection } from '@/components/ui/pricing-section';
@@ -86,11 +87,11 @@ const PAYMENT_FREQUENCIES = ["monthly", "yearly"];
 
 const Pricing = () => {
   return (
-    <div className="flex flex-col items-center min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background">
       <Header1 />
       
       <motion.div 
-        className="w-full max-w-7xl px-4 pt-24 pb-16"
+        className="w-full max-w-7xl mx-auto px-4 pt-24 pb-16"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
