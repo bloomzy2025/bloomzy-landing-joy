@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,8 +26,6 @@ type SignUpFormValues = z.infer<typeof signUpSchema>;
 export default function SignUpForm() {
   const { signUp, signInWithProvider, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const googleButtonRef = useRef<HTMLDivElement>(null);
-  const [googleError, setGoogleError] = useState<string | null>(null);
   
   // Add information tooltips about permissions being requested
   const renderPermissionsInfo = () => {
@@ -38,62 +36,6 @@ export default function SignUpForm() {
       </div>
     );
   };
-  
-  // Initialize Google Sign In for the signup form
-  useEffect(() => {
-    if (googleButtonRef.current && window.google) {
-      try {
-        const container = googleButtonRef.current;
-        container.innerHTML = '';
-        const googleSignInButton = document.createElement('div');
-        googleSignInButton.className = 'g_id_signin';
-        googleSignInButton.dataset.type = 'standard';
-        googleSignInButton.dataset.size = 'large';
-        googleSignInButton.dataset.theme = 'outline';
-        googleSignInButton.dataset.text = 'sign_up_with';
-        googleSignInButton.dataset.shape = 'rectangular';
-        googleSignInButton.dataset.logo_alignment = 'left';
-        googleSignInButton.dataset.width = '100%';
-        container.appendChild(googleSignInButton);
-        
-        window.google?.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: async response => {
-            if (response.credential) {
-              await signInWithProvider('google', '/', {
-                idToken: response.credential
-              });
-            }
-          },
-          auto_select: false,
-          ux_mode: 'popup',
-          scope: 'email profile'
-        });
-        
-        window.google?.accounts.id.renderButton(googleSignInButton, {
-          theme: 'outline',
-          size: 'large',
-          width: container.offsetWidth,
-          type: 'standard',
-          text: 'signup_with',
-          logo_alignment: 'left'
-        });
-        
-        // Set the Google ID origin_uri to Bloomzy.ca
-        if (window.google?.accounts?.id && window.google.accounts.id.setOauthConfig) {
-          window.google.accounts.id.setOauthConfig({
-            origin_uri: 'https://bloomzy.ca'
-          });
-        }
-      } catch (error) {
-        console.error('Error initializing Google Sign In:', error);
-        setGoogleError('Error initializing Google Sign In. Please try the email option.');
-      }
-    } else if (!window.google) {
-      console.warn('Google Identity Services not loaded');
-      setGoogleError('Google Sign In unavailable. Please try the email option.');
-    }
-  }, [googleButtonRef, signInWithProvider]);
   
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
@@ -117,11 +59,34 @@ export default function SignUpForm() {
       
       {renderPermissionsInfo()}
       
-      <div className="flex flex-col gap-4">
-        <div className="w-full">
-          {googleError ? <div className="text-red-500 text-xs mb-2">{googleError}</div> : null}
-          <div ref={googleButtonRef} className="w-full h-10 flex justify-center"></div>
-        </div>
+      <div className="grid grid-cols-2 gap-4">
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => {
+            console.log('Initiating Google sign in from sign up page');
+            signInWithProvider('google');
+          }}
+          disabled={isLoading}
+        >
+          <Icons.google className="mr-2 h-4 w-4" />
+          Google
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          type="button" 
+          className="w-full"
+          onClick={() => {
+            console.log('Initiating Apple sign in from sign up page');
+            signInWithProvider('apple');
+          }}
+          disabled={isLoading}
+        >
+          <Icons.apple className="mr-2 h-4 w-4" />
+          Apple
+        </Button>
       </div>
       
       <div className="relative">
