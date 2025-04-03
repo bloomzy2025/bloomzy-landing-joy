@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 
-interface IdeaSupplier {
+interface Supplier {
   name: string;
   url: string;
   score: number;
@@ -20,10 +20,15 @@ interface IdeaSupplier {
 interface Idea {
   name: string;
   niche: string;
-  sellingPrice: number;
-  profitMargin: number;
-  topSupplier: IdeaSupplier;
-  details: string;
+  supplierPriceRange: string;
+  competitorPriceRange: string;
+  adSpend: string;
+  profitMargin: string;
+  totalProfitMargin: string;
+  topSupplier1: Supplier;
+  topSupplier2: Supplier;
+  topSupplier3: Supplier;
+  features: string;
 }
 
 const ECommerceGenerator = () => {
@@ -62,38 +67,77 @@ const ECommerceGenerator = () => {
         {
           name: `Premium ${formData.passion} ${formData.industry} Collection`,
           niche: `Luxury ${formData.passion} enthusiasts in ${formData.market === 'global' ? 'global markets' : formData.market}`,
-          sellingPrice: Math.floor(Math.random() * 1500) + 1500,
-          profitMargin: Math.floor(Math.random() * 800) + 700,
-          topSupplier: {
+          supplierPriceRange: "$1000 - $2000",
+          competitorPriceRange: "$2500 - $3500", 
+          adSpend: "$50 - $100",
+          profitMargin: "$1500",
+          totalProfitMargin: "$1400 - $1450",
+          topSupplier1: {
             name: "Top Quality Suppliers Inc.",
             url: "https://example.com/supplier1",
-            score: Math.floor(Math.random() * 3 + 7) / 10
+            score: Math.floor(Math.random() * 20) + 80
           },
-          details: `High-end ${formData.features} focused ${formData.industry} products specifically designed for ${formData.passion} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
+          topSupplier2: {
+            name: "Premium Materials Co.",
+            url: "https://example.com/supplier2",
+            score: Math.floor(Math.random() * 20) + 75
+          },
+          topSupplier3: {
+            name: "Luxury Components Ltd.",
+            url: "https://example.com/supplier3",
+            score: Math.floor(Math.random() * 20) + 70
+          },
+          features: `High-end ${formData.features} focused ${formData.industry} products specifically designed for ${formData.passion} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
         },
         {
           name: `Bespoke ${formData.industry} Solutions`,
           niche: `Custom ${formData.passion} for discerning clients`,
-          sellingPrice: Math.floor(Math.random() * 2000) + 2000,
-          profitMargin: Math.floor(Math.random() * 1000) + 800,
-          topSupplier: {
+          supplierPriceRange: "$3000 - $4000",
+          competitorPriceRange: "$4500 - $5500", 
+          adSpend: "$75 - $150",
+          profitMargin: "$1500",
+          totalProfitMargin: "$1350 - $1425",
+          topSupplier1: {
             name: "Artisan Crafters Co.",
-            url: "https://example.com/supplier2",
-            score: Math.floor(Math.random() * 3 + 7) / 10
+            url: "https://example.com/supplier4",
+            score: Math.floor(Math.random() * 20) + 80
           },
-          details: `Customizable ${formData.industry} products with emphasis on ${formData.features}, perfect for the ${formData.passion} market segment that values personalization and unique offerings.`
+          topSupplier2: {
+            name: "Custom Works Manufacturing",
+            url: "https://example.com/supplier5",
+            score: Math.floor(Math.random() * 20) + 75
+          },
+          topSupplier3: {
+            name: "Bespoke Solutions Group",
+            url: "https://example.com/supplier6",
+            score: Math.floor(Math.random() * 20) + 70
+          },
+          features: `Customizable ${formData.industry} products with emphasis on ${formData.features}, perfect for the ${formData.passion} market segment that values personalization and unique offerings.`
         },
         {
           name: `Exclusive ${formData.features} ${formData.industry}`,
           niche: `Premium ${formData.passion} accessories`,
-          sellingPrice: Math.floor(Math.random() * 1800) + 1800,
-          profitMargin: Math.floor(Math.random() * 900) + 600,
-          topSupplier: {
+          supplierPriceRange: "$5000 - $6000",
+          competitorPriceRange: "$6500 - $7500", 
+          adSpend: "$100 - $200",
+          profitMargin: "$1500",
+          totalProfitMargin: "$1300 - $1400",
+          topSupplier1: {
             name: "Luxury Manufacturing Ltd.",
-            url: "https://example.com/supplier3",
-            score: Math.floor(Math.random() * 3 + 7) / 10
+            url: "https://example.com/supplier7",
+            score: Math.floor(Math.random() * 20) + 80
           },
-          details: `High-margin ${formData.industry} focusing on the intersection of ${formData.passion} and ${formData.features}, creating a unique value proposition for upscale markets.`
+          topSupplier2: {
+            name: "Elite Components International",
+            url: "https://example.com/supplier8",
+            score: Math.floor(Math.random() * 20) + 75
+          },
+          topSupplier3: {
+            name: "Premium Sourcing Partners",
+            url: "https://example.com/supplier9",
+            score: Math.floor(Math.random() * 20) + 70
+          },
+          features: `High-margin ${formData.industry} focusing on the intersection of ${formData.passion} and ${formData.features}, creating a unique value proposition for upscale markets.`
         }
       ];
       
@@ -234,26 +278,69 @@ const ECommerceGenerator = () => {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-muted p-3 rounded-md">
-                        <p className="text-sm font-medium">Selling Price</p>
-                        <p className="text-2xl font-bold">${idea.sellingPrice}</p>
+                        <p className="text-sm font-medium">Supplier Price Range</p>
+                        <p className="text-2xl font-bold">{idea.supplierPriceRange}</p>
                       </div>
                       <div className="bg-muted p-3 rounded-md">
-                        <p className="text-sm font-medium">Profit Margin</p>
-                        <p className="text-2xl font-bold">${idea.profitMargin} per sale</p>
+                        <p className="text-sm font-medium">Market Selling Price Range</p>
+                        <p className="text-2xl font-bold">{idea.competitorPriceRange}</p>
                       </div>
                     </div>
                     
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-muted p-3 rounded-md">
+                        <p className="text-sm font-medium">Minimum Ad Spend</p>
+                        <p className="text-xl font-bold">{idea.adSpend}</p>
+                      </div>
+                      <div className="bg-muted p-3 rounded-md">
+                        <p className="text-sm font-medium">Profit Margin</p>
+                        <p className="text-xl font-bold">{idea.profitMargin}</p>
+                      </div>
+                      <div className="bg-muted p-3 rounded-md">
+                        <p className="text-sm font-medium">Total Profit Margin</p>
+                        <p className="text-xl font-bold">{idea.totalProfitMargin}</p>
+                      </div>
+                    </div>
+                    
+                    <Separator />
+                    
                     <div>
-                      <p className="font-medium mb-1">Top Supplier:</p>
-                      <div className="flex items-center justify-between bg-muted p-3 rounded-md">
-                        <div>
-                          <a href={idea.topSupplier.url} target="_blank" rel="noopener noreferrer" 
-                             className="text-blue-600 hover:underline font-medium">
-                            {idea.topSupplier.name}
-                          </a>
+                      <p className="font-medium mb-2">Top Suppliers:</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between bg-muted p-3 rounded-md">
+                          <div>
+                            <a href={idea.topSupplier1.url} target="_blank" rel="noopener noreferrer" 
+                              className="text-blue-600 hover:underline font-medium">
+                              {idea.topSupplier1.name}
+                            </a>
+                          </div>
+                          <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                            Score: {idea.topSupplier1.score}/100
+                          </div>
                         </div>
-                        <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
-                          Score: {idea.topSupplier.score.toFixed(1)}
+                        
+                        <div className="flex items-center justify-between bg-muted p-3 rounded-md">
+                          <div>
+                            <a href={idea.topSupplier2.url} target="_blank" rel="noopener noreferrer" 
+                              className="text-blue-600 hover:underline font-medium">
+                              {idea.topSupplier2.name}
+                            </a>
+                          </div>
+                          <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                            Score: {idea.topSupplier2.score}/100
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between bg-muted p-3 rounded-md">
+                          <div>
+                            <a href={idea.topSupplier3.url} target="_blank" rel="noopener noreferrer" 
+                              className="text-blue-600 hover:underline font-medium">
+                              {idea.topSupplier3.name}
+                            </a>
+                          </div>
+                          <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+                            Score: {idea.topSupplier3.score}/100
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -261,8 +348,8 @@ const ECommerceGenerator = () => {
                     <Separator />
                     
                     <div>
-                      <p className="font-medium mb-1">Details:</p>
-                      <p>{idea.details}</p>
+                      <p className="font-medium mb-1">Features:</p>
+                      <p>{idea.features}</p>
                     </div>
                   </CardContent>
                 </Card>
