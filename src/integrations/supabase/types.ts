@@ -27,39 +27,6 @@ export type Database = {
         }
         Relationships: []
       }
-      Products: {
-        Row: {
-          description: string | null
-          id: number
-          moq: number | null
-          name: string
-          price: number | null
-          reviews: string | null
-          shipping_time: number | null
-          source: string | null
-        }
-        Insert: {
-          description?: string | null
-          id?: number
-          moq?: number | null
-          name: string
-          price?: number | null
-          reviews?: string | null
-          shipping_time?: number | null
-          source?: string | null
-        }
-        Update: {
-          description?: string | null
-          id?: number
-          moq?: number | null
-          name?: string
-          price?: number | null
-          reviews?: string | null
-          shipping_time?: number | null
-          source?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null

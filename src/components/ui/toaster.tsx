@@ -1,4 +1,3 @@
-
 import { useToast } from "@/hooks/use-toast"
 import {
   Toast,
@@ -8,15 +7,9 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast"
-import { useCallback } from "react"
 
 export function Toaster() {
-  const { toasts, dismiss } = useToast()
-
-  // Add useCallback to fix the hook order issue
-  const handleDismiss = useCallback((id: string) => {
-    dismiss(id)
-  }, [dismiss])
+  const { toasts } = useToast()
 
   return (
     <ToastProvider>
@@ -30,7 +23,7 @@ export function Toaster() {
               )}
             </div>
             {action}
-            <ToastClose onClick={() => handleDismiss(id)} />
+            <ToastClose />
           </Toast>
         )
       })}

@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowRight, Clock, ShoppingBag } from "lucide-react";
+import { Brain, ArrowRight, Clock } from "lucide-react";
 
 const FreeToolsSection = () => {
   return (
@@ -14,7 +14,7 @@ const FreeToolsSection = () => {
         </p>
       </div>
       
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         <Card className="border shadow-sm dark:bg-gray-800 dark:border-gray-700">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
@@ -68,35 +68,6 @@ const FreeToolsSection = () => {
             <Button asChild className="w-full gap-2 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90">
               <Link to="/time-wasters-audit">
                 Take the Audit <ArrowRight size={16} />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-        
-        <Card className="border shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <ShoppingBag className="h-5 w-5 text-purple-500 dark:text-purple-400" />
-              <span className="text-sm font-medium text-purple-500 dark:text-purple-400">FREE TOOL</span>
-            </div>
-            <CardTitle className="dark:text-gray-100">E-Commerce Generator</CardTitle>
-            <CardDescription className="dark:text-gray-300">
-              Generate high-ticket e-commerce product ideas tailored to your interests and expertise.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="dark:text-gray-200">
-            <p>This generator creates profitable business ideas by analyzing:</p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Industry trends and emerging opportunities</li>
-              <li>Your personal interests and expertise</li>
-              <li>Market-specific consumer preferences</li>
-              <li>Supplier options and profit margins</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full gap-2 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90">
-              <Link to="/e-commerce-generator">
-                Generate Ideas <ArrowRight size={16} />
               </Link>
             </Button>
           </CardFooter>
