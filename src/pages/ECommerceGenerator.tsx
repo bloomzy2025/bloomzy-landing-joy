@@ -135,12 +135,10 @@ const ECommerceGenerator = () => {
     try {
       const { data, error } = await supabase.functions.invoke('generate-time-audit-report', {
         body: {
-          formData: {
-            requestType: 'ecommerce-ideas',
-            industries: selectedIndustries,
-            niches: nichesList,
-            market: market
-          }
+          requestType: 'ecommerce-ideas',
+          industries: selectedIndustries,
+          niches: nichesList,
+          market: market
         }
       });
 

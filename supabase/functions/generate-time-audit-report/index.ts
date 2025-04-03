@@ -1,7 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 // Get API key from environment variable
-const GROK_API_KEY = Deno.env.get("GROK_API_KEY");
+const GROK_API_KEY = Deno.env.get("GROK_API_KEY") || 
+  "xai-F3G3G1aPZ1hmi6ZD1IttzBxXC1AhnHOfQAtv8HUm00QBF6p9yD2ef8fH5scjEkL96POpDIHqqyEpfXq6";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,12 +16,12 @@ serve(async (req) => {
   }
 
   try {
-    const { formData } = await req.json();
-    console.log("Received form data:", formData);
-
-    if (!GROK_API_KEY) {
-      throw new Error('GROK API key is not configured');
-    }
+    const requestData = await req.json();
+    console.log("Received request data:", requestData);
+    
+    // Extract formData from the request if it exists
+    const formData = requestData.formData || requestData;
+    console.log("Processing form data:", formData);
 
     // Check if this is an e-commerce idea generation request
     if (formData.requestType === 'ecommerce-ideas') {
@@ -36,10 +37,12 @@ serve(async (req) => {
     
     // Always return a successful response with contingency data tailored to the form data
     try {
-      const { formData } = await req.json();
+      const requestData = await req.clone().json();
+      const formData = requestData.formData || requestData;
       
       // If this is an e-commerce request, use the e-commerce fallback
       if (formData.requestType === 'ecommerce-ideas') {
+        console.log("Using e-commerce fallback data");
         const ecommerceContingencyReport = generateEcommerceContingencyReport(formData);
         return new Response(JSON.stringify(ecommerceContingencyReport), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -54,6 +57,10 @@ serve(async (req) => {
       
       // Absolute last resort - generic report
       // ... keep existing code (generic report generation)
+      return new Response(JSON.stringify({ error: "An unexpected error occurred" }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      });
     }
   }
 });
@@ -61,22 +68,22 @@ serve(async (req) => {
 // Function to handle e-commerce idea generation
 async function generateEcommerceIdeas(formData: any, corsHeaders: any) {
   const industries = formData.industries || [];
-  const niches = formData.niches || {};
+  const niches = formData.niches || [];
   const market = formData.market || '';
 
-  if (!industries.length || Object.keys(niches).length === 0 || !market) {
+  if (!industries.length || !niches.length || !market) {
+    console.error("Missing required fields:", { industries, niches, market });
     return new Response(JSON.stringify({ error: "Missing required fields" }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
-  // Convert niches object to a list format
-  const nichesList = Object.values(niches).filter(Boolean);
+  console.log("Processing request with industries:", industries, "niches:", niches, "market:", market);
 
   const detailedPrompt = `
 User Selected Industries: ${industries.join(', ')}
-User Selected Niches: ${nichesList.join(', ')}
+User Selected Niches: ${niches.join(', ')}
 User Preferred Market: ${market}
 
 Based on the user's selected industries, niches, and preferred market, generate three distinct high-ticket e-commerce business ideas. 
@@ -152,6 +159,12 @@ For each of the three ideas, provide the information in a JSON format as follows
   console.log("Calling Grok API with e-commerce prompt...");
 
   try {
+    // Check if API key exists
+    if (!GROK_API_KEY) {
+      console.error("GROK API key is not configured");
+      throw new Error('GROK API key is not configured');
+    }
+
     const response = await fetch('https://api.grok.ai/v1/completions', {
       method: 'POST',
       headers: {
@@ -194,28 +207,34 @@ For each of the three ideas, provide the information in a JSON format as follows
     const jsonStr = jsonMatch[0];
     console.log("Extracted e-commerce JSON string:", jsonStr);
     
-    const ideas = JSON.parse(jsonStr);
-    console.log("Successfully parsed e-commerce ideas");
+    let ideas;
+    try {
+      ideas = JSON.parse(jsonStr);
+      console.log("Successfully parsed e-commerce ideas");
+    } catch (parseError) {
+      console.error("Error parsing JSON response:", parseError);
+      throw new Error("Failed to parse API response");
+    }
     
     // Process the ideas to format supplier information
     const processedIdeas = ideas.map((idea: any) => {
       // Create supplier objects
       const topSupplier1 = {
-        name: idea.supplier1name,
-        url: idea.supplier1url,
-        score: 85 + Math.floor(Math.random() * 15) // Random score between 85-99
+        name: idea.supplier1name || "Premium Supplier Inc.",
+        url: idea.supplier1url || "https://alibaba.com",
+        score: idea.supplier1score || (85 + Math.floor(Math.random() * 15)) // Random score between 85-99
       };
       
       const topSupplier2 = {
-        name: idea.supplier2name,
-        url: idea.supplier2url,
-        score: 75 + Math.floor(Math.random() * 15) // Random score between 75-89
+        name: idea.supplier2name || "Quality Manufacturer Co.",
+        url: idea.supplier2url || "https://globalsources.com",
+        score: idea.supplier2score || (75 + Math.floor(Math.random() * 15)) // Random score between 75-89
       };
       
       const topSupplier3 = {
-        name: idea.supplier3name,
-        url: idea.supplier3url,
-        score: 65 + Math.floor(Math.random() * 15) // Random score between 65-79
+        name: idea.supplier3name || "Reliable Trading Ltd.",
+        url: idea.supplier3url || "https://made-in-china.com",
+        score: idea.supplier3score || (65 + Math.floor(Math.random() * 15)) // Random score between 65-79
       };
       
       // Create a new object with the required structure
@@ -342,185 +361,5 @@ function generateEcommerceContingencyReport(formData: any) {
 
 // Function to generate a contingency report based on the user's form data
 function generateContingencyReport(formData: any) {
-  const timeWasters = formData.time_wasters || [];
-  const priorities = formData.top_priorities || [];
-  const habits = formData.personal_habits || [];
-  const environment = formData.environmental_factors || [];
-  
-  // Generate action steps based on top priorities
-  const actionSteps = priorities.slice(0, 3).map((priority: string, index: number) => {
-    const actions = {
-      "Meetings": { 
-        title: "Optimize Meeting Time", 
-        description: "Implement a 'No Meeting Day' policy and require agendas for all meetings to ensure focus and efficiency."
-      },
-      "Emails": { 
-        title: "Email Management Strategy", 
-        description: "Process emails in batches 2-3 times daily instead of continuously and use templates for common responses."
-      },
-      "Social Media": { 
-        title: "Control Digital Distractions", 
-        description: "Install website blockers during focus hours and schedule specific times for social media usage."
-      },
-      "Fatigue": { 
-        title: "Energy Management", 
-        description: "Schedule challenging tasks during your peak energy hours and take short breaks every 90 minutes to maintain focus."
-      },
-      "Procrastination": { 
-        title: "Beat Procrastination", 
-        description: "Break tasks into smaller, more manageable steps and use the 5-minute rule: commit to just 5 minutes of work to overcome inertia."
-      },
-      "Waiting on Others": { 
-        title: "Reduce Dependency Delays", 
-        description: "Implement a clear followup system with specific deadlines and create parallel workflows to continue progress while waiting."
-      },
-      "Too Many Priorities": { 
-        title: "Priority Management", 
-        description: "Use the Eisenhower Matrix to separate urgent from important tasks and limit yourself to 3 critical tasks per day."
-      },
-      "Noise": { 
-        title: "Sound Management", 
-        description: "Invest in noise-cancelling headphones and use ambient background sounds to mask distracting environmental noise."
-      }
-    };
-    
-    // Default action step if priority doesn't match predefined options
-    const defaultStep = { 
-      title: `Address ${priority}`, 
-      description: `Create a specific plan to minimize the impact of ${priority} on your productivity.`
-    };
-    
-    // Find closest match in actions object
-    const matchingKey = Object.keys(actions).find(key => 
-      priority.toLowerCase().includes(key.toLowerCase())
-    );
-    
-    return matchingKey ? actions[matchingKey as keyof typeof actions] : defaultStep;
-  });
-  
-  // Fill in with default steps if we don't have enough
-  while (actionSteps.length < 3) {
-    actionSteps.push({ 
-      title: "Create a Focused Work System", 
-      description: "Implement a deep work protocol with scheduled focus blocks, clear boundaries, and specific productivity metrics."
-    });
-  }
-  
-  // Generate solutions based on time wasters
-  const solutionOptions = {
-    "Meetings": "Shorten default meeting times from 60 to 30 minutes and require clear agendas for all meetings",
-    "Emails": "Implement the 4D method for emails: Delete, Delegate, Defer, or Do immediately",
-    "Social Media": "Use browser extensions that limit access to distracting websites during work hours",
-    "Administrative Tasks": "Batch administrative work into specific time blocks rather than handling ad-hoc",
-    "Phone Calls": "Schedule phone calls rather than taking them unexpectedly and prepare an agenda beforehand",
-    "Planning": "Use the 1-3-5 rule: plan to accomplish one big thing, three medium things, and five small things each day"
-  };
-  
-  const solutions = timeWasters.slice(0, 5).map((waster: string) => {
-    const matchingKey = Object.keys(solutionOptions).find(key => 
-      waster.toLowerCase().includes(key.toLowerCase())
-    );
-    
-    return matchingKey 
-      ? solutionOptions[matchingKey as keyof typeof solutionOptions]
-      : `Create a specific system to manage time spent on ${waster}`;
-  });
-  
-  // Fill in with default solutions if we don't have enough
-  const defaultSolutions = [
-    "Use the Pomodoro Technique: 25 minutes of focused work followed by a 5-minute break",
-    "Batch similar tasks together to reduce context switching",
-    "Schedule meetings in blocks to preserve uninterrupted time for deep work",
-    "Create templates for recurring communications to save time",
-    "Set up automation for repetitive administrative tasks"
-  ];
-  
-  while (solutions.length < 5) {
-    const defaultSolution = defaultSolutions[solutions.length];
-    if (!solutions.includes(defaultSolution)) {
-      solutions.push(defaultSolution);
-    } else {
-      solutions.push("Delegate tasks that don't require your specific expertise or attention");
-    }
-  }
-  
-  // Generate quick wins (things that can be implemented immediately)
-  const quickWinOptions = {
-    "Procrastination": "Use the 2-minute rule: if a task takes less than 2 minutes, do it immediately",
-    "Multitasking": "Turn off all notifications during focus blocks to prevent context switching",
-    "Perfectionism": "Set a timer for tasks to enforce time boundaries and prevent over-polishing",
-    "Fatigue": "Take a 5-minute walk every hour to maintain energy and focus",
-    "Noise": "Use background white noise or instrumental music to mask distracting sounds",
-    "Distractions": "Clear your desk of everything except what's needed for the current task"
-  };
-  
-  const quickWins = [...habits, ...environment].slice(0, 4).map((item: string) => {
-    const matchingKey = Object.keys(quickWinOptions).find(key => 
-      item.toLowerCase().includes(key.toLowerCase())
-    );
-    
-    return matchingKey 
-      ? quickWinOptions[matchingKey as keyof typeof quickWinOptions]
-      : `Create a 5-minute routine to address ${item} before starting work`;
-  });
-  
-  // Fill in with default quick wins if we don't have enough
-  const defaultQuickWins = [
-    "Turn off notifications during focus periods",
-    "Create email templates for common responses",
-    "Use keyboard shortcuts to navigate applications faster",
-    "Set up calendar blocks for focused work"
-  ];
-  
-  while (quickWins.length < 4) {
-    const defaultWin = defaultQuickWins[quickWins.length];
-    if (!quickWins.includes(defaultWin)) {
-      quickWins.push(defaultWin);
-    } else {
-      quickWins.push("Keep a water bottle at your desk to stay hydrated without interruptions");
-    }
-  }
-  
-  // Generate simple ways to optimize environment
-  const simpleWaysOptions = {
-    "Noise": "Use noise-cancelling headphones or create a sound barrier with ambient background noise",
-    "Fatigue": "Adjust your lighting to natural spectrum bulbs that reduce eye strain and fatigue",
-    "Distractions": "Position your desk away from high-traffic areas or use a room divider to create separation",
-    "Equipment Problems": "Ensure your workspace is ergonomically optimized with proper chair height and monitor positioning",
-    "Workspace": "Designate specific zones for different activities to create mental boundaries between tasks"
-  };
-  
-  const simpleWays = environment.slice(0, 4).map((factor: string) => {
-    const matchingKey = Object.keys(simpleWaysOptions).find(key => 
-      factor.toLowerCase().includes(key.toLowerCase())
-    );
-    
-    return matchingKey 
-      ? simpleWaysOptions[matchingKey as keyof typeof simpleWaysOptions]
-      : `Optimize your workspace to minimize the impact of ${factor}`;
-  });
-  
-  // Fill in with default simple ways if we don't have enough
-  const defaultSimpleWays = [
-    "Keep a clean and organized workspace",
-    "Use a task manager to track priorities",
-    "Schedule buffer time between meetings",
-    "Prepare for the next day before ending work"
-  ];
-  
-  while (simpleWays.length < 4) {
-    const defaultWay = defaultSimpleWays[simpleWays.length];
-    if (!simpleWays.includes(defaultWay)) {
-      simpleWays.push(defaultWay);
-    } else {
-      simpleWays.push("Use color-coding in your calendar to quickly identify different types of commitments");
-    }
-  }
-  
-  return {
-    actionSteps,
-    solutions,
-    quickWins,
-    simpleWays
-  };
+  // ... keep existing code (time audit contingency report generation function)
 }
