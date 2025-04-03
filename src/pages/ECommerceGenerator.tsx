@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Footerdemo } from "@/components/ui/footer-section";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Supplier {
   name: string;
@@ -31,42 +32,120 @@ interface Idea {
   features: string;
 }
 
+interface Industry {
+  value: string;
+  label: string;
+  isSelected: boolean;
+}
+
+interface Niche {
+  value: string;
+  label: string;
+  industry: string;
+  isSelected: boolean;
+}
+
 const ECommerceGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<Idea[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   
-  const [formData, setFormData] = useState({
-    industry: "",
-    passion: "",
-    market: "north-america",
-    features: ""
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData(prev => ({ ...prev, [id]: value }));
+  const [industries, setIndustries] = useState<Industry[]>([
+    { value: "Fashion", label: "Fashion", isSelected: false },
+    { value: "Technology", label: "Technology", isSelected: false },
+    { value: "Home & Garden", label: "Home & Garden", isSelected: false },
+    { value: "Other", label: "Other (Free text)", isSelected: false }
+  ]);
+  
+  const [otherIndustry, setOtherIndustry] = useState("");
+  const [market, setMarket] = useState("north-america");
+  
+  const allNiches: Niche[] = [
+    // Fashion niches
+    { value: "Sustainable Luxury Fashion", label: "Sustainable Luxury Fashion", industry: "Fashion", isSelected: false },
+    { value: "Vintage Couture", label: "Vintage Couture", industry: "Fashion", isSelected: false },
+    { value: "Custom-Made Apparel", label: "Custom-Made Apparel", industry: "Fashion", isSelected: false },
+    { value: "Luxury Accessories", label: "Luxury Accessories", industry: "Fashion", isSelected: false },
+    { value: "High-End Footwear", label: "High-End Footwear", industry: "Fashion", isSelected: false },
+    
+    // Technology niches
+    { value: "Smart Home Automation", label: "Smart Home Automation", industry: "Technology", isSelected: false },
+    { value: "High-Performance Computing", label: "High-Performance Computing", industry: "Technology", isSelected: false },
+    { value: "Virtual Reality Experiences", label: "Virtual Reality Experiences", industry: "Technology", isSelected: false },
+    { value: "Advanced Audio Systems", label: "Advanced Audio Systems", industry: "Technology", isSelected: false },
+    { value: "Robotics", label: "Robotics", industry: "Technology", isSelected: false },
+    
+    // Home & Garden niches
+    { value: "Luxury Outdoor Furniture", label: "Luxury Outdoor Furniture", industry: "Home & Garden", isSelected: false },
+    { value: "Smart Gardening Systems", label: "Smart Gardening Systems", industry: "Home & Garden", isSelected: false },
+    { value: "Bespoke Interior Design", label: "Bespoke Interior Design", industry: "Home & Garden", isSelected: false },
+    { value: "High-End Kitchen Appliances", label: "High-End Kitchen Appliances", industry: "Home & Garden", isSelected: false }
+  ];
+  
+  const [niches, setNiches] = useState<Niche[]>([]);
+  
+  // Update niches based on selected industries
+  useEffect(() => {
+    const selectedIndustries = industries.filter(ind => ind.isSelected).map(ind => ind.value);
+    const filteredNiches = allNiches.filter(niche => 
+      selectedIndustries.includes(niche.industry)
+    );
+    setNiches(filteredNiches);
+  }, [industries]);
+  
+  const handleIndustryChange = (industryValue: string, isChecked: boolean) => {
+    setIndustries(prev => 
+      prev.map(industry => 
+        industry.value === industryValue 
+          ? { ...industry, isSelected: isChecked } 
+          : industry
+      )
+    );
   };
-
-  const handleSelectChange = (value: string) => {
-    setFormData(prev => ({ ...prev, market: value }));
+  
+  const handleNicheChange = (nicheValue: string, isChecked: boolean) => {
+    setNiches(prev => 
+      prev.map(niche => 
+        niche.value === nicheValue 
+          ? { ...niche, isSelected: isChecked } 
+          : niche
+      )
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const selectedIndustries = industries
+      .filter(industry => industry.isSelected)
+      .map(industry => industry.value === "Other" ? otherIndustry : industry.value);
+    
+    const selectedNiches = niches
+      .filter(niche => niche.isSelected)
+      .map(niche => niche.value);
+    
+    if (selectedIndustries.length === 0 || selectedNiches.length === 0) {
+      toast({
+        title: "Missing selections",
+        description: "Please select at least one industry and niche.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     setError(null);
     
     try {
-      // Simulate API call with mocked data - in a real app this would be a fetch to an API
+      // Simulate API call with mocked data
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock data for demonstration
       const mockIdeas = [
         {
-          name: `Premium ${formData.passion} ${formData.industry} Collection`,
-          niche: `Luxury ${formData.passion} enthusiasts in ${formData.market === 'global' ? 'global markets' : formData.market}`,
+          name: `Premium ${selectedNiches[0]} ${selectedIndustries[0]} Collection`,
+          niche: `Luxury ${selectedNiches[0]} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
           supplierPriceRange: "$1000 - $2000",
           competitorPriceRange: "$2500 - $3500", 
           adSpend: "$50 - $100",
@@ -87,11 +166,11 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier3",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `High-end ${formData.features} focused ${formData.industry} products specifically designed for ${formData.passion} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
+          features: `High-end ${selectedNiches[0]} focused ${selectedIndustries[0]} products specifically designed for ${selectedNiches[0]} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
         },
         {
-          name: `Bespoke ${formData.industry} Solutions`,
-          niche: `Custom ${formData.passion} for discerning clients`,
+          name: `Bespoke ${selectedIndustries[0]} Solutions`,
+          niche: `Custom ${selectedNiches.length > 1 ? selectedNiches[1] : selectedNiches[0]} for discerning clients`,
           supplierPriceRange: "$3000 - $4000",
           competitorPriceRange: "$4500 - $5500", 
           adSpend: "$75 - $150",
@@ -112,11 +191,11 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier6",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `Customizable ${formData.industry} products with emphasis on ${formData.features}, perfect for the ${formData.passion} market segment that values personalization and unique offerings.`
+          features: `Customizable ${selectedIndustries[0]} products with emphasis on ${selectedNiches.length > 1 ? selectedNiches[1] : selectedNiches[0]}, perfect for the market segment that values personalization and unique offerings.`
         },
         {
-          name: `Exclusive ${formData.features} ${formData.industry}`,
-          niche: `Premium ${formData.passion} accessories`,
+          name: `Exclusive ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} ${selectedNiches.length > 2 ? selectedNiches[2] : selectedNiches[0]}`,
+          niche: `Premium ${selectedNiches.length > 0 ? selectedNiches[0] : ""} accessories`,
           supplierPriceRange: "$5000 - $6000",
           competitorPriceRange: "$6500 - $7500", 
           adSpend: "$100 - $200",
@@ -137,14 +216,14 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier9",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `High-margin ${formData.industry} focusing on the intersection of ${formData.passion} and ${formData.features}, creating a unique value proposition for upscale markets.`
+          features: `High-margin ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} focusing on the intersection of luxury and ${selectedNiches.length > 2 ? selectedNiches[2] : selectedNiches[0]}, creating a unique value proposition for upscale markets.`
         }
       ];
       
       setResults(mockIdeas);
       toast({
         title: "Ideas Generated!",
-        description: "We've created 3 e-commerce ideas based on your input.",
+        description: "We've created 3 e-commerce ideas based on your selections.",
       });
     } catch (err) {
       console.error("Error generating ideas:", err);
@@ -181,35 +260,72 @@ const ECommerceGenerator = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="industry">1. What industry or broad category are you interested in exploring?</Label>
-                  <Input 
-                    id="industry"
-                    placeholder="e.g., Fitness, Technology, Fashion"
-                    value={formData.industry}
-                    onChange={handleInputChange}
-                    required
-                  />
+                <div className="space-y-4">
+                  <Label>1. Select the industries or broad categories you are most passionate about or experienced in:</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {industries.map((industry) => (
+                      <div key={industry.value} className="flex items-center space-x-2">
+                        <Checkbox 
+                          id={`industry-${industry.value}`} 
+                          checked={industry.isSelected}
+                          onCheckedChange={(checked) => 
+                            handleIndustryChange(industry.value, checked === true)
+                          }
+                        />
+                        <Label 
+                          htmlFor={`industry-${industry.value}`}
+                          className="cursor-pointer"
+                        >
+                          {industry.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {industries.find(i => i.value === "Other")?.isSelected && (
+                    <Input 
+                      placeholder="Specify other industry" 
+                      value={otherIndustry}
+                      onChange={(e) => setOtherIndustry(e.target.value)}
+                      className="mt-2"
+                    />
+                  )}
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="passion">
-                    2. Within that industry, what specific hobbies, passions, or areas of expertise do you have?
-                  </Label>
-                  <Input 
-                    id="passion"
-                    placeholder="e.g., biohacking, vintage couture"
-                    value={formData.passion}
-                    onChange={handleInputChange}
-                    required
-                  />
+                <div className="space-y-4">
+                  <Label>2. Within the selected industries, what specific hobbies, interests, or niche areas do you find particularly fascinating?</Label>
+                  {niches.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {niches.map((niche) => (
+                        <div key={niche.value} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`niche-${niche.value}`}
+                            checked={niche.isSelected}
+                            onCheckedChange={(checked) => 
+                              handleNicheChange(niche.value, checked === true)
+                            }
+                          />
+                          <Label 
+                            htmlFor={`niche-${niche.value}`}
+                            className="cursor-pointer"
+                          >
+                            {niche.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground italic">
+                      Please select at least one industry to see relevant niche options.
+                    </p>
+                  )}
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="market">3. What's your preferred target market?</Label>
                   <Select
-                    value={formData.market}
-                    onValueChange={handleSelectChange}
+                    value={market}
+                    onValueChange={setMarket}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a market" />
@@ -221,19 +337,6 @@ const ECommerceGenerator = () => {
                       <SelectItem value="global">Global Affluent Buyers</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="features">
-                    4. Are there any specific features or qualities you'd prioritize in your products?
-                  </Label>
-                  <Input 
-                    id="features"
-                    placeholder="e.g., customization, eco-friendliness"
-                    value={formData.features}
-                    onChange={handleInputChange}
-                    required
-                  />
                 </div>
                 
                 <div className="pt-4">
