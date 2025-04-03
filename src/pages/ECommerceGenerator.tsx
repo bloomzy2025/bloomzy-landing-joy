@@ -38,11 +38,9 @@ interface Industry {
   isSelected: boolean;
 }
 
-interface Niche {
-  value: string;
-  label: string;
+interface NicheInput {
   industry: string;
-  isSelected: boolean;
+  value: string;
 }
 
 const ECommerceGenerator = () => {
@@ -55,43 +53,38 @@ const ECommerceGenerator = () => {
     { value: "Fashion", label: "Fashion", isSelected: false },
     { value: "Technology", label: "Technology", isSelected: false },
     { value: "Home & Garden", label: "Home & Garden", isSelected: false },
+    { value: "Automotive", label: "Automotive", isSelected: false },
+    { value: "Fitness & Wellness", label: "Fitness & Wellness", isSelected: false },
+    { value: "Arts & Crafts", label: "Arts & Crafts", isSelected: false },
+    { value: "Travel & Leisure", label: "Travel & Leisure", isSelected: false },
+    { value: "Food and Beverage", label: "Food and Beverage", isSelected: false },
+    { value: "Collectibles", label: "Collectibles", isSelected: false },
     { value: "Other", label: "Other (Free text)", isSelected: false }
   ]);
   
   const [otherIndustry, setOtherIndustry] = useState("");
   const [market, setMarket] = useState("north-america");
+  const [nicheInputs, setNicheInputs] = useState<NicheInput[]>([]);
   
-  const allNiches: Niche[] = [
-    // Fashion niches
-    { value: "Sustainable Luxury Fashion", label: "Sustainable Luxury Fashion", industry: "Fashion", isSelected: false },
-    { value: "Vintage Couture", label: "Vintage Couture", industry: "Fashion", isSelected: false },
-    { value: "Custom-Made Apparel", label: "Custom-Made Apparel", industry: "Fashion", isSelected: false },
-    { value: "Luxury Accessories", label: "Luxury Accessories", industry: "Fashion", isSelected: false },
-    { value: "High-End Footwear", label: "High-End Footwear", industry: "Fashion", isSelected: false },
-    
-    // Technology niches
-    { value: "Smart Home Automation", label: "Smart Home Automation", industry: "Technology", isSelected: false },
-    { value: "High-Performance Computing", label: "High-Performance Computing", industry: "Technology", isSelected: false },
-    { value: "Virtual Reality Experiences", label: "Virtual Reality Experiences", industry: "Technology", isSelected: false },
-    { value: "Advanced Audio Systems", label: "Advanced Audio Systems", industry: "Technology", isSelected: false },
-    { value: "Robotics", label: "Robotics", industry: "Technology", isSelected: false },
-    
-    // Home & Garden niches
-    { value: "Luxury Outdoor Furniture", label: "Luxury Outdoor Furniture", industry: "Home & Garden", isSelected: false },
-    { value: "Smart Gardening Systems", label: "Smart Gardening Systems", industry: "Home & Garden", isSelected: false },
-    { value: "Bespoke Interior Design", label: "Bespoke Interior Design", industry: "Home & Garden", isSelected: false },
-    { value: "High-End Kitchen Appliances", label: "High-End Kitchen Appliances", industry: "Home & Garden", isSelected: false }
-  ];
-  
-  const [niches, setNiches] = useState<Niche[]>([]);
-  
-  // Update niches based on selected industries
+  // Update niche inputs based on selected industries
   useEffect(() => {
     const selectedIndustries = industries.filter(ind => ind.isSelected).map(ind => ind.value);
-    const filteredNiches = allNiches.filter(niche => 
-      selectedIndustries.includes(niche.industry)
+    
+    // Remove niche inputs for industries that are no longer selected
+    setNicheInputs(prev => 
+      prev.filter(nicheInput => selectedIndustries.includes(nicheInput.industry))
     );
-    setNiches(filteredNiches);
+    
+    // Add new niche inputs for newly selected industries
+    const currentIndustries = nicheInputs.map(ni => ni.industry);
+    const newIndustries = selectedIndustries.filter(industry => !currentIndustries.includes(industry));
+    
+    if (newIndustries.length > 0) {
+      setNicheInputs(prev => [
+        ...prev,
+        ...newIndustries.map(industry => ({ industry, value: "" }))
+      ]);
+    }
   }, [industries]);
   
   const handleIndustryChange = (industryValue: string, isChecked: boolean) => {
@@ -104,12 +97,12 @@ const ECommerceGenerator = () => {
     );
   };
   
-  const handleNicheChange = (nicheValue: string, isChecked: boolean) => {
-    setNiches(prev => 
-      prev.map(niche => 
-        niche.value === nicheValue 
-          ? { ...niche, isSelected: isChecked } 
-          : niche
+  const handleNicheInputChange = (industry: string, value: string) => {
+    setNicheInputs(prev => 
+      prev.map(input => 
+        input.industry === industry 
+          ? { ...input, value } 
+          : input
       )
     );
   };
@@ -121,14 +114,18 @@ const ECommerceGenerator = () => {
       .filter(industry => industry.isSelected)
       .map(industry => industry.value === "Other" ? otherIndustry : industry.value);
     
-    const selectedNiches = niches
-      .filter(niche => niche.isSelected)
-      .map(niche => niche.value);
+    // Convert niche inputs to the format expected by the API
+    const nicheValues: Record<string, string> = {};
+    nicheInputs.forEach(input => {
+      if (input.value.trim()) {
+        nicheValues[input.industry] = input.value;
+      }
+    });
     
-    if (selectedIndustries.length === 0 || selectedNiches.length === 0) {
+    if (selectedIndustries.length === 0 || Object.keys(nicheValues).length === 0) {
       toast({
         title: "Missing selections",
-        description: "Please select at least one industry and niche.",
+        description: "Please select at least one industry and enter at least one niche.",
         variant: "destructive",
       });
       return;
@@ -144,8 +141,8 @@ const ECommerceGenerator = () => {
       // Mock data for demonstration
       const mockIdeas = [
         {
-          name: `Premium ${selectedNiches[0]} ${selectedIndustries[0]} Collection`,
-          niche: `Luxury ${selectedNiches[0]} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
+          name: `Premium ${Object.values(nicheValues)[0]} ${selectedIndustries[0]} Collection`,
+          niche: `Luxury ${Object.values(nicheValues)[0]} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
           supplierPriceRange: "$1000 - $2000",
           competitorPriceRange: "$2500 - $3500", 
           adSpend: "$50 - $100",
@@ -166,11 +163,11 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier3",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `High-end ${selectedNiches[0]} focused ${selectedIndustries[0]} products specifically designed for ${selectedNiches[0]} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
+          features: `High-end ${Object.values(nicheValues)[0]} focused ${selectedIndustries[0]} products specifically designed for ${Object.values(nicheValues)[0]} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
         },
         {
           name: `Bespoke ${selectedIndustries[0]} Solutions`,
-          niche: `Custom ${selectedNiches.length > 1 ? selectedNiches[1] : selectedNiches[0]} for discerning clients`,
+          niche: `Custom ${Object.values(nicheValues).length > 1 ? Object.values(nicheValues)[1] : Object.values(nicheValues)[0]} for discerning clients`,
           supplierPriceRange: "$3000 - $4000",
           competitorPriceRange: "$4500 - $5500", 
           adSpend: "$75 - $150",
@@ -191,11 +188,11 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier6",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `Customizable ${selectedIndustries[0]} products with emphasis on ${selectedNiches.length > 1 ? selectedNiches[1] : selectedNiches[0]}, perfect for the market segment that values personalization and unique offerings.`
+          features: `Customizable ${selectedIndustries[0]} products with emphasis on ${Object.values(nicheValues).length > 1 ? Object.values(nicheValues)[1] : Object.values(nicheValues)[0]}, perfect for the market segment that values personalization and unique offerings.`
         },
         {
-          name: `Exclusive ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} ${selectedNiches.length > 2 ? selectedNiches[2] : selectedNiches[0]}`,
-          niche: `Premium ${selectedNiches.length > 0 ? selectedNiches[0] : ""} accessories`,
+          name: `Exclusive ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} ${Object.values(nicheValues).length > 2 ? Object.values(nicheValues)[2] : Object.values(nicheValues)[0]}`,
+          niche: `Premium ${Object.values(nicheValues).length > 0 ? Object.values(nicheValues)[0] : ""} accessories`,
           supplierPriceRange: "$5000 - $6000",
           competitorPriceRange: "$6500 - $7500", 
           adSpend: "$100 - $200",
@@ -216,7 +213,7 @@ const ECommerceGenerator = () => {
             url: "https://example.com/supplier9",
             score: Math.floor(Math.random() * 20) + 70
           },
-          features: `High-margin ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} focusing on the intersection of luxury and ${selectedNiches.length > 2 ? selectedNiches[2] : selectedNiches[0]}, creating a unique value proposition for upscale markets.`
+          features: `High-margin ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} focusing on the intersection of luxury and ${Object.values(nicheValues).length > 2 ? Object.values(nicheValues)[2] : Object.values(nicheValues)[0]}, creating a unique value proposition for upscale markets.`
         }
       ];
       
@@ -294,29 +291,22 @@ const ECommerceGenerator = () => {
                 
                 <div className="space-y-4">
                   <Label>2. Within the selected industries, what specific hobbies, interests, or niche areas do you find particularly fascinating?</Label>
-                  {niches.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {niches.map((niche) => (
-                        <div key={niche.value} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`niche-${niche.value}`}
-                            checked={niche.isSelected}
-                            onCheckedChange={(checked) => 
-                              handleNicheChange(niche.value, checked === true)
-                            }
+                  {nicheInputs.length > 0 ? (
+                    <div className="space-y-4">
+                      {nicheInputs.map((nicheInput) => (
+                        <div key={nicheInput.industry} className="space-y-2">
+                          <Label>{nicheInput.industry} Specific Niches:</Label>
+                          <Input
+                            placeholder={`Enter specific hobbies/niches in ${nicheInput.industry}`}
+                            value={nicheInput.value}
+                            onChange={(e) => handleNicheInputChange(nicheInput.industry, e.target.value)}
                           />
-                          <Label 
-                            htmlFor={`niche-${niche.value}`}
-                            className="cursor-pointer"
-                          >
-                            {niche.label}
-                          </Label>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <p className="text-muted-foreground italic">
-                      Please select at least one industry to see relevant niche options.
+                      Please select at least one industry to enter relevant niche options.
                     </p>
                   )}
                 </div>
