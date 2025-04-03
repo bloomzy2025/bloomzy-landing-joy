@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Supplier {
   name: string;
@@ -66,16 +66,13 @@ const ECommerceGenerator = () => {
   const [market, setMarket] = useState("north-america");
   const [nicheInputs, setNicheInputs] = useState<NicheInput[]>([]);
   
-  // Update niche inputs based on selected industries
   useEffect(() => {
     const selectedIndustries = industries.filter(ind => ind.isSelected).map(ind => ind.value);
     
-    // Remove niche inputs for industries that are no longer selected
     setNicheInputs(prev => 
       prev.filter(nicheInput => selectedIndustries.includes(nicheInput.industry))
     );
     
-    // Add new niche inputs for newly selected industries
     const currentIndustries = nicheInputs.map(ni => ni.industry);
     const newIndustries = selectedIndustries.filter(industry => !currentIndustries.includes(industry));
     
@@ -114,15 +111,16 @@ const ECommerceGenerator = () => {
       .filter(industry => industry.isSelected)
       .map(industry => industry.value === "Other" ? otherIndustry : industry.value);
     
-    // Convert niche inputs to the format expected by the API
-    const nicheValues: Record<string, string> = {};
+    const nichesObj: Record<string, string> = {};
     nicheInputs.forEach(input => {
       if (input.value.trim()) {
-        nicheValues[input.industry] = input.value;
+        nichesObj[input.industry] = input.value;
       }
     });
     
-    if (selectedIndustries.length === 0 || Object.keys(nicheValues).length === 0) {
+    const nichesList = Object.values(nichesObj).filter(Boolean);
+    
+    if (selectedIndustries.length === 0 || nichesList.length === 0) {
       toast({
         title: "Missing selections",
         description: "Please select at least one industry and enter at least one niche.",
@@ -135,94 +133,27 @@ const ECommerceGenerator = () => {
     setError(null);
     
     try {
-      // Simulate API call with mocked data
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock data for demonstration
-      const mockIdeas = [
-        {
-          name: `Premium ${Object.values(nicheValues)[0]} ${selectedIndustries[0]} Collection`,
-          niche: `Luxury ${Object.values(nicheValues)[0]} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
-          supplierPriceRange: "$1000 - $2000",
-          competitorPriceRange: "$2500 - $3500", 
-          adSpend: "$50 - $100",
-          profitMargin: "$1500",
-          totalProfitMargin: "$1400 - $1450",
-          topSupplier1: {
-            name: "Top Quality Suppliers Inc.",
-            url: "https://example.com/supplier1",
-            score: Math.floor(Math.random() * 20) + 80
-          },
-          topSupplier2: {
-            name: "Premium Materials Co.",
-            url: "https://example.com/supplier2",
-            score: Math.floor(Math.random() * 20) + 75
-          },
-          topSupplier3: {
-            name: "Luxury Components Ltd.",
-            url: "https://example.com/supplier3",
-            score: Math.floor(Math.random() * 20) + 70
-          },
-          features: `High-end ${Object.values(nicheValues)[0]} focused ${selectedIndustries[0]} products specifically designed for ${Object.values(nicheValues)[0]} enthusiasts. Targets affluent consumers looking for premium quality and exclusivity.`
-        },
-        {
-          name: `Bespoke ${selectedIndustries[0]} Solutions`,
-          niche: `Custom ${Object.values(nicheValues).length > 1 ? Object.values(nicheValues)[1] : Object.values(nicheValues)[0]} for discerning clients`,
-          supplierPriceRange: "$3000 - $4000",
-          competitorPriceRange: "$4500 - $5500", 
-          adSpend: "$75 - $150",
-          profitMargin: "$1500",
-          totalProfitMargin: "$1350 - $1425",
-          topSupplier1: {
-            name: "Artisan Crafters Co.",
-            url: "https://example.com/supplier4",
-            score: Math.floor(Math.random() * 20) + 80
-          },
-          topSupplier2: {
-            name: "Custom Works Manufacturing",
-            url: "https://example.com/supplier5",
-            score: Math.floor(Math.random() * 20) + 75
-          },
-          topSupplier3: {
-            name: "Bespoke Solutions Group",
-            url: "https://example.com/supplier6",
-            score: Math.floor(Math.random() * 20) + 70
-          },
-          features: `Customizable ${selectedIndustries[0]} products with emphasis on ${Object.values(nicheValues).length > 1 ? Object.values(nicheValues)[1] : Object.values(nicheValues)[0]}, perfect for the market segment that values personalization and unique offerings.`
-        },
-        {
-          name: `Exclusive ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} ${Object.values(nicheValues).length > 2 ? Object.values(nicheValues)[2] : Object.values(nicheValues)[0]}`,
-          niche: `Premium ${Object.values(nicheValues).length > 0 ? Object.values(nicheValues)[0] : ""} accessories`,
-          supplierPriceRange: "$5000 - $6000",
-          competitorPriceRange: "$6500 - $7500", 
-          adSpend: "$100 - $200",
-          profitMargin: "$1500",
-          totalProfitMargin: "$1300 - $1400",
-          topSupplier1: {
-            name: "Luxury Manufacturing Ltd.",
-            url: "https://example.com/supplier7",
-            score: Math.floor(Math.random() * 20) + 80
-          },
-          topSupplier2: {
-            name: "Elite Components International",
-            url: "https://example.com/supplier8",
-            score: Math.floor(Math.random() * 20) + 75
-          },
-          topSupplier3: {
-            name: "Premium Sourcing Partners",
-            url: "https://example.com/supplier9",
-            score: Math.floor(Math.random() * 20) + 70
-          },
-          features: `High-margin ${selectedIndustries.length > 1 ? selectedIndustries[1] : selectedIndustries[0]} focusing on the intersection of luxury and ${Object.values(nicheValues).length > 2 ? Object.values(nicheValues)[2] : Object.values(nicheValues)[0]}, creating a unique value proposition for upscale markets.`
+      const { data, error } = await supabase.functions.invoke('generate-time-audit-report', {
+        body: {
+          formData: {
+            requestType: 'ecommerce-ideas',
+            industries: selectedIndustries,
+            niches: nichesList,
+            market: market
+          }
         }
-      ];
+      });
+
+      if (error) {
+        throw new Error(`Edge function error: ${error.message}`);
+      }
       
-      setResults(mockIdeas);
+      setResults(data);
       toast({
         title: "Ideas Generated!",
         description: "We've created 3 e-commerce ideas based on your selections.",
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error generating ideas:", err);
       setError("An error occurred while generating ideas. Please try again.");
       toast({

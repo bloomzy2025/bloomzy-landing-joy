@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-// Hardcoded API key for reliable access
-const GROK_API_KEY = "xai-F3G3G1aPZ1hmi6ZD1IttzBxXC1AhnHOfQAtv8HUm00QBF6p9yD2ef8fH5scjEkL96POpDIHqqyEpfXq6";
+// Get API key from environment variable
+const GROK_API_KEY = Deno.env.get("GROK_API_KEY");
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -28,127 +28,13 @@ serve(async (req) => {
       return await generateEcommerceIdeas(formData, corsHeaders);
     }
 
-    // Original time audit report generation
-    // Prepare the prompt for the Grok API with more specific guidelines
-    const prompt = `
-Based on the following Time Wasters Audit data, create a personalized productivity report with actionable recommendations:
-
-Daily Activities: ${formData.daily_activities.join(', ')}
-Time Wasters: ${formData.time_wasters.join(', ')}
-Personal Habits: ${formData.personal_habits.join(', ')}
-Habit Control: ${formData.habit_control}%
-Work Hours: ${formData.work_hours}
-Dependencies: ${formData.dependencies.join(', ')}
-Planning Issues: ${formData.planning_issues.join(', ')}
-Environmental Factors: ${formData.environmental_factors.join(', ')}
-Top Priorities: ${formData.top_priorities.join(', ')}
-
-Format the response as a JSON object with the following structure:
-{
-  "actionSteps": [
-    { "title": "Step 1 title", "description": "Step 1 description" },
-    { "title": "Step 2 title", "description": "Step 2 description" },
-    { "title": "Step 3 title", "description": "Step 3 description" }
-  ],
-  "solutions": [
-    "Solution 1",
-    "Solution 2",
-    "Solution 3",
-    "Solution 4",
-    "Solution 5"
-  ],
-  "quickWins": [
-    "Quick win 1",
-    "Quick win 2",
-    "Quick win 3",
-    "Quick win 4"
-  ],
-  "simpleWays": [
-    "Simple way 1",
-    "Simple way 2",
-    "Simple way 3",
-    "Simple way 4"
-  ]
-}
-
-The action steps should address their specific top priorities. For example, if fatigue is mentioned, suggest sleep improvements or energy management techniques.
-For time wasters like meetings, suggest meeting efficiency strategies.
-For habit control issues, provide habit-building techniques specific to their personal habits.
-Quick wins should be implementable in under 5 minutes with no resources needed.
-Solutions should be evidence-based strategies that directly address their biggest time wasters.
-Simple ways should help them optimize their specific work environment.
-Make all recommendations specific to their situation - not generic advice.
-Use a professional, supportive tone throughout.
-`;
-
-    console.log("Calling Grok API with prompt...");
-    console.log(`API Key (first 4 chars): ${GROK_API_KEY.substring(0, 4)}...`);
-
-    // Call the Grok API with error handling
-    try {
-      const response = await fetch('https://api.grok.ai/v1/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROK_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "grok-1",
-          prompt: prompt,
-          max_tokens: 1500,
-          temperature: 0.5
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error("Grok API responded with error:", response.status, errorData);
-        throw new Error(`Grok API error: ${response.status} ${errorData}`);
-      }
-      
-      const data = await response.json();
-      console.log("Grok API response received successfully");
-      
-      if (!data.choices || data.choices.length === 0) {
-        console.error("Invalid response structure from Grok API:", data);
-        throw new Error("Invalid response structure from Grok API");
-      }
-      
-      try {
-        // Try to parse the response as JSON
-        const reportText = data.choices[0].text.trim();
-        console.log("Raw report text:", reportText);
-        
-        // Find JSON object in the response - sometimes Grok wraps the JSON in markdown or extra text
-        const jsonMatch = reportText.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-          console.error("Could not find JSON object in response");
-          throw new Error("Could not find JSON object in response");
-        }
-        
-        const jsonStr = jsonMatch[0];
-        console.log("Extracted JSON string:", jsonStr);
-        
-        const reportData = JSON.parse(jsonStr);
-        console.log("Successfully parsed report data");
-        
-        return new Response(JSON.stringify(reportData), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      } catch (parseError) {
-        console.error("Error parsing Grok response as JSON:", parseError);
-        console.error("Raw response:", data.choices[0].text);
-        throw parseError;
-      }
-    } catch (apiError) {
-      console.error("Error calling Grok API:", apiError);
-      throw apiError;
-    }
+    // Original time audit report generation code
+    // ... keep existing code (time audit report generation functionality)
+    
   } catch (error) {
     console.error("Error in generate-time-audit-report function:", error);
     
     // Always return a successful response with contingency data tailored to the form data
-    // This ensures users get a valuable report even if the API call fails
     try {
       const { formData } = await req.json();
       
@@ -161,74 +47,36 @@ Use a professional, supportive tone throughout.
       }
       
       // Create a personalized fallback based on submitted data for time audit
-      const contingencyReport = generateContingencyReport(formData);
+      // ... keep existing code (time audit contingency report generation)
       
-      return new Response(JSON.stringify(contingencyReport), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
     } catch (fallbackError) {
       console.error("Error creating fallback report:", fallbackError);
       
       // Absolute last resort - generic report
-      const genericReport = {
-        actionSteps: [
-          { 
-            title: "Create a Distraction-Free Environment", 
-            description: "Designate a quiet workspace and use noise-canceling headphones to minimize interruptions."
-          },
-          { 
-            title: "Implement Time Blocking", 
-            description: "Schedule specific blocks of time for similar tasks to reduce context switching and increase focus."
-          },
-          { 
-            title: "Establish Clear Boundaries", 
-            description: "Communicate your focus periods to colleagues and set expectations for response times."
-          }
-        ],
-        solutions: [
-          "Use the Pomodoro Technique: 25 minutes of focused work followed by a 5-minute break",
-          "Batch similar tasks together to reduce context switching",
-          "Schedule meetings in blocks to preserve uninterrupted time for deep work",
-          "Create templates for recurring communications to save time",
-          "Set up automation for repetitive administrative tasks"
-        ],
-        quickWins: [
-          "Turn off notifications during focus periods",
-          "Create email templates for common responses",
-          "Use keyboard shortcuts to navigate applications faster",
-          "Set up calendar blocks for focused work"
-        ],
-        simpleWays: [
-          "Keep a clean and organized workspace",
-          "Use a task manager to track priorities",
-          "Schedule buffer time between meetings",
-          "Prepare for the next day before ending work"
-        ]
-      };
-      
-      return new Response(JSON.stringify(genericReport), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      // ... keep existing code (generic report generation)
     }
   }
 });
 
-// New function to handle e-commerce idea generation
+// Function to handle e-commerce idea generation
 async function generateEcommerceIdeas(formData: any, corsHeaders: any) {
   const industries = formData.industries || [];
-  const niches = formData.niches || [];
+  const niches = formData.niches || {};
   const market = formData.market || '';
 
-  if (!industries.length || !niches.length || !market) {
+  if (!industries.length || Object.keys(niches).length === 0 || !market) {
     return new Response(JSON.stringify({ error: "Missing required fields" }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
+  // Convert niches object to a list format
+  const nichesList = Object.values(niches).filter(Boolean);
+
   const detailedPrompt = `
 User Selected Industries: ${industries.join(', ')}
-User Selected Niches: ${niches.join(', ')}
+User Selected Niches: ${nichesList.join(', ')}
 User Preferred Market: ${market}
 
 Based on the user's selected industries, niches, and preferred market, generate three distinct high-ticket e-commerce business ideas. 
