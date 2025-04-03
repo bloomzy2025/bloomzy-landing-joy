@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Ranking module for e-commerce product ideas.
@@ -16,6 +15,27 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+def recommend_high_ticket(query):
+    # Dictionary mapping query keywords to high-ticket recommendations
+    recommendation_map = {
+        'luxury watches': 'High end watch',
+        'industrial machinery': 'Industrial machinery',
+        'premium leather goods': 'Designer handbag',
+        'heavy duty tools': 'Professional power tools',
+        'custom furniture': 'Bespoke furniture set'
+    }
+    
+    # Convert query to lowercase for case-insensitive matching
+    query = query.lower().strip()
+    
+    # Check if query matches any key in the recommendation map
+    for key in recommendation_map:
+        if key in query:
+            return recommendation_map[key]
+    
+    # Default recommendation if no specific match is found
+    return f"Premium {query.split()[-1]}"
 
 class IdeaRanker:
     """Ranks and scores e-commerce product ideas based on various metrics."""
