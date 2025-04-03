@@ -47,6 +47,11 @@ export function HeaderNavigation({
                 Maker vs Manager Quiz
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/e-commerce-generator" className="w-full">
+                E-Commerce Generator
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

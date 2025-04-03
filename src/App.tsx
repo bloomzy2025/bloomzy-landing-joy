@@ -16,6 +16,7 @@ import Pricing from "./pages/Pricing";
 import EnterpriseContact from "./pages/EnterpriseContact";
 import MakerManagerQuiz from "./pages/MakerManagerQuiz";
 import TimeWastersAudit from "./pages/TimeWastersAudit";
+import ECommerceGenerator from "./pages/ECommerceGenerator";
 import AuthCallback from "./pages/AuthCallback";
 import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -43,6 +44,7 @@ function App() {
               <Route path="/enterprise" element={<EnterpriseContact />} />
               <Route path="/maker-manager-quiz" element={<MakerManagerQuiz />} />
               <Route path="/time-wasters-audit" element={<TimeWastersAudit />} />
+              <Route path="/e-commerce-generator" element={<ECommerceGenerator />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
