@@ -49,6 +49,7 @@ const ECommerceGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<Idea[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [rawResponse, setRawResponse] = useState<any>(null);
   const { toast } = useToast();
   
   const [industries, setIndustries] = useState<Industry[]>([
@@ -106,6 +107,88 @@ const ECommerceGenerator = () => {
     );
   };
 
+  const validateIdeas = (data: any[]): boolean => {
+    if (!Array.isArray(data)) {
+      console.error("Validation failed: Data is not an array", data);
+      return false;
+    }
+
+    for (const item of data) {
+      if (
+        !item.name || typeof item.name !== 'string' ||
+        !item.niche || typeof item.niche !== 'string' ||
+        !item.supplierPriceRange || typeof item.supplierPriceRange !== 'string' ||
+        !item.competitorPriceRange || typeof item.competitorPriceRange !== 'string' ||
+        !item.adSpend || typeof item.adSpend !== 'string' ||
+        !item.profitMargin || typeof item.profitMargin !== 'string' ||
+        !item.totalProfitMargin || typeof item.totalProfitMargin !== 'string' ||
+        !item.features || typeof item.features !== 'string'
+      ) {
+        console.error("Validation failed: Missing or invalid required fields", item);
+        return false;
+      }
+
+      // Verify supplier objects
+      const suppliers = ['topSupplier1', 'topSupplier2', 'topSupplier3'];
+      for (const supplier of suppliers) {
+        if (
+          !item[supplier] ||
+          !item[supplier].name || typeof item[supplier].name !== 'string' ||
+          !item[supplier].url || typeof item[supplier].url !== 'string' ||
+          typeof item[supplier].score !== 'number'
+        ) {
+          console.error(`Validation failed: Missing or invalid ${supplier} data`, item[supplier]);
+          return false;
+        }
+      }
+    }
+    console.log("Data validation passed");
+    return true;
+  };
+
+  const processApiResponse = (data: any): Idea[] => {
+    console.log("Processing API response:", JSON.stringify(data, null, 2));
+    
+    if (!Array.isArray(data)) {
+      console.error("Data is not an array:", data);
+      throw new Error("Invalid data format: response is not an array");
+    }
+    
+    return data.map((item: any) => {
+      // Ensure supplier objects are properly structured
+      const processSupplier = (supplier: any, defaultName: string): Supplier => {
+        if (!supplier || typeof supplier !== 'object') {
+          console.log(`Creating default supplier for ${defaultName}`);
+          return {
+            name: defaultName,
+            url: "https://example.com",
+            score: Math.floor(80 + Math.random() * 15)
+          };
+        }
+        
+        return {
+          name: supplier.name || defaultName,
+          url: supplier.url || "https://example.com",
+          score: typeof supplier.score === 'number' ? supplier.score : Math.floor(80 + Math.random() * 15)
+        };
+      };
+      
+      return {
+        name: item.name || "Premium Product",
+        niche: item.niche || "Luxury market",
+        supplierPriceRange: item.supplierPriceRange || "$1000 - $2000",
+        competitorPriceRange: item.competitorPriceRange || "$2500 - $3500",
+        adSpend: item.adSpend || "$50 - $100",
+        profitMargin: item.profitMargin || "$1500",
+        totalProfitMargin: item.totalProfitMargin || "$1400 - $1450",
+        features: item.features || "High-quality premium product for discerning customers.",
+        topSupplier1: processSupplier(item.topSupplier1, "Premium Supplier Inc."),
+        topSupplier2: processSupplier(item.topSupplier2, "Quality Manufacturing Co."),
+        topSupplier3: processSupplier(item.topSupplier3, "Reliable Trading Ltd.")
+      };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -134,42 +217,51 @@ const ECommerceGenerator = () => {
     
     setIsLoading(true);
     setError(null);
+    setRawResponse(null);
+    
+    const requestData = {
+      requestType: 'ecommerce-ideas',
+      industries: selectedIndustries,
+      niches: nichesList,
+      market: market
+    };
+    
+    console.log("Submitting request data:", JSON.stringify(requestData, null, 2));
     
     try {
-      console.log("Submitting data:", {
-        requestType: 'ecommerce-ideas',
-        industries: selectedIndustries,
-        niches: nichesList,
-        market: market
+      const { data, error: apiError } = await supabase.functions.invoke('generate-time-audit-report', {
+        body: requestData
       });
+
+      console.log("Raw API response:", JSON.stringify(data, null, 2));
+      setRawResponse(data);
       
-      const { data, error } = await supabase.functions.invoke('generate-time-audit-report', {
-        body: {
-          requestType: 'ecommerce-ideas',
-          industries: selectedIndustries,
-          niches: nichesList,
-          market: market
-        }
-      });
-
-      console.log("Response received:", { data, error });
-
-      if (error) {
-        throw new Error(`Edge function error: ${error.message}`);
+      if (apiError) {
+        console.error("Edge function error:", apiError);
+        throw new Error(`Edge function error: ${apiError.message}`);
       }
       
-      if (!data || !Array.isArray(data)) {
+      if (!data) {
+        console.error("No data returned from edge function");
+        throw new Error("No data returned from server");
+      }
+
+      // Validate the data structure
+      if (validateIdeas(data)) {
+        // Process and normalize the data
+        const processedData = processApiResponse(data);
+        setResults(processedData);
+        toast({
+          title: "Ideas Generated!",
+          description: "We've created e-commerce ideas based on your selections.",
+        });
+      } else {
+        console.error("Data validation failed, using fallback", data);
         throw new Error("Invalid data format received from server");
       }
-      
-      setResults(data);
-      toast({
-        title: "Ideas Generated!",
-        description: "We've created e-commerce ideas based on your selections.",
-      });
     } catch (err: any) {
       console.error("Error generating ideas:", err);
-      setError("An error occurred while generating ideas. Please try again.");
+      setError(`Error: ${err.message || "An unknown error occurred"}`);
       toast({
         title: "Error",
         description: "Failed to generate e-commerce ideas. Using fallback data.",
@@ -278,6 +370,13 @@ const ECommerceGenerator = () => {
               Generate high-ticket e-commerce product ideas tailored to your interests and expertise
             </p>
           </div>
+          
+          {rawResponse && import.meta.env.DEV && (
+            <div className="mb-4 p-4 bg-gray-100 rounded overflow-auto max-h-60">
+              <h3 className="text-sm font-bold mb-2">Debug: Raw API Response</h3>
+              <pre className="text-xs">{JSON.stringify(rawResponse, null, 2)}</pre>
+            </div>
+          )}
           
           <Card className="mb-8">
             <CardHeader>

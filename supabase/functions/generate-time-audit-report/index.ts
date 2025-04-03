@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 // Get API key from environment variable
@@ -15,31 +16,38 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  console.log("Edge function called: generate-time-audit-report");
+  
   try {
     let requestData;
     try {
       requestData = await req.json();
+      console.log("Received request data:", JSON.stringify(requestData, null, 2));
     } catch (jsonError) {
       console.error("Error parsing request JSON:", jsonError);
       throw new Error("Invalid JSON in request body");
     }
     
-    console.log("Received request data:", requestData);
-    
     // Extract formData from the request if it exists
     const formData = requestData.formData || requestData;
-    console.log("Processing form data:", formData);
+    console.log("Processing form data:", JSON.stringify(formData, null, 2));
 
     // Check if this is an e-commerce idea generation request
     if (formData.requestType === 'ecommerce-ideas') {
       console.log("Processing e-commerce idea generation request");
       
       try {
-        return await generateEcommerceIdeas(formData, corsHeaders);
+        const result = await generateEcommerceIdeas(formData, corsHeaders);
+        console.log("Successfully generated e-commerce ideas");
+        return result;
       } catch (ecommerceError) {
-        console.error("Error in e-commerce idea generation, using fallback:", ecommerceError);
+        console.error("Error in e-commerce idea generation:", ecommerceError);
+        console.log("Using fallback data");
+        
         // Always fall back to contingency data
         const ecommerceContingencyReport = generateEcommerceContingencyReport(formData);
+        console.log("Generated fallback data:", JSON.stringify(ecommerceContingencyReport, null, 2));
+        
         return new Response(JSON.stringify(ecommerceContingencyReport), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200 // Ensure we return 200 even for fallback data
@@ -67,7 +75,7 @@ serve(async (req) => {
       summary: `Time audit report for task: ${task}. Time spent: ${timeSpent}. Distractions: ${distractions || "None"}. Energy level: ${energyLevel || "Medium"}. Notes: ${notes || "No notes provided"}`,
     };
 
-    console.log("Generated time audit report:", report);
+    console.log("Generated time audit report:", JSON.stringify(report, null, 2));
     return new Response(JSON.stringify(report), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -80,6 +88,7 @@ serve(async (req) => {
       let requestData;
       try {
         requestData = await req.clone().json();
+        console.log("Cloned request data for fallback:", JSON.stringify(requestData, null, 2));
       } catch (cloneError) {
         console.error("Error cloning request:", cloneError);
         // Create generic fallback if we can't clone the request
@@ -89,6 +98,8 @@ serve(async (req) => {
           niches: ["Premium Products"],
           market: "global"
         };
+        console.log("Using generic fallback data:", JSON.stringify(genericData, null, 2));
+        
         const genericContingency = generateEcommerceContingencyReport(genericData);
         return new Response(JSON.stringify(genericContingency), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -97,11 +108,14 @@ serve(async (req) => {
       }
       
       const formData = requestData.formData || requestData;
+      console.log("Using form data for fallback:", JSON.stringify(formData, null, 2));
       
       // If this is an e-commerce request, use the e-commerce fallback
       if (formData.requestType === 'ecommerce-ideas') {
         console.log("Using e-commerce fallback data");
         const ecommerceContingencyReport = generateEcommerceContingencyReport(formData);
+        console.log("Generated e-commerce fallback:", JSON.stringify(ecommerceContingencyReport, null, 2));
+        
         return new Response(JSON.stringify(ecommerceContingencyReport), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200
@@ -118,7 +132,8 @@ serve(async (req) => {
         notes: "This is a fallback report due to an error.",
         summary: `Fallback time audit report for task: ${task || "Generic Task"}. Time spent: ${timeSpent || "Unknown"}.`,
       };
-      console.log("Generated fallback time audit report:", fallbackReport);
+      console.log("Generated fallback time audit report:", JSON.stringify(fallbackReport, null, 2));
+      
       return new Response(JSON.stringify(fallbackReport), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200
@@ -128,6 +143,8 @@ serve(async (req) => {
       console.error("Error creating fallback report:", fallbackError);
       
       // Absolute last resort - generic report
+      console.log("Using last resort fallback data");
+      
       const genericFallbackReport = [
         {
           name: "Premium Collection",
@@ -154,6 +171,8 @@ serve(async (req) => {
 
 // Function to handle e-commerce idea generation
 async function generateEcommerceIdeas(formData: any, corsHeaders: any) {
+  console.log("Starting generateEcommerceIdeas function");
+  
   const industries = formData.industries || [];
   const niches = formData.niches || [];
   const market = formData.market || '';
@@ -197,50 +216,30 @@ For each of the three ideas, provide the information in a JSON format as follows
     "adSpend": "Ad Spend Range 1",
     "profitMargin": "Profit Margin 1",
     "totalProfitMargin": "Total Profit Margin 1",
-    "supplier1name": "Supplier Name 1",
-    "supplier1url": "Supplier URL 1",
-    "supplier2name": "Supplier Name 2",
-    "supplier2url": "Supplier URL 2",
-    "supplier3name": "Supplier Name 3",
-    "supplier3url": "Supplier URL 3",
+    "topSupplier1": {
+      "name": "Supplier Name 1",
+      "url": "Supplier URL 1",
+      "score": 95
+    },
+    "topSupplier2": {
+      "name": "Supplier Name 2", 
+      "url": "Supplier URL 2",
+      "score": 88
+    },
+    "topSupplier3": {
+      "name": "Supplier Name 3",
+      "url": "Supplier URL 3", 
+      "score": 82
+    },
     "features": "Features Description 1"
   },
-  {
-    "name": "Product Name 2",
-    "niche": "Micro-Niche 2",
-    "supplierPriceRange": "Price Range 2",
-    "competitorPriceRange": "Price Range 2",
-    "adSpend": "Ad Spend Range 2",
-    "profitMargin": "Profit Margin 2",
-    "totalProfitMargin": "Total Profit Margin 2",
-    "supplier1name": "Supplier Name 1",
-    "supplier1url": "Supplier URL 1",
-    "supplier2name": "Supplier Name 2",
-    "supplier2url": "Supplier URL 2",
-    "supplier3name": "Supplier Name 3",
-    "supplier3url": "Supplier URL 3",
-    "features": "Features Description 2"
-  },
-  {
-    "name": "Product Name 3",
-    "niche": "Micro-Niche 3",
-    "supplierPriceRange": "Price Range 3",
-    "competitorPriceRange": "Price Range 3",
-    "adSpend": "Ad Spend Range 3",
-    "profitMargin": "Profit Margin 3",
-    "totalProfitMargin": "Total Profit Margin 3",
-    "supplier1name": "Supplier Name 1",
-    "supplier1url": "Supplier URL 1",
-    "supplier2name": "Supplier Name 2",
-    "supplier2url": "Supplier URL 2",
-    "supplier3name": "Supplier Name 3",
-    "supplier3url": "Supplier URL 3",
-    "features": "Features Description 3"
-  }
+  // Repeat for other ideas
 ]
+
+Return ONLY the JSON, no introduction or explanation.
 `;
 
-  console.log("Calling Grok API with e-commerce prompt...");
+  console.log("Calling Grok API with prompt");
 
   try {
     // Check if API key exists
@@ -248,6 +247,8 @@ For each of the three ideas, provide the information in a JSON format as follows
       console.error("GROK API key is not configured");
       throw new Error('GROK API key is not configured');
     }
+
+    console.log("Using Grok API key (masked):", GROK_API_KEY.substring(0, 10) + "...");
 
     const response = await fetch('https://api.grok.ai/v1/completions', {
       method: 'POST',
@@ -264,78 +265,85 @@ For each of the three ideas, provide the information in a JSON format as follows
     });
     
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error("Grok API responded with error:", response.status, errorData);
-      throw new Error(`Grok API error: ${response.status} ${errorData}`);
+      const errorText = await response.text();
+      console.error("Grok API responded with error:", response.status, errorText);
+      throw new Error(`Grok API error: ${response.status} ${errorText}`);
     }
     
     const data = await response.json();
-    console.log("Grok API response received successfully");
+    console.log("Grok API response received");
     
     if (!data.choices || data.choices.length === 0) {
-      console.error("Invalid response structure from Grok API:", data);
+      console.error("Invalid response structure from Grok API:", JSON.stringify(data, null, 2));
       throw new Error("Invalid response structure from Grok API");
     }
     
     // Parse the Grok response
     const responseText = data.choices[0].text.trim();
-    console.log("Raw e-commerce response text:", responseText);
+    console.log("Raw response text length:", responseText.length);
+    console.log("First 200 chars of response:", responseText.substring(0, 200));
     
     // Find JSON array in the response
     const jsonMatch = responseText.match(/\[\s*\{[\s\S]*\}\s*\]/);
     if (!jsonMatch) {
-      console.error("Could not find JSON array in e-commerce response");
-      throw new Error("Could not find JSON array in e-commerce response");
+      console.error("Could not find JSON array in response");
+      throw new Error("Could not find JSON array in response");
     }
     
     const jsonStr = jsonMatch[0];
-    console.log("Extracted e-commerce JSON string:", jsonStr);
+    console.log("Extracted JSON string length:", jsonStr.length);
     
     let ideas;
     try {
       ideas = JSON.parse(jsonStr);
-      console.log("Successfully parsed e-commerce ideas");
+      console.log("Successfully parsed ideas, count:", ideas.length);
     } catch (parseError) {
       console.error("Error parsing JSON response:", parseError);
+      console.log("Problematic JSON string:", jsonStr);
       throw new Error("Failed to parse API response");
     }
     
     // Process the ideas to format supplier information
-    const processedIdeas = ideas.map((idea: any) => {
-      // Create supplier objects
+    const processedIdeas = ideas.map((idea: any, index: number) => {
+      console.log(`Processing idea ${index + 1}`);
+      
+      // Create supplier objects with proper structure
       const topSupplier1 = {
-        name: idea.supplier1name || "Premium Supplier Inc.",
-        url: idea.supplier1url || "https://alibaba.com",
-        score: idea.supplier1score || (85 + Math.floor(Math.random() * 15)) // Random score between 85-99
+        name: idea.topSupplier1?.name || idea.supplier1name || "Premium Supplier Inc.",
+        url: idea.topSupplier1?.url || idea.supplier1url || "https://alibaba.com",
+        score: idea.topSupplier1?.score || idea.supplier1score || (85 + Math.floor(Math.random() * 15))
       };
       
       const topSupplier2 = {
-        name: idea.supplier2name || "Quality Manufacturer Co.",
-        url: idea.supplier2url || "https://globalsources.com",
-        score: idea.supplier2score || (75 + Math.floor(Math.random() * 15)) // Random score between 75-89
+        name: idea.topSupplier2?.name || idea.supplier2name || "Quality Manufacturer Co.",
+        url: idea.topSupplier2?.url || idea.supplier2url || "https://globalsources.com",
+        score: idea.topSupplier2?.score || idea.supplier2score || (75 + Math.floor(Math.random() * 15))
       };
       
       const topSupplier3 = {
-        name: idea.supplier3name || "Reliable Trading Ltd.",
-        url: idea.supplier3url || "https://made-in-china.com",
-        score: idea.supplier3score || (65 + Math.floor(Math.random() * 15)) // Random score between 65-79
+        name: idea.topSupplier3?.name || idea.supplier3name || "Reliable Trading Ltd.",
+        url: idea.topSupplier3?.url || idea.supplier3url || "https://made-in-china.com",
+        score: idea.topSupplier3?.score || idea.supplier3score || (65 + Math.floor(Math.random() * 15))
       };
       
       // Create a new object with the required structure
       return {
-        name: idea.name,
-        niche: idea.niche,
-        supplierPriceRange: idea.supplierPriceRange,
-        competitorPriceRange: idea.competitorPriceRange,
-        adSpend: idea.adSpend,
-        profitMargin: idea.profitMargin,
-        totalProfitMargin: idea.totalProfitMargin,
-        features: idea.features,
+        name: idea.name || `Premium ${niches[0]} Product`,
+        niche: idea.niche || `${industries[0]} enthusiasts`,
+        supplierPriceRange: idea.supplierPriceRange || "$1000 - $2000",
+        competitorPriceRange: idea.competitorPriceRange || "$2500 - $3500",
+        adSpend: idea.adSpend || "$50 - $100",
+        profitMargin: idea.profitMargin || "$1500",
+        totalProfitMargin: idea.totalProfitMargin || "$1400 - $1450",
+        features: idea.features || `High-quality product for ${industries[0]} enthusiasts.`,
         topSupplier1,
         topSupplier2,
         topSupplier3
       };
     });
+    
+    console.log("Final processed ideas count:", processedIdeas.length);
+    console.log("First idea sample:", JSON.stringify(processedIdeas[0], null, 2));
     
     return new Response(JSON.stringify(processedIdeas), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -349,11 +357,13 @@ For each of the three ideas, provide the information in a JSON format as follows
 
 // Generate fallback e-commerce ideas if the API call fails
 function generateEcommerceContingencyReport(formData: any) {
+  console.log("Generating fallback e-commerce ideas");
+  
   const industries = formData.industries || [];
   const niches = formData.niches || [];
   const market = formData.market || 'global';
   
-  console.log("Generating fallback e-commerce ideas for:", { industries, niches, market });
+  console.log("Using data for fallback:", { industries, niches, market });
   
   // Create contingency ideas based on selected industries and niches
   const ideas = [];
@@ -443,6 +453,7 @@ function generateEcommerceContingencyReport(formData: any) {
     }
   });
   
+  console.log("Generated fallback ideas count:", ideas.length);
   return ideas;
 }
 
