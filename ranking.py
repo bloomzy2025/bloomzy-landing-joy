@@ -319,6 +319,53 @@ class IdeaRanker:
         logger.info(f"Ranked {len(ranked_ideas)} ideas")
         return ranked_ideas
 
+def rank_products(products: List[Dict], query: str) -> List[Dict]:
+    """Rank a list of products based on various factors.
+    
+    Args:
+        products: List of product dictionaries
+        query: The search query used
+        
+    Returns:
+        List of products sorted by rank (best first)
+    """
+    logger.info(f"Ranking {len(products)} products for query '{query}'")
+    
+    # Use the IdeaRanker class to rank products
+    ranker = IdeaRanker()
+    
+    # Convert products to the format expected by IdeaRanker
+    idea_products = []
+    for product in products:
+        # Calculate approximate competitor price (1.5x supplier price)
+        supplier_price = product.get('price', 0)
+        competitor_price = supplier_price * 1.5
+        
+        idea_product = {
+            "name": product.get("name", "Unknown Product"),
+            "niche": query,
+            "industry": "E-commerce",
+            "market": "global",
+            "supplierPriceRange": f"${supplier_price}",
+            "competitorPriceRange": f"${competitor_price}",
+            "topSupplier1": {"name": product.get("source", "Unknown"), "score": random.randint(70, 95)},
+            "moq": product.get("moq", 1),
+            "source": product.get("source", "Unknown")
+        }
+        idea_products.append(idea_product)
+    
+    # Rank products
+    ranked_products = ranker.rank_ideas(idea_products)
+    
+    # Add original data back to ranked products
+    for ranked_product in ranked_products:
+        for original_product in products:
+            if ranked_product["name"] == original_product.get("name"):
+                ranked_product.update(original_product)
+    
+    logger.info(f"Ranked {len(ranked_products)} products. Top product: {ranked_products[0]['name'] if ranked_products else 'None'}")
+    return ranked_products
+
 # Example usage when run directly
 if __name__ == "__main__":
     # Sample idea for testing
@@ -358,3 +405,14 @@ if __name__ == "__main__":
     print("\nRanked ideas:")
     for i, idea in enumerate(ranked, 1):
         print(f"{i}. {idea['name']}: {idea['score']:.1f}/100")
+    
+    # Rank products
+    products = [
+        {"name": "Product A", "price": 100, "source": "Supplier A"},
+        {"name": "Product B", "price": 200, "source": "Supplier B"},
+        {"name": "Product C", "price": 300, "source": "Supplier C"}
+    ]
+    ranked_products = rank_products(products, "Electronics")
+    print("\nRanked products:")
+    for i, product in enumerate(ranked_products, 1):
+        print(f"{i}. {product['name']}: {product['score']:.1f}/100")

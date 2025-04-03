@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Utilities for interacting with Supabase.
@@ -346,6 +345,46 @@ class SupabaseClient:
         except requests.RequestException as e:
             logger.error(f"Error getting auth user: {str(e)}")
             return {"error": str(e)}
+
+def insert_products(products: List[Dict[str, Any]]) -> bool:
+    """Insert a list of products into Supabase.
+    
+    Args:
+        products: List of product dictionaries
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        client = SupabaseClient()
+        
+        for product in products:
+            logger.info(f"Inserting product: {product.get('name', 'Unknown')}")
+            client.insert("Products", product)
+        
+        logger.info(f"Successfully inserted {len(products)} products")
+        return True
+    
+    except Exception as e:
+        logger.error(f"Error inserting products: {str(e)}")
+        return False
+
+def get_products() -> List[Dict[str, Any]]:
+    """Get all products from Supabase.
+    
+    Returns:
+        List of product dictionaries
+    """
+    try:
+        client = SupabaseClient()
+        products = client.select("Products")
+        
+        logger.info(f"Retrieved {len(products)} products from database")
+        return products
+    
+    except Exception as e:
+        logger.error(f"Error retrieving products: {str(e)}")
+        return []
 
 # Example usage when run directly
 if __name__ == "__main__":

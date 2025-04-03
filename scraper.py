@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 Web scraper for extracting product and supplier information.
@@ -197,6 +196,45 @@ class Scraper:
         
         logger.info(f"Found {len(simulated_suppliers)} suppliers for '{query}' in market '{market}'")
         return simulated_suppliers
+
+def scrape_alibaba(query: str) -> List[Dict[str, Any]]:
+    """Scrape product listings from Alibaba based on query.
+    
+    This is a simplified simulation of scraping Alibaba.
+    In a real implementation, this would make actual web requests.
+    
+    Args:
+        query: Search query for products
+        
+    Returns:
+        List of product dictionaries
+    """
+    logger.info(f"Simulating scraping Alibaba for '{query}'")
+    
+    # Simulate finding 3-5 products with randomized data
+    num_products = random.randint(3, 5)
+    products = []
+    
+    adjectives = ["Premium", "High Quality", "Wholesale", "Factory Direct", "Custom"]
+    
+    for i in range(num_products):
+        price = round(random.uniform(10, 500), 2)
+        moq = random.choice([1, 5, 10, 20, 50, 100])
+        
+        product = {
+            "name": f"{random.choice(adjectives)} {query} - Model {chr(65+i)}",
+            "price": price,
+            "moq": moq,
+            "shipping_time": random.randint(7, 45),
+            "description": f"Quality {query} product from verified supplier. Available in multiple variants.",
+            "reviews": f"{round(random.uniform(3.5, 4.9), 1)}/5 based on {random.randint(20, 200)} reviews",
+            "source": "Alibaba"
+        }
+        
+        products.append(product)
+    
+    logger.info(f"Found {len(products)} products on Alibaba for '{query}'")
+    return products
 
 # Example usage when run directly
 if __name__ == "__main__":
