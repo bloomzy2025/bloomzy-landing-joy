@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface Supplier {
   name: string;
@@ -109,7 +111,8 @@ const ECommerceGenerator = () => {
     
     const selectedIndustries = industries
       .filter(industry => industry.isSelected)
-      .map(industry => industry.value === "Other" ? otherIndustry : industry.value);
+      .map(industry => industry.value === "Other" ? otherIndustry : industry.value)
+      .filter(industry => industry.trim() !== "");
     
     const nichesObj: Record<string, string> = {};
     nicheInputs.forEach(input => {
@@ -133,6 +136,13 @@ const ECommerceGenerator = () => {
     setError(null);
     
     try {
+      console.log("Submitting data:", {
+        requestType: 'ecommerce-ideas',
+        industries: selectedIndustries,
+        niches: nichesList,
+        market: market
+      });
+      
       const { data, error } = await supabase.functions.invoke('generate-time-audit-report', {
         body: {
           requestType: 'ecommerce-ideas',
@@ -142,26 +152,118 @@ const ECommerceGenerator = () => {
         }
       });
 
+      console.log("Response received:", { data, error });
+
       if (error) {
         throw new Error(`Edge function error: ${error.message}`);
+      }
+      
+      if (!data || !Array.isArray(data)) {
+        throw new Error("Invalid data format received from server");
       }
       
       setResults(data);
       toast({
         title: "Ideas Generated!",
-        description: "We've created 3 e-commerce ideas based on your selections.",
+        description: "We've created e-commerce ideas based on your selections.",
       });
     } catch (err: any) {
       console.error("Error generating ideas:", err);
       setError("An error occurred while generating ideas. Please try again.");
       toast({
         title: "Error",
-        description: "Failed to generate e-commerce ideas.",
+        description: "Failed to generate e-commerce ideas. Using fallback data.",
         variant: "destructive",
       });
+      
+      const fallbackData = createFallbackData(selectedIndustries, nichesList, market);
+      setResults(fallbackData);
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const createFallbackData = (industries: string[], niches: string[], market: string): Idea[] => {
+    const primaryIndustry = industries[0] || 'Luxury';
+    const primaryNiche = niches[0] || 'Premium Products';
+    
+    return [
+      {
+        name: `Premium ${primaryNiche} Collection`,
+        niche: `${primaryIndustry} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
+        supplierPriceRange: "$1000 - $2000",
+        competitorPriceRange: "$2500 - $3500", 
+        adSpend: "$50 - $100",
+        profitMargin: "$1500",
+        totalProfitMargin: "$1400 - $1450",
+        features: `High-end ${primaryNiche} products specifically designed for luxury ${primaryIndustry} enthusiasts.`,
+        topSupplier1: {
+          name: "Premium Supplier Inc.",
+          url: "https://example.com/supplier1",
+          score: 92
+        },
+        topSupplier2: {
+          name: "Quality Manufacturing Co.",
+          url: "https://example.com/supplier2",
+          score: 87
+        },
+        topSupplier3: {
+          name: "Reliable Trading Ltd.",
+          url: "https://example.com/supplier3",
+          score: 83
+        }
+      },
+      {
+        name: `Eco-Friendly ${primaryNiche} Collection`,
+        niche: `${primaryIndustry} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
+        supplierPriceRange: "$500 - $1000",
+        competitorPriceRange: "$1500 - $2500", 
+        adSpend: "$20 - $50",
+        profitMargin: "$1000",
+        totalProfitMargin: "$900 - $950",
+        features: `Eco-friendly ${primaryNiche} products specifically designed for sustainable ${primaryIndustry} enthusiasts.`,
+        topSupplier1: {
+          name: "Green Supplier Inc.",
+          url: "https://example.com/supplier4",
+          score: 88
+        },
+        topSupplier2: {
+          name: "Sustainable Manufacturing Co.",
+          url: "https://example.com/supplier5",
+          score: 85
+        },
+        topSupplier3: {
+          name: "Green Trading Ltd.",
+          url: "https://example.com/supplier6",
+          score: 82
+        }
+      },
+      {
+        name: `Luxury ${primaryNiche} Collection`,
+        niche: `${primaryIndustry} enthusiasts in ${market === 'global' ? 'global markets' : market}`,
+        supplierPriceRange: "$2000 - $5000",
+        competitorPriceRange: "$3500 - $7000", 
+        adSpend: "$100 - $200",
+        profitMargin: "$2500",
+        totalProfitMargin: "$2400 - $2450",
+        features: `Luxury ${primaryNiche} products specifically designed for high-end ${primaryIndustry} enthusiasts.`,
+        topSupplier1: {
+          name: "Luxury Supplier Inc.",
+          url: "https://example.com/supplier7",
+          score: 95
+        },
+        topSupplier2: {
+          name: "Elite Manufacturing Co.",
+          url: "https://example.com/supplier8",
+          score: 90
+        },
+        topSupplier3: {
+          name: "Luxury Trading Ltd.",
+          url: "https://example.com/supplier9",
+          score: 88
+        }
+      }
+    ];
   };
 
   return (
@@ -282,9 +384,11 @@ const ECommerceGenerator = () => {
           )}
           
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-md">
-              {error}
-            </div>
+            <Alert variant="destructive" className="mb-8">
+              <InfoIcon className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
           
           {results && results.length > 0 && (
