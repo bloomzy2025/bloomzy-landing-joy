@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,15 +9,39 @@ import { GridBackground } from "@/components/ui/grid-background";
 import { Header1 } from "@/components/ui/header";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 type Step = 1 | 2 | 3;
 type Niche = { id: number; text: string; selected: boolean };
 type NicheWithKeywords = { niche: string; keywords: string[] };
+type BusinessInfo = {
+  companyName: string;
+  businessType: string;
+  targetAudience: string;
+  productService: string;
+  howItOperates: string;
+  specificNeed: string;
+  keyFeature: string;
+  mainOutcome: string;
+  businessCustomerType: string;
+  businessModel: string;
+};
 
 export default function FirstPayingCustomerFinder() {
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
-  const [businessInput, setBusinessInput] = useState("");
+  const [businessInfo, setBusinessInfo] = useState<BusinessInfo>({
+    companyName: "",
+    businessType: "",
+    targetAudience: "",
+    productService: "",
+    howItOperates: "",
+    specificNeed: "",
+    keyFeature: "",
+    mainOutcome: "",
+    businessCustomerType: "Business",
+    businessModel: "Subscription",
+  });
   const [niches, setNiches] = useState<Niche[]>([]);
   const [nicheKeywords, setNicheKeywords] = useState<NicheWithKeywords[]>([]);
   const [selectedCount, setSelectedCount] = useState(0);
@@ -24,13 +49,23 @@ export default function FirstPayingCustomerFinder() {
   const [customNiche, setCustomNiche] = useState("");
   const [finalPlan, setFinalPlan] = useState({ reason: "", steps: ["", "", ""] });
 
+  const handleInputChange = (field: keyof BusinessInfo, value: string) => {
+    setBusinessInfo(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const mockGeminiCall = async (prompt: string) => {
     console.log("Calling Gemini with prompt:", prompt);
     
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     if (prompt.includes("micro-niche audiences")) {
-      return Array.from({ length: 20 }, (_, i) => `Niche ${i + 1}: ${businessInput.split(" ")[0]} fans who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} options`);
+      const companyNamePart = businessInfo.companyName || "Your Company";
+      return Array.from({ length: 20 }, (_, i) => 
+        `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.productService || "options"}`
+      );
     } else if (prompt.includes("keywords")) {
       return niches
         .filter(n => n.selected)
@@ -40,8 +75,18 @@ export default function FirstPayingCustomerFinder() {
     }
   };
 
+  const isStep1Complete = () => {
+    const requiredFields = [
+      'companyName', 'businessType', 'targetAudience', 
+      'productService', 'howItOperates', 'specificNeed', 
+      'keyFeature', 'mainOutcome'
+    ];
+    
+    return requiredFields.every(field => businessInfo[field as keyof BusinessInfo].trim() !== '');
+  };
+
   const handleFindCustomers = async () => {
-    if (!businessInput.trim()) {
+    if (!isStep1Complete()) {
       toast({
         title: "Please answer all questions",
         description: "We need your answers to find the best customer groups for you.",
@@ -52,13 +97,16 @@ export default function FirstPayingCustomerFinder() {
 
     setLoading(true);
     try {
+      // Create a formatted string for the Gemini API
+      const businessSummary = `I'm from ${businessInfo.companyName}. We're a ${businessInfo.businessType} that serves ${businessInfo.targetAudience} by offering ${businessInfo.productService}. Our business works by ${businessInfo.howItOperates}, addressing ${businessInfo.specificNeed} with ${businessInfo.keyFeature}. This helps our customers ${businessInfo.mainOutcome}, and we primarily operate through a ${businessInfo.businessCustomerType === "Business" ? "B2B" : "B2C"} ${businessInfo.businessModel.toLowerCase()} business model.`;
+      
       const result = await mockGeminiCall(
-        `You're a startup advisor. My business is described here: "${businessInput}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`
+        `You're a startup advisor. My business is described here: "${businessSummary}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`
       );
       
       const generatedNiches = Array.isArray(result) 
         ? result 
-        : result.split("\n").filter(line => line.trim());
+        : typeof result === 'string' ? result.split("\n").filter(line => line.trim()) : [];
       
       setNiches(
         generatedNiches.map((text, id) => ({
@@ -123,10 +171,12 @@ export default function FirstPayingCustomerFinder() {
 
       const processedKeywords = Array.isArray(result) 
         ? result 
-        : result.split("\n").filter(line => line.trim());
+        : typeof result === 'string' ? result.split("\n").filter(line => line.trim()) : [];
       
       const nicheWithKeywords = processedKeywords.map(line => {
-        const parts = typeof line === 'string' ? line.split(':') : [line, ''];
+        if (typeof line !== 'string') return { niche: '', keywords: [] };
+        
+        const parts = line.split(':');
         return {
           niche: parts[0]?.trim() || '',
           keywords: parts[1] ? parts[1].split(',').map(k => k.trim()) : []
@@ -166,8 +216,8 @@ export default function FirstPayingCustomerFinder() {
       );
 
       if (typeof result === 'string') {
-        const whyMatch = result.match(/Why It's Great: (.+?)\./);
-        const stepsMatch = result.match(/Next Steps: 1\. (.+?), 2\. (.+?), 3\. (.+?)\.$/);
+        const whyMatch = result.match(/Why It's Great: (.+?)\./) || ['', ''];
+        const stepsMatch = result.match(/Next Steps: 1\. (.+?), 2\. (.+?), 3\. (.+?)(\.)?$/) || ['', '', '', ''];
         
         if (whyMatch && stepsMatch) {
           setFinalPlan({
@@ -211,16 +261,128 @@ export default function FirstPayingCustomerFinder() {
     <div className="space-y-6">
       <h2 className="text-2xl font-bold">Step 1: Tell us about your business</h2>
       <p className="text-muted-foreground">
-        Answer the questions about your business—who you are, what you sell, and how it helps. 
-        Hit 'Find My Customers' to get 20 specific groups ready to pay.
+        Fill in the fields below to tell us about your business. We'll use this information to find customer groups that are most likely to pay for your products or services.
       </p>
-      
-      <Textarea
-        value={businessInput}
-        onChange={(e) => setBusinessInput(e.target.value)}
-        placeholder="Answer these: 1. Your name and company? 2. What's your business type? 3. Who do you help? 4. What do you sell? 5. How does it work? 6. What problem do you solve? 7. What's the main benefit? 8. B2B or B2C? 9. Business model (e.g., subscription, product sales)?"
-        className="h-40"
-      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="companyName" className="font-medium">Your Company</Label>
+          <Input
+            id="companyName"
+            value={businessInfo.companyName}
+            onChange={(e) => handleInputChange('companyName', e.target.value)}
+            placeholder="GreenLeaf Solutions"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="businessType" className="font-medium">Business Type</Label>
+          <Input
+            id="businessType"
+            value={businessInfo.businessType}
+            onChange={(e) => handleInputChange('businessType', e.target.value)}
+            placeholder="Sustainability consulting firm"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="targetAudience" className="font-medium">Target Audience</Label>
+          <Input
+            id="targetAudience"
+            value={businessInfo.targetAudience}
+            onChange={(e) => handleInputChange('targetAudience', e.target.value)}
+            placeholder="Small to medium-sized businesses"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="productService" className="font-medium">Product/Service</Label>
+          <Input
+            id="productService"
+            value={businessInfo.productService}
+            onChange={(e) => handleInputChange('productService', e.target.value)}
+            placeholder="Tailored environmental strategies"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="howItOperates" className="font-medium">How It Operates</Label>
+          <Input
+            id="howItOperates"
+            value={businessInfo.howItOperates}
+            onChange={(e) => handleInputChange('howItOperates', e.target.value)}
+            placeholder="Conducting audits and providing plans"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="specificNeed" className="font-medium">Specific Need/Problem</Label>
+          <Input
+            id="specificNeed"
+            value={businessInfo.specificNeed}
+            onChange={(e) => handleInputChange('specificNeed', e.target.value)}
+            placeholder="Cost-effective eco-friendly practices"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="keyFeature" className="font-medium">Key Feature/Approach</Label>
+          <Input
+            id="keyFeature"
+            value={businessInfo.keyFeature}
+            onChange={(e) => handleInputChange('keyFeature', e.target.value)}
+            placeholder="Customized, step-by-step approach"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="mainOutcome" className="font-medium">Main Outcome</Label>
+          <Input
+            id="mainOutcome"
+            value={businessInfo.mainOutcome}
+            onChange={(e) => handleInputChange('mainOutcome', e.target.value)}
+            placeholder="Reduce carbon footprint and costs"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="businessCustomerType" className="font-medium">Customer Type</Label>
+          <Select 
+            value={businessInfo.businessCustomerType}
+            onValueChange={(value) => handleInputChange('businessCustomerType', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select customer type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Business">We sell to businesses (B2B)</SelectItem>
+              <SelectItem value="Consumer">We sell to consumers (B2C)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="businessModel" className="font-medium">Business Model</Label>
+          <Select 
+            value={businessInfo.businessModel}
+            onValueChange={(value) => handleInputChange('businessModel', value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select business model" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Subscription">Subscription</SelectItem>
+              <SelectItem value="Product Sales">Product Sales</SelectItem>
+              <SelectItem value="Advertising">Advertising</SelectItem>
+              <SelectItem value="Freemium">Freemium</SelectItem>
+              <SelectItem value="Licensing">Licensing</SelectItem>
+              <SelectItem value="Commission">Commission</SelectItem>
+              <SelectItem value="Pay-Per-Use">Pay-Per-Use</SelectItem>
+              <SelectItem value="Franchise">Franchise</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       
       <TooltipProvider>
         <Tooltip>
