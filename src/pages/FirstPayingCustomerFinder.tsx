@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,10 +66,20 @@ export default function FirstPayingCustomerFinder() {
     console.log("Calling Gemini with prompt:", prompt);
     await new Promise(resolve => setTimeout(resolve, 1500));
     if (prompt.includes("micro-niche audiences")) {
-      const companyNamePart = businessInfo.companyName || "Your Company";
-      return Array.from({
-        length: 20
-      }, (_, i) => `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.businessTypeAndOffer.split(" ").slice(-1)[0] || "options"}`);
+      // Updated prompt format for niche generation using all user's answers
+      if (prompt.includes("Pretend you are an early stage business advisor")) {
+        // This is the new prompt format requested by the user
+        const companyNamePart = businessInfo.companyName || "Your Company";
+        return Array.from({
+          length: 20
+        }, (_, i) => `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.businessTypeAndOffer.split(" ").slice(-1)[0] || "options"}`);
+      } else {
+        // Fallback to the old prompt format
+        const companyNamePart = businessInfo.companyName || "Your Company";
+        return Array.from({
+          length: 20
+        }, (_, i) => `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.businessTypeAndOffer.split(" ").slice(-1)[0] || "options"}`);
+      }
     } else if (prompt.includes("keywords")) {
       return niches.filter(n => n.selected).map(n => `${n.text}: keyword1, keyword2, keyword3, keyword4, keyword5`);
     } else {
@@ -92,8 +103,24 @@ export default function FirstPayingCustomerFinder() {
     }
     setLoading(true);
     try {
-      const businessSummary = `I'm from ${businessInfo.companyName}. ${businessInfo.businessTypeAndOffer}. We want to help ${businessInfo.targetAudience}. Our business works by ${businessInfo.deliveryMethod}, addressing ${businessInfo.problemAndOutcome}. What sets us apart is ${businessInfo.uniqueApproach}, and we primarily operate through a ${businessInfo.businessCustomerType} ${businessInfo.businessModel.toLowerCase()} business model.`;
-      const result = await mockGeminiCall(`You're a startup advisor. My business is described here: "${businessSummary}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`);
+      // Construct the user context from their answers
+      const userContext = `
+Company Name: ${businessInfo.companyName}
+Business Type & Offer: ${businessInfo.businessTypeAndOffer}
+Target Audience: ${businessInfo.targetAudience}
+Delivery Method: ${businessInfo.deliveryMethod}
+Problem Solved: ${businessInfo.problemAndOutcome}
+Unique Approach: ${businessInfo.uniqueApproach}
+Customer Type: ${businessInfo.businessCustomerType}
+Business Model: ${businessInfo.businessModel}
+      `;
+      
+      // Create the new prompt format as requested
+      const newPrompt = `Pretend you are an early stage business advisor. Attached is a description of my business. I want you to provide me with a concise list of 20 micro-niche audiences that I can target based on the provided prompt, focusing on low CPC (<$2 where possible), high relevance, and growth potential. I don't want you to give anything else aside from the list. CONTEXT:
+${userContext}
+Now give me the list of 20 personalized and relevant micro-niches that I can target`;
+      
+      const result = await mockGeminiCall(newPrompt);
       const generatedNiches = Array.isArray(result) ? result : typeof result === 'string' ? result.split("\n").filter(line => line.trim()) : [];
       setNiches(generatedNiches.map((text, id) => ({
         id,
