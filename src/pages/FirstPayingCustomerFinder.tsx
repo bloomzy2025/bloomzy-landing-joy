@@ -10,6 +10,7 @@ import { Header1 } from "@/components/ui/header";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+
 type Step = 1 | 2 | 3;
 type Niche = {
   id: number;
@@ -30,6 +31,7 @@ type BusinessInfo = {
   businessCustomerType: string;
   businessModel: string;
 };
+
 export default function FirstPayingCustomerFinder() {
   const [step, setStep] = useState<Step>(1);
   const [loading, setLoading] = useState(false);
@@ -52,12 +54,14 @@ export default function FirstPayingCustomerFinder() {
     reason: "",
     steps: ["", "", ""]
   });
+
   const handleInputChange = (field: keyof BusinessInfo, value: string) => {
     setBusinessInfo(prev => ({
       ...prev,
       [field]: value
     }));
   };
+
   const mockGeminiCall = async (prompt: string) => {
     console.log("Calling Gemini with prompt:", prompt);
     await new Promise(resolve => setTimeout(resolve, 1500));
@@ -72,10 +76,12 @@ export default function FirstPayingCustomerFinder() {
       return `Why It's Great: This niche has low ad costs (CPC ~$1.50) and growing demand in 2024. Next Steps: 1. Create targeted content for ${finalNiche || customNiche}, 2. Join Facebook groups where they hang out, 3. Run Google ads with the keywords we found.`;
     }
   };
+
   const isStep1Complete = () => {
     const requiredFields = ['companyName', 'businessTypeAndOffer', 'targetAudience', 'deliveryMethod', 'problemAndOutcome', 'uniqueApproach'];
     return requiredFields.every(field => businessInfo[field as keyof BusinessInfo].trim() !== '');
   };
+
   const handleFindCustomers = async () => {
     if (!isStep1Complete()) {
       toast({
@@ -108,6 +114,7 @@ export default function FirstPayingCustomerFinder() {
       setLoading(false);
     }
   };
+
   const toggleNicheSelection = (id: number) => {
     const updatedNiches = niches.map(niche => {
       if (niche.id === id) {
@@ -134,6 +141,7 @@ export default function FirstPayingCustomerFinder() {
     setNiches(updatedNiches);
     setSelectedCount(updatedNiches.filter(n => n.selected).length);
   };
+
   const handleGetKeywords = async () => {
     if (selectedCount !== 5) {
       toast({
@@ -172,6 +180,7 @@ export default function FirstPayingCustomerFinder() {
       setLoading(false);
     }
   };
+
   const handleStartWinning = async () => {
     const selectedNiche = finalNiche || customNiche;
     if (!selectedNiche) {
@@ -215,11 +224,13 @@ export default function FirstPayingCustomerFinder() {
       setLoading(false);
     }
   };
+
   const renderProgressBar = () => <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
       <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500" style={{
       width: `${step / 3 * 100}%`
     }}></div>
     </div>;
+
   const renderStep1 = () => <div className="space-y-6">
       <h2 className="text-2xl font-bold">Step 1: Describe your Business</h2>
       <p className="text-muted-foreground">
@@ -341,6 +352,7 @@ export default function FirstPayingCustomerFinder() {
         </Tooltip>
       </TooltipProvider>
     </div>;
+
   const renderStep2 = () => <div className="space-y-6">
       <h2 className="text-2xl font-bold">Step 2: Pick Your Top 5 Customer Groups</h2>
       <p className="text-muted-foreground">
@@ -366,6 +378,7 @@ export default function FirstPayingCustomerFinder() {
         </Button>
       </div>
     </div>;
+
   const renderStep3 = () => <div className="space-y-6">
       <h2 className="text-2xl font-bold">Step 3: Choose Your Winning Customer Group</h2>
       <p className="text-muted-foreground">
@@ -422,6 +435,7 @@ export default function FirstPayingCustomerFinder() {
           </div>
         </div>}
     </div>;
+
   return <div className="min-h-screen bg-white">
       <div className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-lg border-b border-gray-200">
         <div className="container mx-auto">
