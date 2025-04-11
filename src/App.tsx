@@ -21,6 +21,7 @@ import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import CookieSettings from "./pages/CookieSettings";
+import FirstPayingCustomerFinder from "./pages/FirstPayingCustomerFinder";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ function App() {
               <Route path="/enterprise" element={<EnterpriseContact />} />
               <Route path="/maker-manager-quiz" element={<MakerManagerQuiz />} />
               <Route path="/time-wasters-audit" element={<TimeWastersAudit />} />
+              <Route path="/customer-finder" element={<FirstPayingCustomerFinder />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />

@@ -1,80 +1,70 @@
 
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Brain, ArrowRight, Clock } from "lucide-react";
+import { Clock, Wrench, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const FreeToolsSection = () => {
+export function FreeToolsSection() {
   return (
-    <div className="py-12 container mx-auto">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold tracking-tight mb-2 dark:text-white">Free Self-Assessment Tools</h2>
-        <p className="text-muted-foreground max-w-lg mx-auto dark:text-gray-400">
-          Discover more about yourself with our collection of free self-assessment tools designed to optimize your productivity and work style.
-        </p>
-      </div>
-      
-      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        <Card className="border shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Brain className="h-5 w-5 text-green-700 dark:text-green-600" />
-              <span className="text-sm font-medium text-green-700 dark:text-green-600">FREE TOOL</span>
+    <section className="py-12 md:py-24 bg-slate-50">
+      <div className="container px-4 md:px-6">
+        <div className="grid gap-6 items-center">
+          <div className="flex flex-col justify-center space-y-4 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Free Tools for Entrepreneurs
+              </h2>
+              <p className="max-w-[900px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400 mx-auto">
+                Use our free tools to improve your productivity and focus on what matters most for your business.
+              </p>
             </div>
-            <CardTitle className="dark:text-gray-100">Maker or Manager Quiz</CardTitle>
-            <CardDescription className="dark:text-gray-300">
-              Discover whether you're better suited for a maker schedule with deep focus time, or a manager schedule with frequent collaboration.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="dark:text-gray-200">
-            <p>This assessment helps you identify your optimal work style and provides personalized scheduling recommendations based on your:</p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Role-based tasks and responsibilities</li>
-              <li>Work preferences and meeting tolerance</li>
-              <li>Time management style and energy levels</li>
-              <li>Ideal work environment</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full gap-2 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90">
-              <Link to="/maker-manager-quiz">
-                Take the Quiz <ArrowRight size={16} />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-        
-        <Card className="border shadow-sm dark:bg-gray-800 dark:border-gray-700">
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-5 w-5 text-green-500 dark:text-green-400" />
-              <span className="text-sm font-medium text-green-500 dark:text-green-400">FREE TOOL</span>
-            </div>
-            <CardTitle className="dark:text-gray-100">Time Wasters Audit</CardTitle>
-            <CardDescription className="dark:text-gray-300">
-              Identify your biggest time-wasting activities and get personalized recommendations to boost your productivity.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="dark:text-gray-200">
-            <p>This comprehensive audit analyzes your current work habits to identify:</p>
-            <ul className="list-disc pl-5 mt-2 space-y-1">
-              <li>Daily time wasters and distractions</li>
-              <li>Personal habits affecting productivity</li>
-              <li>Environmental factors impacting your focus</li>
-              <li>Personalized strategies for improvement</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full gap-2 dark:bg-accent-green dark:text-gray-900 dark:hover:bg-accent-green/90">
-              <Link to="/time-wasters-audit">
-                Take the Audit <ArrowRight size={16} />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex flex-col space-y-4">
+                <div className="p-2 bg-green-100 rounded-full w-fit">
+                  <Clock className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold">Time Wasters Audit</h3>
+                <p className="text-gray-500 flex-grow">
+                  Identify where you're wasting time and how to reclaim it for growth activities.
+                </p>
+                <Button className="w-full" asChild>
+                  <Link to="/time-wasters-audit">Start Audit</Link>
+                </Button>
+              </div>
+            </Card>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex flex-col space-y-4">
+                <div className="p-2 bg-blue-100 rounded-full w-fit">
+                  <Wrench className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-bold">Maker-Manager Quiz</h3>
+                <p className="text-gray-500 flex-grow">
+                  Discover if you're more of a maker or manager and optimize your schedule accordingly.
+                </p>
+                <Button className="w-full" asChild>
+                  <Link to="/maker-manager-quiz">Take Quiz</Link>
+                </Button>
+              </div>
+            </Card>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <div className="flex flex-col space-y-4">
+                <div className="p-2 bg-purple-100 rounded-full w-fit">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold">First Paying Customer Finder</h3>
+                <p className="text-gray-500 flex-grow">
+                  Find your first paying customers with our 3-step AI-powered tool.
+                </p>
+                <Button className="w-full" asChild>
+                  <Link to="/customer-finder">Find Customers</Link>
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
-
-export default FreeToolsSection;
