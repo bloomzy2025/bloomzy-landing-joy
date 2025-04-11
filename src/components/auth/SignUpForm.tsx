@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -79,12 +78,8 @@ export default function SignUpForm() {
           logo_alignment: 'left'
         });
         
-        // Set the Google ID origin_uri to Bloomzy.ca
-        if (window.google?.accounts?.id && window.google.accounts.id.setOauthConfig) {
-          window.google.accounts.id.setOauthConfig({
-            origin_uri: 'https://bloomzy.ca'
-          });
-        }
+        // Remove the setOauthConfig calls that are causing errors
+        // The origin_uri can be set directly in the initialize call if needed in the future
       } catch (error) {
         console.error('Error initializing Google Sign In:', error);
         setGoogleError('Error initializing Google Sign In. Please try the email option.');

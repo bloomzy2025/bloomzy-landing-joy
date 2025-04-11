@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -25,24 +24,18 @@ export default function FirstPayingCustomerFinder() {
   const [customNiche, setCustomNiche] = useState("");
   const [finalPlan, setFinalPlan] = useState({ reason: "", steps: ["", "", ""] });
 
-  // Mock function to simulate API call to Gemini
   const mockGeminiCall = async (prompt: string) => {
-    // In a real implementation, this would call the Gemini API
     console.log("Calling Gemini with prompt:", prompt);
     
-    // Simulate API response delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     if (prompt.includes("micro-niche audiences")) {
-      // Generate 20 mock niches for step 1
       return Array.from({ length: 20 }, (_, i) => `Niche ${i + 1}: ${businessInput.split(" ")[0]} fans who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} options`);
     } else if (prompt.includes("keywords")) {
-      // Generate keywords for each selected niche
       return niches
         .filter(n => n.selected)
         .map(n => `${n.text}: keyword1, keyword2, keyword3, keyword4, keyword5`);
     } else {
-      // Final niche confirmation
       return `Why It's Great: This niche has low ad costs (CPC ~$1.50) and growing demand in 2024. Next Steps: 1. Create targeted content for ${finalNiche || customNiche}, 2. Join Facebook groups where they hang out, 3. Run Google ads with the keywords we found.`;
     }
   };
@@ -63,7 +56,6 @@ export default function FirstPayingCustomerFinder() {
         `You're a startup advisor. My business is described here: "${businessInput}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`
       );
       
-      // Process the mock result into niches
       const generatedNiches = Array.isArray(result) 
         ? result 
         : result.split("\n").filter(line => line.trim());
@@ -91,11 +83,9 @@ export default function FirstPayingCustomerFinder() {
   const toggleNicheSelection = (id: number) => {
     const updatedNiches = niches.map(niche => {
       if (niche.id === id) {
-        // If already selected and trying to deselect
         if (niche.selected) {
           return { ...niche, selected: false };
         }
-        // If trying to select and already have 5 selected
         else if (selectedCount >= 5) {
           toast({
             title: "Maximum 5 niches",
@@ -103,7 +93,6 @@ export default function FirstPayingCustomerFinder() {
           });
           return niche;
         }
-        // Select the niche
         else {
           return { ...niche, selected: true };
         }
@@ -132,16 +121,15 @@ export default function FirstPayingCustomerFinder() {
         `You're a startup advisor. I chose these 5 micro-niches: ${selectedNiches.join(', ')}. For each, give me 5 keywords (1-2 words max) for affordable ad campaigns. Focus on relevance, low CPC, and growing demand. Format as: [Niche]: keyword1, keyword2, keyword3, keyword4, keyword5`
       );
 
-      // Process the mock result
       const processedKeywords = Array.isArray(result) 
         ? result 
         : result.split("\n").filter(line => line.trim());
       
       const nicheWithKeywords = processedKeywords.map(line => {
-        const [niche, keywordsStr] = line.split(":");
+        const parts = typeof line === 'string' ? line.split(':') : [line, ''];
         return {
-          niche: niche.trim(),
-          keywords: keywordsStr.split(",").map(k => k.trim())
+          niche: parts[0]?.trim() || '',
+          keywords: parts[1] ? parts[1].split(',').map(k => k.trim()) : []
         };
       });
 
@@ -177,14 +165,20 @@ export default function FirstPayingCustomerFinder() {
         `You're a startup advisor. I chose this micro-niche: "${selectedNiche}". Explain in 2 sentences why it's a great pick, focusing on low ad costs and growth potential. Then give 3 next steps to reach these customers (e.g., content ideas, platforms to use). Format as: Why It's Great: [reason]. Next Steps: 1. [step], 2. [step], 3. [step].`
       );
 
-      // Process the mock result
-      const whyMatch = result.match(/Why It's Great: (.+?)\./);
-      const stepsMatch = result.match(/Next Steps: 1\. (.+?), 2\. (.+?), 3\. (.+?)\.$/);
-      
-      if (whyMatch && stepsMatch) {
+      if (typeof result === 'string') {
+        const whyMatch = result.match(/Why It's Great: (.+?)\./);
+        const stepsMatch = result.match(/Next Steps: 1\. (.+?), 2\. (.+?), 3\. (.+?)\.$/);
+        
+        if (whyMatch && stepsMatch) {
+          setFinalPlan({
+            reason: whyMatch[1],
+            steps: [stepsMatch[1], stepsMatch[2], stepsMatch[3]]
+          });
+        }
+      } else {
         setFinalPlan({
-          reason: whyMatch[1],
-          steps: [stepsMatch[1], stepsMatch[2], stepsMatch[3]]
+          reason: "This niche has strong potential based on our analysis.",
+          steps: ["Create targeted content", "Join relevant communities", "Run targeted ads"]
         });
       }
       
@@ -367,7 +361,6 @@ export default function FirstPayingCustomerFinder() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Fixed header */}
       <div className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-lg border-b border-gray-200">
         <div className="container mx-auto">
           <Header1 />

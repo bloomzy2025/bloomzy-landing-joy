@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,15 +11,20 @@ import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/ui/icons";
 import { toast } from "@/hooks/use-toast";
+
 const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
+
 const signInSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(1, "Password is required")
 });
+
 type SignInFormValues = z.infer<typeof signInSchema>;
+
 type SignInFormProps = {
   returnTo?: string;
 };
+
 export default function SignInForm({
   returnTo = '/'
 }: SignInFormProps) {
@@ -34,11 +38,13 @@ export default function SignInForm({
   const [isFromQuiz, setIsFromQuiz] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
   const [googleError, setGoogleError] = useState<string | null>(null);
+
   useEffect(() => {
     if (returnTo.includes('/maker-manager-quiz') || location.search.includes('returnTo=/maker-manager-quiz')) {
       setIsFromQuiz(true);
     }
   }, [returnTo, location.search]);
+
   useEffect(() => {
     if (googleButtonRef.current && window.google) {
       try {
@@ -54,6 +60,7 @@ export default function SignInForm({
         googleSignInButton.dataset.logo_alignment = 'left';
         googleSignInButton.dataset.width = '100%';
         container.appendChild(googleSignInButton);
+
         window.google?.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: async response => {
@@ -67,6 +74,7 @@ export default function SignInForm({
           ux_mode: 'popup',
           scope: 'email profile'
         });
+        
         window.google?.accounts.id.renderButton(googleSignInButton, {
           theme: 'outline',
           size: 'large',
@@ -76,12 +84,8 @@ export default function SignInForm({
           logo_alignment: 'left'
         });
         
-        // Set the Google ID origin_uri to Bloomzy.ca
-        if (window.google?.accounts?.id && window.google.accounts.id.setOauthConfig) {
-          window.google.accounts.id.setOauthConfig({
-            origin_uri: 'https://bloomzy.ca'
-          });
-        }
+        // Remove the setOauthConfig calls that are causing errors
+        // The origin_uri can be set directly in the initialize call if needed in the future
       } catch (error) {
         console.error('Error initializing Google Sign In:', error);
         setGoogleError('Error initializing Google Sign In. Please try the email option.');
@@ -91,12 +95,14 @@ export default function SignInForm({
       setGoogleError('Google Sign In unavailable. Please try the email option.');
     }
   }, [googleButtonRef, returnTo, signInWithProvider]);
+
   const renderPermissionsInfo = () => {
     return <div className="text-xs text-center mb-4 text-muted-foreground">
         <p>By signing in, you'll share your email and profile information with us.</p>
         <p>We only request essential permissions needed for account creation.</p>
       </div>;
   };
+  
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -104,10 +110,13 @@ export default function SignInForm({
       password: ""
     }
   });
+  
   const onSubmit = async (values: SignInFormValues) => {
     await signIn(values.email, values.password, returnTo);
   };
-  return <div className="mx-auto w-full max-w-md space-y-6 p-6 bg-card rounded-lg border shadow">
+
+  return (
+    <div className="mx-auto w-full max-w-md space-y-6 p-6 bg-card rounded-lg border shadow">
       <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">Log in to Bloomzy</h1>
         <p className="text-muted-foreground">
@@ -167,5 +176,6 @@ export default function SignInForm({
       </Form>
       
       
-    </div>;
+    </div>
+  );
 }
