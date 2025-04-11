@@ -259,9 +259,9 @@ export default function FirstPayingCustomerFinder() {
 
   const renderStep1 = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Step 1: Tell us about your business</h2>
+      <h2 className="text-2xl font-bold">Step 1: Describe your Business</h2>
       <p className="text-muted-foreground">
-        Fill in the fields below to tell us about your business. We'll use this information to find customer groups that are most likely to pay for your products or services.
+        Fill in the fields below to help us find specific customer groups that are most likely to pay for your products or services.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -271,7 +271,8 @@ export default function FirstPayingCustomerFinder() {
             id="companyName"
             value={businessInfo.companyName}
             onChange={(e) => handleInputChange('companyName', e.target.value)}
-            placeholder="GreenLeaf Solutions"
+            placeholder='"GreenLeaf Solutions"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -281,7 +282,8 @@ export default function FirstPayingCustomerFinder() {
             id="businessType"
             value={businessInfo.businessType}
             onChange={(e) => handleInputChange('businessType', e.target.value)}
-            placeholder="Sustainability consulting firm"
+            placeholder='"Sustainability consulting firm"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -291,7 +293,8 @@ export default function FirstPayingCustomerFinder() {
             id="targetAudience"
             value={businessInfo.targetAudience}
             onChange={(e) => handleInputChange('targetAudience', e.target.value)}
-            placeholder="Small to medium-sized businesses"
+            placeholder='"Small to medium-sized businesses"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -301,7 +304,8 @@ export default function FirstPayingCustomerFinder() {
             id="productService"
             value={businessInfo.productService}
             onChange={(e) => handleInputChange('productService', e.target.value)}
-            placeholder="Tailored environmental strategies"
+            placeholder='"Tailored environmental strategies"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -311,7 +315,8 @@ export default function FirstPayingCustomerFinder() {
             id="howItOperates"
             value={businessInfo.howItOperates}
             onChange={(e) => handleInputChange('howItOperates', e.target.value)}
-            placeholder="Conducting audits and providing plans"
+            placeholder='"Conducting audits and providing plans"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -321,7 +326,8 @@ export default function FirstPayingCustomerFinder() {
             id="specificNeed"
             value={businessInfo.specificNeed}
             onChange={(e) => handleInputChange('specificNeed', e.target.value)}
-            placeholder="Cost-effective eco-friendly practices"
+            placeholder='"Cost-effective eco-friendly practices"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -331,7 +337,8 @@ export default function FirstPayingCustomerFinder() {
             id="keyFeature"
             value={businessInfo.keyFeature}
             onChange={(e) => handleInputChange('keyFeature', e.target.value)}
-            placeholder="Customized, step-by-step approach"
+            placeholder='"Customized, step-by-step approach"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -341,7 +348,8 @@ export default function FirstPayingCustomerFinder() {
             id="mainOutcome"
             value={businessInfo.mainOutcome}
             onChange={(e) => handleInputChange('mainOutcome', e.target.value)}
-            placeholder="Reduce carbon footprint and costs"
+            placeholder='"Reduce carbon footprint and costs"'
+            className="placeholder:text-gray-400"
           />
         </div>
 
@@ -390,7 +398,7 @@ export default function FirstPayingCustomerFinder() {
             <div>
               <Button 
                 onClick={handleFindCustomers} 
-                className="w-full bg-green-500 hover:bg-green-600"
+                className="w-full bg-brand-green hover:bg-brand-green/90"
                 disabled={loading}
               >
                 {loading ? "Finding your customers..." : "Find My Customers"}
