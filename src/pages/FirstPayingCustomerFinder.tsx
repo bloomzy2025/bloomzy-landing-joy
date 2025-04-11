@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,13 +22,11 @@ type NicheWithKeywords = {
 };
 type BusinessInfo = {
   companyName: string;
-  businessType: string;
+  businessTypeAndOffer: string;
   targetAudience: string;
-  productService: string;
-  howItOperates: string;
-  specificNeed: string;
-  keyFeature: string;
-  mainOutcome: string;
+  deliveryMethod: string;
+  problemAndOutcome: string;
+  uniqueApproach: string;
   businessCustomerType: string;
   businessModel: string;
 };
@@ -36,14 +35,12 @@ export default function FirstPayingCustomerFinder() {
   const [loading, setLoading] = useState(false);
   const [businessInfo, setBusinessInfo] = useState<BusinessInfo>({
     companyName: "",
-    businessType: "",
+    businessTypeAndOffer: "",
     targetAudience: "",
-    productService: "",
-    howItOperates: "",
-    specificNeed: "",
-    keyFeature: "",
-    mainOutcome: "",
-    businessCustomerType: "Business",
+    deliveryMethod: "",
+    problemAndOutcome: "",
+    uniqueApproach: "",
+    businessCustomerType: "B2B",
     businessModel: "Subscription"
   });
   const [niches, setNiches] = useState<Niche[]>([]);
@@ -68,7 +65,7 @@ export default function FirstPayingCustomerFinder() {
       const companyNamePart = businessInfo.companyName || "Your Company";
       return Array.from({
         length: 20
-      }, (_, i) => `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.productService || "options"}`);
+      }, (_, i) => `Niche ${i + 1}: ${businessInfo.targetAudience.split(" ")[0] || "Customers"} who ${["want", "need", "love"][i % 3]} ${["sustainable", "premium", "affordable"][i % 3]} ${businessInfo.businessTypeAndOffer.split(" ").slice(-1)[0] || "options"}`);
     } else if (prompt.includes("keywords")) {
       return niches.filter(n => n.selected).map(n => `${n.text}: keyword1, keyword2, keyword3, keyword4, keyword5`);
     } else {
@@ -76,7 +73,7 @@ export default function FirstPayingCustomerFinder() {
     }
   };
   const isStep1Complete = () => {
-    const requiredFields = ['companyName', 'businessType', 'targetAudience', 'productService', 'howItOperates', 'specificNeed', 'keyFeature', 'mainOutcome'];
+    const requiredFields = ['companyName', 'businessTypeAndOffer', 'targetAudience', 'deliveryMethod', 'problemAndOutcome', 'uniqueApproach'];
     return requiredFields.every(field => businessInfo[field as keyof BusinessInfo].trim() !== '');
   };
   const handleFindCustomers = async () => {
@@ -91,7 +88,7 @@ export default function FirstPayingCustomerFinder() {
     setLoading(true);
     try {
       // Create a formatted string for the Gemini API
-      const businessSummary = `I'm from ${businessInfo.companyName}. We're a ${businessInfo.businessType} that serves ${businessInfo.targetAudience} by offering ${businessInfo.productService}. Our business works by ${businessInfo.howItOperates}, addressing ${businessInfo.specificNeed} with ${businessInfo.keyFeature}. This helps our customers ${businessInfo.mainOutcome}, and we primarily operate through a ${businessInfo.businessCustomerType === "Business" ? "B2B" : "B2C"} ${businessInfo.businessModel.toLowerCase()} business model.`;
+      const businessSummary = `I'm from ${businessInfo.companyName}. ${businessInfo.businessTypeAndOffer}. We want to help ${businessInfo.targetAudience}. Our business works by ${businessInfo.deliveryMethod}, addressing ${businessInfo.problemAndOutcome}. What sets us apart is ${businessInfo.uniqueApproach}, and we primarily operate through a ${businessInfo.businessCustomerType} ${businessInfo.businessModel.toLowerCase()} business model.`;
       const result = await mockGeminiCall(`You're a startup advisor. My business is described here: "${businessSummary}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`);
       const generatedNiches = Array.isArray(result) ? result : typeof result === 'string' ? result.split("\n").filter(line => line.trim()) : [];
       setNiches(generatedNiches.map((text, id) => ({
@@ -231,60 +228,86 @@ export default function FirstPayingCustomerFinder() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="companyName" className="font-medium">Your Company</Label>
-          <Input id="companyName" value={businessInfo.companyName} onChange={e => handleInputChange('companyName', e.target.value)} placeholder='"GreenLeaf Solutions"' className="placeholder:text-gray-400" />
+          <Label htmlFor="companyName" className="font-medium">Your Business Name</Label>
+          <Input 
+            id="companyName" 
+            value={businessInfo.companyName} 
+            onChange={e => handleInputChange('companyName', e.target.value)} 
+            placeholder='"GreenLeaf Solutions"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="businessType" className="font-medium">Business Type</Label>
-          <Input id="businessType" value={businessInfo.businessType} onChange={e => handleInputChange('businessType', e.target.value)} placeholder='"Sustainability consulting firm"' className="placeholder:text-gray-400" />
+          <Label htmlFor="businessTypeAndOffer" className="font-medium">What's Your Business and What Do You Offer?</Label>
+          <Input 
+            id="businessTypeAndOffer" 
+            value={businessInfo.businessTypeAndOffer} 
+            onChange={e => handleInputChange('businessTypeAndOffer', e.target.value)} 
+            placeholder='"We're a sustainability consulting firm offering tailored environmental strategies"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="targetAudience" className="font-medium">Target Audience</Label>
-          <Input id="targetAudience" value={businessInfo.targetAudience} onChange={e => handleInputChange('targetAudience', e.target.value)} placeholder='"Small to medium-sized businesses"' className="placeholder:text-gray-400" />
+          <Label htmlFor="targetAudience" className="font-medium">Who Do You Want to Help?</Label>
+          <Input 
+            id="targetAudience" 
+            value={businessInfo.targetAudience} 
+            onChange={e => handleInputChange('targetAudience', e.target.value)} 
+            placeholder='"Small to medium-sized businesses"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="productService" className="font-medium">Product/Service</Label>
-          <Input id="productService" value={businessInfo.productService} onChange={e => handleInputChange('productService', e.target.value)} placeholder='"Tailored environmental strategies"' className="placeholder:text-gray-400" />
+          <Label htmlFor="deliveryMethod" className="font-medium">How Do You Deliver Results?</Label>
+          <Input 
+            id="deliveryMethod" 
+            value={businessInfo.deliveryMethod} 
+            onChange={e => handleInputChange('deliveryMethod', e.target.value)} 
+            placeholder='"We conduct in-depth audits and provide actionable plans"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="howItOperates" className="font-medium">How It Operates</Label>
-          <Input id="howItOperates" value={businessInfo.howItOperates} onChange={e => handleInputChange('howItOperates', e.target.value)} placeholder='"Conducting audits and providing plans"' className="placeholder:text-gray-400" />
+          <Label htmlFor="problemAndOutcome" className="font-medium">What Problem Do You Solve and What's the Big Win?</Label>
+          <Input 
+            id="problemAndOutcome" 
+            value={businessInfo.problemAndOutcome} 
+            onChange={e => handleInputChange('problemAndOutcome', e.target.value)} 
+            placeholder='"We solve the need for cost-effective eco-friendly practices, helping customers reduce their carbon footprint and costs"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="specificNeed" className="font-medium">Specific Solution</Label>
-          <Input id="specificNeed" value={businessInfo.specificNeed} onChange={e => handleInputChange('specificNeed', e.target.value)} placeholder='"Cost-effective eco-friendly practices"' className="placeholder:text-gray-400" />
+          <Label htmlFor="uniqueApproach" className="font-medium">What Sets You Apart?</Label>
+          <Input 
+            id="uniqueApproach" 
+            value={businessInfo.uniqueApproach} 
+            onChange={e => handleInputChange('uniqueApproach', e.target.value)} 
+            placeholder='"Our customized, step-by-step approach tailored to each client"' 
+            className="placeholder:text-gray-400" 
+          />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="keyFeature" className="font-medium">Key Feature/Approach</Label>
-          <Input id="keyFeature" value={businessInfo.keyFeature} onChange={e => handleInputChange('keyFeature', e.target.value)} placeholder='"Customized, step-by-step approach"' className="placeholder:text-gray-400" />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="mainOutcome" className="font-medium">Main Outcome</Label>
-          <Input id="mainOutcome" value={businessInfo.mainOutcome} onChange={e => handleInputChange('mainOutcome', e.target.value)} placeholder='"Reduce carbon footprint and costs"' className="placeholder:text-gray-400" />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="businessCustomerType" className="font-medium">Customer Type</Label>
+          <Label htmlFor="businessCustomerType" className="font-medium">Who Do You Sell To?</Label>
           <Select value={businessInfo.businessCustomerType} onValueChange={value => handleInputChange('businessCustomerType', value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select customer type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Business">We sell to businesses (B2B)</SelectItem>
-              <SelectItem value="Consumer">We sell to consumers (B2C)</SelectItem>
+              <SelectItem value="B2B">Businesses (B2B)</SelectItem>
+              <SelectItem value="B2C">Consumers (B2C)</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="businessModel" className="font-medium">Business Model</Label>
+          <Label htmlFor="businessModel" className="font-medium">How Do You Make Money?</Label>
           <Select value={businessInfo.businessModel} onValueChange={value => handleInputChange('businessModel', value)}>
             <SelectTrigger>
               <SelectValue placeholder="Select business model" />
