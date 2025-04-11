@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -274,7 +273,7 @@ export default function FirstPayingCustomerFinder() {
               id="targetAudience" 
               value={businessInfo.targetAudience} 
               onChange={e => handleInputChange('targetAudience', e.target.value)} 
-              placeholder="Small to medium-sized businesses" 
+              placeholder="Small to medium-sized manufacturing businesses" 
               className="placeholder:text-gray-400" 
             />
           </div>
