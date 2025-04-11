@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -251,7 +252,7 @@ export default function FirstPayingCustomerFinder() {
               id="companyName" 
               value={businessInfo.companyName} 
               onChange={e => handleInputChange('companyName', e.target.value)} 
-              placeholder={"\"GreenLeaf Solutions\""} 
+              placeholder="GreenLeaf Solutions" 
               className="placeholder:text-gray-400" 
             />
           </div>
@@ -262,7 +263,7 @@ export default function FirstPayingCustomerFinder() {
               id="businessTypeAndOffer" 
               value={businessInfo.businessTypeAndOffer} 
               onChange={e => handleInputChange('businessTypeAndOffer', e.target.value)} 
-              placeholder={"\"We're a sustainability consulting firm offering tailored environmental strategies\""} 
+              placeholder="Sustainability consulting with tailored strategies" 
               className="placeholder:text-gray-400" 
             />
           </div>
@@ -273,7 +274,7 @@ export default function FirstPayingCustomerFinder() {
               id="targetAudience" 
               value={businessInfo.targetAudience} 
               onChange={e => handleInputChange('targetAudience', e.target.value)} 
-              placeholder={"\"Small to medium-sized businesses\""} 
+              placeholder="Small to medium-sized businesses" 
               className="placeholder:text-gray-400" 
             />
           </div>
@@ -284,18 +285,18 @@ export default function FirstPayingCustomerFinder() {
               id="deliveryMethod" 
               value={businessInfo.deliveryMethod} 
               onChange={e => handleInputChange('deliveryMethod', e.target.value)} 
-              placeholder={"\"We conduct in-depth audits and provide actionable plans\""} 
+              placeholder="In-depth audits with actionable plans" 
               className="placeholder:text-gray-400" 
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="problemAndOutcome" className="font-medium">What Problem Do You Solve and What's the Big Win?</Label>
+            <Label htmlFor="problemAndOutcome" className="font-medium">What Problem Do You Solve?</Label>
             <Input 
               id="problemAndOutcome" 
               value={businessInfo.problemAndOutcome} 
               onChange={e => handleInputChange('problemAndOutcome', e.target.value)} 
-              placeholder={"\"We solve the need for cost-effective eco-friendly practices, helping customers reduce their carbon footprint and costs\""} 
+              placeholder="Need for cost-effective eco-friendly practices" 
               className="placeholder:text-gray-400" 
             />
           </div>
@@ -306,7 +307,7 @@ export default function FirstPayingCustomerFinder() {
               id="uniqueApproach" 
               value={businessInfo.uniqueApproach} 
               onChange={e => handleInputChange('uniqueApproach', e.target.value)} 
-              placeholder={"\"Our customized, step-by-step approach tailored to each client\""} 
+              placeholder="Customized, step-by-step client approach" 
               className="placeholder:text-gray-400" 
             />
           </div>
