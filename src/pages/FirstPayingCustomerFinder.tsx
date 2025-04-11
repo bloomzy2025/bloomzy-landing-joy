@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -93,7 +92,6 @@ export default function FirstPayingCustomerFinder() {
     }
     setLoading(true);
     try {
-      // Create a formatted string for the Gemini API
       const businessSummary = `I'm from ${businessInfo.companyName}. ${businessInfo.businessTypeAndOffer}. We want to help ${businessInfo.targetAudience}. Our business works by ${businessInfo.deliveryMethod}, addressing ${businessInfo.problemAndOutcome}. What sets us apart is ${businessInfo.uniqueApproach}, and we primarily operate through a ${businessInfo.businessCustomerType} ${businessInfo.businessModel.toLowerCase()} business model.`;
       const result = await mockGeminiCall(`You're a startup advisor. My business is described here: "${businessSummary}". Suggest 20 micro-niche audiences I can target for my first paying customers. Focus on low ad costs (CPC under $2 if possible), high relevance to my offer, and growing demand. List only the niches, nothing else.`);
       const generatedNiches = Array.isArray(result) ? result : typeof result === 'string' ? result.split("\n").filter(line => line.trim()) : [];
@@ -225,218 +223,238 @@ export default function FirstPayingCustomerFinder() {
     }
   };
 
-  const renderProgressBar = () => <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
-      <div className="bg-green-500 h-2.5 rounded-full transition-all duration-500" style={{
-      width: `${step / 3 * 100}%`
-    }}></div>
-    </div>;
-
-  const renderStep1 = () => <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Step 1: Describe your Business</h2>
-      <p className="text-muted-foreground">
-        Fill in the fields below to help us find specific customer groups that are most likely to pay for your products or services.
-      </p>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="companyName" className="font-medium">Your Business Name</Label>
-          <Input 
-            id="companyName" 
-            value={businessInfo.companyName} 
-            onChange={e => handleInputChange('companyName', e.target.value)} 
-            placeholder='"GreenLeaf Solutions"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="businessTypeAndOffer" className="font-medium">What's Your Business and What Do You Offer?</Label>
-          <Input 
-            id="businessTypeAndOffer" 
-            value={businessInfo.businessTypeAndOffer} 
-            onChange={e => handleInputChange('businessTypeAndOffer', e.target.value)} 
-            placeholder='"We're a sustainability consulting firm offering tailored environmental strategies"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="targetAudience" className="font-medium">Who Do You Want to Help?</Label>
-          <Input 
-            id="targetAudience" 
-            value={businessInfo.targetAudience} 
-            onChange={e => handleInputChange('targetAudience', e.target.value)} 
-            placeholder='"Small to medium-sized businesses"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="deliveryMethod" className="font-medium">How Do You Deliver Results?</Label>
-          <Input 
-            id="deliveryMethod" 
-            value={businessInfo.deliveryMethod} 
-            onChange={e => handleInputChange('deliveryMethod', e.target.value)} 
-            placeholder='"We conduct in-depth audits and provide actionable plans"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="problemAndOutcome" className="font-medium">What Problem Do You Solve and What's the Big Win?</Label>
-          <Input 
-            id="problemAndOutcome" 
-            value={businessInfo.problemAndOutcome} 
-            onChange={e => handleInputChange('problemAndOutcome', e.target.value)} 
-            placeholder='"We solve the need for cost-effective eco-friendly practices, helping customers reduce their carbon footprint and costs"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="uniqueApproach" className="font-medium">What Sets You Apart?</Label>
-          <Input 
-            id="uniqueApproach" 
-            value={businessInfo.uniqueApproach} 
-            onChange={e => handleInputChange('uniqueApproach', e.target.value)} 
-            placeholder='"Our customized, step-by-step approach tailored to each client"' 
-            className="placeholder:text-gray-400" 
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="businessCustomerType" className="font-medium">Who Do You Sell To?</Label>
-          <Select value={businessInfo.businessCustomerType} onValueChange={value => handleInputChange('businessCustomerType', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select customer type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="B2B">Businesses (B2B)</SelectItem>
-              <SelectItem value="B2C">Consumers (B2C)</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="businessModel" className="font-medium">How Do You Make Money?</Label>
-          <Select value={businessInfo.businessModel} onValueChange={value => handleInputChange('businessModel', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select business model" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Subscription">Subscription</SelectItem>
-              <SelectItem value="Product Sales">Product Sales</SelectItem>
-              <SelectItem value="Advertising">Advertising</SelectItem>
-              <SelectItem value="Freemium">Freemium</SelectItem>
-              <SelectItem value="Licensing">Licensing</SelectItem>
-              <SelectItem value="Commission">Commission</SelectItem>
-              <SelectItem value="Pay-Per-Use">Pay-Per-Use</SelectItem>
-              <SelectItem value="Franchise">Franchise</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+  const renderProgressBar = () => {
+    return (
+      <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+        <div 
+          className="bg-green-500 h-2.5 rounded-full transition-all duration-500" 
+          style={{
+            width: `${step / 3 * 100}%`
+          }}
+        />
       </div>
-      
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div>
-              <Button onClick={handleFindCustomers} className="w-full bg-brand-green hover:bg-brand-green/90" disabled={loading}>
-                {loading ? "Finding your customers..." : "Find My Customers"}
-              </Button>
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Answer all questions for the best results</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>;
+    );
+  };
 
-  const renderStep2 = () => <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Step 2: Pick Your Top 5 Customer Groups</h2>
-      <p className="text-muted-foreground">
-        Check 5 groups you're excited to help. Click 'Get Ad Keywords' to see how to reach them with cheap, targeted ads.
-      </p>
-      <p className="text-sm text-muted-foreground italic">
-        Why pick 5? It narrows your focus without stress.
-      </p>
-      
-      <div className="space-y-2 max-h-80 overflow-y-auto p-4 border rounded-md">
-        {niches.map(niche => <div key={niche.id} className="flex items-start space-x-2">
-            <Checkbox id={`niche-${niche.id}`} checked={niche.selected} onCheckedChange={() => toggleNicheSelection(niche.id)} />
-            <label htmlFor={`niche-${niche.id}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              {niche.text}
-            </label>
-          </div>)}
-      </div>
-      
-      <div className="flex items-center justify-between">
-        <p className="text-sm">Selected: {selectedCount}/5</p>
-        <Button onClick={handleGetKeywords} className="bg-blue-500 hover:bg-blue-600" disabled={loading || selectedCount !== 5}>
-          {loading ? "Getting keywords..." : "Get Ad Keywords"}
-        </Button>
-      </div>
-    </div>;
+  const renderStep1 = () => {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Step 1: Describe your Business</h2>
+        <p className="text-muted-foreground">
+          Fill in the fields below to help us find specific customer groups that are most likely to pay for your products or services.
+        </p>
 
-  const renderStep3 = () => <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Step 3: Choose Your Winning Customer Group</h2>
-      <p className="text-muted-foreground">
-        Pick one group you're fired up about. Hit 'Start Winning' to confirm it's a smart choice and get 3 ways to start selling.
-      </p>
-      
-      <div className="space-y-4 max-h-80 overflow-y-auto p-4 border rounded-md">
-        {nicheKeywords.map((item, index) => <div key={index} className="space-y-1">
-            <h3 className="font-medium">{item.niche}</h3>
-            <p className="text-sm text-muted-foreground">
-              Keywords: {item.keywords.join(", ")}
-            </p>
-          </div>)}
-      </div>
-      
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Select from your top 5:</label>
-          <Select onValueChange={setFinalNiche}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a niche" />
-            </SelectTrigger>
-            <SelectContent>
-              {nicheKeywords.map((item, index) => <SelectItem key={index} value={item.niche}>
-                  {item.niche}
-                </SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Or type any niche from Step 1:</label>
-          <Input value={customNiche} onChange={e => setCustomNiche(e.target.value)} placeholder="Enter a custom niche" />
-        </div>
-        
-        <Button onClick={handleStartWinning} className="w-full bg-green-500 hover:bg-green-600" disabled={loading || !finalNiche && !customNiche}>
-          {loading ? "Creating your plan..." : "Start Winning"}
-        </Button>
-      </div>
-      
-      {finalPlan.reason && <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">{finalNiche || customNiche}</h3>
-          <div className="space-y-4">
-            <div>
-              <p className="font-medium">Why It's Great:</p>
-              <p>{finalPlan.reason}</p>
-            </div>
-            <div>
-              <p className="font-medium">Next Steps:</p>
-              <ol className="list-decimal pl-5 space-y-2">
-                {finalPlan.steps.map((step, index) => <li key={index}>{step}</li>)}
-              </ol>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="companyName" className="font-medium">Your Business Name</Label>
+            <Input 
+              id="companyName" 
+              value={businessInfo.companyName} 
+              onChange={e => handleInputChange('companyName', e.target.value)} 
+              placeholder={"\"GreenLeaf Solutions\""} 
+              className="placeholder:text-gray-400" 
+            />
           </div>
-        </div>}
-    </div>;
 
-  return <div className="min-h-screen bg-white">
+          <div className="space-y-2">
+            <Label htmlFor="businessTypeAndOffer" className="font-medium">What's Your Business and What Do You Offer?</Label>
+            <Input 
+              id="businessTypeAndOffer" 
+              value={businessInfo.businessTypeAndOffer} 
+              onChange={e => handleInputChange('businessTypeAndOffer', e.target.value)} 
+              placeholder={"\"We're a sustainability consulting firm offering tailored environmental strategies\""} 
+              className="placeholder:text-gray-400" 
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="targetAudience" className="font-medium">Who Do You Want to Help?</Label>
+            <Input 
+              id="targetAudience" 
+              value={businessInfo.targetAudience} 
+              onChange={e => handleInputChange('targetAudience', e.target.value)} 
+              placeholder={"\"Small to medium-sized businesses\""} 
+              className="placeholder:text-gray-400" 
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deliveryMethod" className="font-medium">How Do You Deliver Results?</Label>
+            <Input 
+              id="deliveryMethod" 
+              value={businessInfo.deliveryMethod} 
+              onChange={e => handleInputChange('deliveryMethod', e.target.value)} 
+              placeholder={"\"We conduct in-depth audits and provide actionable plans\""} 
+              className="placeholder:text-gray-400" 
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="problemAndOutcome" className="font-medium">What Problem Do You Solve and What's the Big Win?</Label>
+            <Input 
+              id="problemAndOutcome" 
+              value={businessInfo.problemAndOutcome} 
+              onChange={e => handleInputChange('problemAndOutcome', e.target.value)} 
+              placeholder={"\"We solve the need for cost-effective eco-friendly practices, helping customers reduce their carbon footprint and costs\""} 
+              className="placeholder:text-gray-400" 
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="uniqueApproach" className="font-medium">What Sets You Apart?</Label>
+            <Input 
+              id="uniqueApproach" 
+              value={businessInfo.uniqueApproach} 
+              onChange={e => handleInputChange('uniqueApproach', e.target.value)} 
+              placeholder={"\"Our customized, step-by-step approach tailored to each client\""} 
+              className="placeholder:text-gray-400" 
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="businessCustomerType" className="font-medium">Who Do You Sell To?</Label>
+            <Select value={businessInfo.businessCustomerType} onValueChange={value => handleInputChange('businessCustomerType', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select customer type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="B2B">Businesses (B2B)</SelectItem>
+                <SelectItem value="B2C">Consumers (B2C)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="businessModel" className="font-medium">How Do You Make Money?</Label>
+            <Select value={businessInfo.businessModel} onValueChange={value => handleInputChange('businessModel', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select business model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Subscription">Subscription</SelectItem>
+                <SelectItem value="Product Sales">Product Sales</SelectItem>
+                <SelectItem value="Advertising">Advertising</SelectItem>
+                <SelectItem value="Freemium">Freemium</SelectItem>
+                <SelectItem value="Licensing">Licensing</SelectItem>
+                <SelectItem value="Commission">Commission</SelectItem>
+                <SelectItem value="Pay-Per-Use">Pay-Per-Use</SelectItem>
+                <SelectItem value="Franchise">Franchise</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <Button onClick={handleFindCustomers} className="w-full bg-brand-green hover:bg-brand-green/90" disabled={loading}>
+                  {loading ? "Finding your customers..." : "Find My Customers"}
+                </Button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Answer all questions for the best results</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+    );
+  };
+
+  const renderStep2 = () => {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Step 2: Pick Your Top 5 Customer Groups</h2>
+        <p className="text-muted-foreground">
+          Check 5 groups you're excited to help. Click 'Get Ad Keywords' to see how to reach them with cheap, targeted ads.
+        </p>
+        <p className="text-sm text-muted-foreground italic">
+          Why pick 5? It narrows your focus without stress.
+        </p>
+        
+        <div className="space-y-2 max-h-80 overflow-y-auto p-4 border rounded-md">
+          {niches.map(niche => <div key={niche.id} className="flex items-start space-x-2">
+              <Checkbox id={`niche-${niche.id}`} checked={niche.selected} onCheckedChange={() => toggleNicheSelection(niche.id)} />
+              <label htmlFor={`niche-${niche.id}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                {niche.text}
+              </label>
+            </div>)}
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <p className="text-sm">Selected: {selectedCount}/5</p>
+          <Button onClick={handleGetKeywords} className="bg-blue-500 hover:bg-blue-600" disabled={loading || selectedCount !== 5}>
+            {loading ? "Getting keywords..." : "Get Ad Keywords"}
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderStep3 = () => {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Step 3: Choose Your Winning Customer Group</h2>
+        <p className="text-muted-foreground">
+          Pick one group you're fired up about. Hit 'Start Winning' to confirm it's a smart choice and get 3 ways to start selling.
+        </p>
+        
+        <div className="space-y-4 max-h-80 overflow-y-auto p-4 border rounded-md">
+          {nicheKeywords.map((item, index) => <div key={index} className="space-y-1">
+              <h3 className="font-medium">{item.niche}</h3>
+              <p className="text-sm text-muted-foreground">
+                Keywords: {item.keywords.join(", ")}
+              </p>
+            </div>)}
+        </div>
+        
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Select from your top 5:</label>
+            <Select onValueChange={setFinalNiche}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a niche" />
+              </SelectTrigger>
+              <SelectContent>
+                {nicheKeywords.map((item, index) => <SelectItem key={index} value={item.niche}>
+                    {item.niche}
+                  </SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Or type any niche from Step 1:</label>
+            <Input value={customNiche} onChange={e => setCustomNiche(e.target.value)} placeholder="Enter a custom niche" />
+          </div>
+          
+          <Button onClick={handleStartWinning} className="w-full bg-green-500 hover:bg-green-600" disabled={loading || !finalNiche && !customNiche}>
+            {loading ? "Creating your plan..." : "Start Winning"}
+          </Button>
+        </div>
+        
+        {finalPlan.reason && <div className="mt-6 p-6 bg-green-50 border border-green-200 rounded-lg">
+            <h3 className="text-xl font-bold mb-4">{finalNiche || customNiche}</h3>
+            <div className="space-y-4">
+              <div>
+                <p className="font-medium">Why It's Great:</p>
+                <p>{finalPlan.reason}</p>
+              </div>
+              <div>
+                <p className="font-medium">Next Steps:</p>
+                <ol className="list-decimal pl-5 space-y-2">
+                  {finalPlan.steps.map((step, index) => <li key={index}>{step}</li>)}
+                </ol>
+              </div>
+            </div>
+          </div>}
+      </div>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-white">
       <div className="fixed top-0 left-0 right-0 z-50 w-full bg-white shadow-lg border-b border-gray-200">
         <div className="container mx-auto">
           <Header1 />
@@ -461,5 +479,6 @@ export default function FirstPayingCustomerFinder() {
           {step === 3 && renderStep3()}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 }
