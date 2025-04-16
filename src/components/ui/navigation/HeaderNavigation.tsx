@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { NavigationLink } from "./NavigationLink";
@@ -34,8 +33,8 @@ export function HeaderNavigation({
       {/* Programs Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            Programs <ChevronDown className="h-4 w-4" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Programs <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -60,8 +59,8 @@ export function HeaderNavigation({
       {/* Books Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            Books <ChevronDown className="h-4 w-4" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Books <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -81,8 +80,8 @@ export function HeaderNavigation({
       {/* Free Resources Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            Free Resources <ChevronDown className="h-4 w-4" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Free Resources <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -107,8 +106,8 @@ export function HeaderNavigation({
       {/* About Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            About <ChevronDown className="h-4 w-4" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            About <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -129,7 +128,7 @@ export function HeaderNavigation({
       <NavigationLink 
         to="/contact" 
         isActive={location.pathname === "/contact"}
-        className="text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
+        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
       >
         Contact
       </NavigationLink>
