@@ -38,15 +38,6 @@ export function HeaderActions({
     <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
       {!isMobile && (
         <>
-          {!user && (
-            <Link 
-              to="/signin" 
-              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-md"
-            >
-              Login
-            </Link>
-          )}
-          
           {user && (
             <div className="flex items-center gap-3">
               <Avatar className="h-8 w-8 bg-primary text-primary-foreground">
@@ -66,13 +57,13 @@ export function HeaderActions({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Link 
-          to="/calendly" 
+          to="/contact"
           className={cn(
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "default" }), 
-            "text-sm font-medium bg-black hover:bg-gray-800 text-white dark:bg-black dark:hover:bg-gray-800"
+            "text-base font-bold bg-[#19466e] hover:bg-[#12345c] text-white px-6 py-2"
           )}
         >
-          Get early access
+          Let's Talk
         </Link>
       </motion.div>
     </div>

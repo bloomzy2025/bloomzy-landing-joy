@@ -76,10 +76,10 @@ function Header1() {
 
   return (
     <div className={cn(
-      "bg-gray-50 dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
+      "bg-white dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
       scrolled ? "shadow-md dark:shadow-gray-800/20" : ""
     )}>
-      <div className="container flex justify-between items-center rounded-lg bg-zinc-50 dark:bg-gray-900 p-2 sm:p-4">
+      <div className="container flex justify-between items-center bg-white dark:bg-gray-900 p-2 sm:p-4">
         <div className="flex items-center">
           <Logo isMobile={isMobile} />
           
@@ -93,7 +93,7 @@ function Header1() {
           )}
         </div>
         
-        <div className="flex items-center gap-6">
+        <div className="flex items-center justify-between flex-grow ml-8">
           {!isMobile && (
             <HeaderNavigation
               isMobile={isMobile}

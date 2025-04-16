@@ -23,8 +23,8 @@ export function NavigationLink({
     <Link 
       to={to} 
       className={cn(
-        "font-medium relative text-sm transition-colors", 
-        className || "text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+        "font-bold relative text-base transition-colors", 
+        className || "text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
       )} 
       onClick={onClick}
     >

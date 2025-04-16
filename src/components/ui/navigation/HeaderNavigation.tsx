@@ -29,12 +29,59 @@ export function HeaderNavigation({
   const location = useLocation();
 
   return (
-    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-6'}`}>
-      {/* Free Tools Dropdown */}
+    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-8'}`}>
+      {/* Programs Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white">
-            Free Tools <ChevronDown className="h-4 w-4" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Programs <ChevronDown className="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-gray-800">
+            <DropdownMenuItem>
+              <Link to="/program-1" className="w-full">
+                Program 1
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/program-2" className="w-full">
+                Program 2
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/program-3" className="w-full">
+                Program 3
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      
+      {/* Books Dropdown */}
+      <div className="relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Books <ChevronDown className="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-gray-800">
+            <DropdownMenuItem>
+              <Link to="/book-1" className="w-full">
+                Book 1
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/book-2" className="w-full">
+                Book 2
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      
+      {/* Free Resources Dropdown */}
+      <div className="relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Free Resources <ChevronDown className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -56,20 +103,34 @@ export function HeaderNavigation({
         </DropdownMenu>
       </div>
       
-      <NavigationLink 
-        to="/pricing" 
-        isActive={location.pathname === "/pricing"}
-        className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
-      >
-        Pricing
-      </NavigationLink>
+      {/* About Dropdown */}
+      <div className="relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-1 text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            About <ChevronDown className="h-4 w-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-gray-800">
+            <DropdownMenuItem>
+              <Link to="/about" className="w-full">
+                About Us
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/team" className="w-full">
+                Our Team
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       
+      {/* Contact Link */}
       <NavigationLink 
-        to="/about" 
-        isActive={location.pathname === "/about"}
-        className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+        to="/contact" 
+        isActive={location.pathname === "/contact"}
+        className="text-base font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
       >
-        About
+        Contact
       </NavigationLink>
     </div>
   );
