@@ -9,18 +9,23 @@ interface NavigationLinkProps {
   isActive?: boolean;
   children: React.ReactNode;
   onClick?: () => void;
+  className?: string;
 }
 
 export function NavigationLink({
   to,
   isActive = false,
   children,
-  onClick
+  onClick,
+  className
 }: NavigationLinkProps) {
   return (
     <Link 
       to={to} 
-      className="font-medium relative text-gray-700 dark:text-gray-200 hover:text-brand-green dark:hover:text-accent-green transition-colors" 
+      className={cn(
+        "font-medium relative text-sm transition-colors", 
+        className || "text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+      )} 
       onClick={onClick}
     >
       {children}

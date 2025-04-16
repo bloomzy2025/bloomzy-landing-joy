@@ -39,7 +39,10 @@ export function HeaderActions({
       {!isMobile && (
         <>
           {!user && (
-            <Link to="/signin" className="text-sm font-medium bg-white dark:bg-gray-800 text-black dark:text-white px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-all">
+            <Link 
+              to="/signin" 
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white px-4 py-2 rounded-md"
+            >
               Login
             </Link>
           )}
@@ -66,7 +69,7 @@ export function HeaderActions({
           to="/calendly" 
           className={cn(
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "default" }), 
-            "bg-[#1A1A1A] hover:bg-[#333333] text-white dark:bg-[#1A1A1A] dark:hover:bg-[#333333] dark:text-white font-medium"
+            "text-sm font-medium bg-black hover:bg-gray-800 text-white dark:bg-black dark:hover:bg-gray-800"
           )}
         >
           Get early access

@@ -56,11 +56,19 @@ export function HeaderNavigation({
         </DropdownMenu>
       </div>
       
-      <NavigationLink to="/pricing" isActive={location.pathname === "/pricing"}>
+      <NavigationLink 
+        to="/pricing" 
+        isActive={location.pathname === "/pricing"}
+        className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+      >
         Pricing
       </NavigationLink>
       
-      <NavigationLink to="/about" isActive={location.pathname === "/about"}>
+      <NavigationLink 
+        to="/about" 
+        isActive={location.pathname === "/about"}
+        className="text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white"
+      >
         About
       </NavigationLink>
     </div>
