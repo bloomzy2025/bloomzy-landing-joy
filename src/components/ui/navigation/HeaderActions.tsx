@@ -35,7 +35,7 @@ export function HeaderActions({
   };
   
   return (
-    <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4'}`}>
+    <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4 ml-6'}`}>
       {!isMobile && (
         <>
           {user && (
