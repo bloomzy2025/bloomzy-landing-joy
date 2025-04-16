@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -44,7 +43,6 @@ function Header1() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Reset menu state on location change
   React.useEffect(() => {
     setMenuOpen(false);
   }, [location]);
@@ -95,7 +93,7 @@ function Header1() {
               <Logo isMobile={isMobile} />
             </div>
             
-            <div className="flex items-center justify-center gap-8 flex-grow mx-6">
+            <div className="flex items-center justify-center gap-[3rem] flex-grow mx-6">
               <HeaderNavigation
                 isMobile={isMobile}
                 menuOpen={menuOpen}
