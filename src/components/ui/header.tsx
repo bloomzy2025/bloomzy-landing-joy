@@ -90,12 +90,12 @@ function Header1() {
             </button>
           </div>
         ) : (
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between max-w-5xl mx-auto">
             <div className="flex-shrink-0">
               <Logo isMobile={isMobile} />
             </div>
             
-            <div className="flex items-center justify-center gap-10 flex-grow">
+            <div className="flex items-center justify-center gap-8 flex-grow mx-6">
               <HeaderNavigation
                 isMobile={isMobile}
                 menuOpen={menuOpen}

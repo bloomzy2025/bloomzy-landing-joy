@@ -29,7 +29,8 @@ export function HeaderNavigation({
   const location = useLocation();
 
   return (
-    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-10 mx-auto'}`}>
+    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-8 mx-auto'}`}>
+      
       {/* Programs Dropdown */}
       <div className="relative">
         <DropdownMenu>
