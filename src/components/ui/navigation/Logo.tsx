@@ -1,4 +1,5 @@
 
+import React from "react";
 import { Link } from "react-router-dom";
 
 interface LogoProps {
@@ -7,15 +8,15 @@ interface LogoProps {
 
 export function Logo({ isMobile = false }: LogoProps) {
   return (
-    <Link to="/" className={`${isMobile ? 'mx-auto' : ''} text-xl font-bold tracking-tighter flex items-center gap-2 text-gray-900 dark:text-white`}>
-      <div className="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center overflow-hidden">
-        <img 
-          src="/lovable-uploads/12735e3d-18db-4ce4-bb6a-fba45bf2629d.png" 
-          alt="Bloomzy Logo" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      Bloomzy
+    <Link 
+      to="/" 
+      className="flex items-center font-bold text-xl"
+    >
+      <img 
+        src="/lovable-uploads/a169e02c-1ca5-40a2-b85f-4aad022c2ea8.png" 
+        alt="Lean Marketing Logo" 
+        className="h-10 mr-2"
+      />
     </Link>
   );
 }
