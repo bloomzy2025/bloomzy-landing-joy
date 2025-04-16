@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { NavigationLink } from "./NavigationLink";
@@ -81,7 +80,7 @@ export function HeaderNavigation({
       {/* Free Resources Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 whitespace-nowrap">
             Free Resources <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
@@ -136,4 +135,3 @@ export function HeaderNavigation({
     </div>
   );
 }
-
