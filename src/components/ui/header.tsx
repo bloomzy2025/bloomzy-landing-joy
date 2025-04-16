@@ -5,6 +5,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { NavigationLink } from "./navigation/NavigationLink";
 import { HeaderNavigation } from "./navigation/HeaderNavigation";
 import { Logo } from "./navigation/Logo";
 import { HeaderActions } from "./navigation/HeaderActions";
@@ -79,7 +80,7 @@ function Header1() {
       scrolled ? "shadow-md dark:shadow-gray-800/20" : ""
     )}>
       <div className="container flex justify-between items-center rounded-lg bg-zinc-50 dark:bg-gray-900 p-2 sm:p-4">
-        <div className="flex-grow flex justify-center items-center">
+        <div className="flex items-center">
           <Logo isMobile={isMobile} />
           
           {isMobile && (
@@ -97,6 +98,9 @@ function Header1() {
             <HeaderNavigation
               isMobile={isMobile}
               menuOpen={menuOpen}
+              activeSection={activeSection}
+              scrollToSection={scrollToSection}
+              isActive={isActive}
             />
           )}
           
@@ -107,6 +111,9 @@ function Header1() {
           <HeaderNavigation
             isMobile={isMobile}
             menuOpen={menuOpen}
+            activeSection={activeSection}
+            scrollToSection={scrollToSection}
+            isActive={isActive}
           />
         )}
       </div>
