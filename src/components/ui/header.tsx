@@ -5,7 +5,6 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { NavigationLink } from "./navigation/NavigationLink";
 import { HeaderNavigation } from "./navigation/HeaderNavigation";
 import { Logo } from "./navigation/Logo";
 import { HeaderActions } from "./navigation/HeaderActions";
@@ -79,33 +78,38 @@ function Header1() {
       "bg-white dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
       scrolled ? "shadow-md dark:shadow-gray-800/20" : ""
     )}>
-      <div className="container flex justify-between items-center bg-white dark:bg-gray-900 p-2 sm:p-4">
-        <div className="flex items-center">
-          <Logo isMobile={isMobile} />
-          
-          {isMobile && (
+      <div className="container flex items-center justify-center bg-white dark:bg-gray-900 p-2 sm:p-4">
+        {isMobile ? (
+          <div className="flex w-full justify-between items-center">
+            <Logo isMobile={isMobile} />
             <button 
               onClick={toggleMenu} 
-              className="ml-4 z-50 p-2 text-gray-800 dark:text-gray-200"
+              className="z-50 p-2 text-gray-800 dark:text-gray-200"
             >
               {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
-          )}
-        </div>
-        
-        <div className="flex items-center justify-between flex-grow ml-8">
-          {!isMobile && (
-            <HeaderNavigation
-              isMobile={isMobile}
-              menuOpen={menuOpen}
-              activeSection={activeSection}
-              scrollToSection={scrollToSection}
-              isActive={isActive}
-            />
-          )}
-          
-          <HeaderActions isMobile={isMobile} />
-        </div>
+          </div>
+        ) : (
+          <div className="flex w-full items-center justify-between">
+            <div className="flex-shrink-0">
+              <Logo isMobile={isMobile} />
+            </div>
+            
+            <div className="flex items-center justify-center gap-10 flex-grow">
+              <HeaderNavigation
+                isMobile={isMobile}
+                menuOpen={menuOpen}
+                activeSection={activeSection}
+                scrollToSection={scrollToSection}
+                isActive={isActive}
+              />
+            </div>
+            
+            <div className="flex-shrink-0">
+              <HeaderActions isMobile={isMobile} />
+            </div>
+          </div>
+        )}
         
         {isMobile && (
           <HeaderNavigation
