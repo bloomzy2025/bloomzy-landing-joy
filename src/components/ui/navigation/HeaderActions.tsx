@@ -59,8 +59,8 @@ export function HeaderActions({
         <Link 
           to="/contact"
           className={cn(
-            buttonVariants({ variant: "default", size: isMobile ? "sm" : "default" }), 
-            "text-base font-bold bg-[#19466e] hover:bg-[#12345c] text-white px-6 py-2"
+            buttonVariants({ variant: "default", size: isMobile ? "sm" : "lg" }), 
+            "text-xl font-bold bg-[#19466e] hover:bg-[#12345c] text-white px-8 py-3"
           )}
         >
           Let's Talk
