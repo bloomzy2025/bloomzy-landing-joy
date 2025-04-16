@@ -14,8 +14,8 @@ export function Logo({ isMobile = false }: LogoProps) {
     >
       <img 
         src="/lovable-uploads/a169e02c-1ca5-40a2-b85f-4aad022c2ea8.png" 
-        alt="Lean Marketing Logo" 
-        className="h-10 mr-2"
+        alt="Bloomzy Logo" 
+        className={`${isMobile ? 'h-8' : 'h-12'} mr-2`}
       />
     </Link>
   );
