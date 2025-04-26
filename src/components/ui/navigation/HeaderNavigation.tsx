@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { NavigationLink } from "./NavigationLink";
@@ -56,32 +57,11 @@ export function HeaderNavigation({
         </DropdownMenu>
       </div>
       
-      {/* Books Dropdown */}
-      <div className="relative">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            Books <ChevronDown className="h-5 w-5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white dark:bg-gray-800">
-            <DropdownMenuItem>
-              <Link to="/book-1" className="w-full">
-                Book 1
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/book-2" className="w-full">
-                Book 2
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      
-      {/* Free Resources Dropdown */}
+      {/* Resources Dropdown (renamed from Free Resources) */}
       <div className="relative">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 whitespace-nowrap">
-            Free Resources <ChevronDown className="h-5 w-5" />
+            Resources <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -123,15 +103,6 @@ export function HeaderNavigation({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
-      {/* Contact Link */}
-      <NavigationLink 
-        to="/contact" 
-        isActive={location.pathname === "/contact"}
-        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
-      >
-        Contact
-      </NavigationLink>
     </div>
   );
 }
