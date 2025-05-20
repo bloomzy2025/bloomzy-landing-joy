@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -41,9 +42,6 @@ const Index = () => {
   const {
     toast
   } = useToast();
-  const {
-    user
-  } = useAuth();
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, {
@@ -52,6 +50,9 @@ const Index = () => {
   const featuresInView = useInView(featuresRef, {
     margin: "-50% 0px -50% 0px"
   });
+
+  // Remove the useAuth call that was causing the error
+  // We'll conditionally use it in components that need it instead
 
   useEffect(() => {
     const hash = window.location.hash.substring(1);

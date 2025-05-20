@@ -15,7 +15,15 @@ interface HeaderActionsProps {
 export function HeaderActions({
   isMobile = false
 }: HeaderActionsProps) {
-  const { user } = useAuth();
+  // Wrap the useAuth hook in a try-catch to prevent errors while the AuthProvider initializes
+  let user = null;
+  try {
+    const auth = useAuth();
+    user = auth?.user;
+  } catch (error) {
+    console.error("Auth provider not ready yet:", error);
+    // Auth provider not available yet, continue with null user
+  }
 
   // Get user initials from email or full name if available
   const getUserInitials = () => {

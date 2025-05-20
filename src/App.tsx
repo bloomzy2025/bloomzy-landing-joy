@@ -23,29 +23,38 @@ import Terms from "./pages/Terms";
 import CookieSettings from "./pages/CookieSettings";
 import FirstPayingCustomerFinder from "./pages/FirstPayingCustomerFinder";
 
+// Create a new QueryClient instance with better error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: false,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      // Add better error handling
+      onError: (error) => {
+        console.error('Query error:', error);
+      }
     }
   }
 });
 
 function App() {
+  console.log("App rendering - AuthProvider will be initialized");
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <Router>
+          {/* Make sure AuthProvider is inside Router but wrapping all routes */}
           <AuthProvider>
+            <Toaster />
+            <Sonner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/calendly" element={<Calendly />} />
+              <Route path="/contact" element={<Calendly />} />
               <Route path="/waitlist" element={<Waitlist />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/enterprise" element={<EnterpriseContact />} />
@@ -57,7 +66,6 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookie-settings" element={<CookieSettings />} />
-              <Route path="/contact" element={<Calendly />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

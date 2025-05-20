@@ -10,11 +10,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogOut, AlertTriangle } from "lucide-react";
+import { useState } from "react";
 
 export default function AuthButton() {
-  const { user, signOut, isLoading, connectionError } = useAuth();
+  // Safely handle potential auth context issues
+  const [authError, setAuthError] = useState(false);
+  let auth;
+  
+  try {
+    auth = useAuth();
+  } catch (error) {
+    console.error("Auth context error:", error);
+    setAuthError(true);
+    // Return fallback UI when auth context is not available
+    return (
+      <Button variant="outline" className="gap-2 text-yellow-600 dark:text-yellow-500 dark:border-gray-700 dark:hover:bg-gray-800">
+        <AlertTriangle size={16} />
+        Auth Unavailable
+      </Button>
+    );
+  }
+  
+  const { user, signOut, isLoading, connectionError } = auth;
 
-  if (connectionError) {
+  if (connectionError || authError) {
     return (
       <Button variant="outline" className="gap-2 text-yellow-600 dark:text-yellow-500 dark:border-gray-700 dark:hover:bg-gray-800">
         <AlertTriangle size={16} />
