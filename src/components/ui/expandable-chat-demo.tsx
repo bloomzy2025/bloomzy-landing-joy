@@ -8,10 +8,8 @@ import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from "@/components/ui
 import { ChatInput } from "@/components/ui/chat-input";
 import { ExpandableChat, ExpandableChatHeader, ExpandableChatBody, ExpandableChatFooter } from "@/components/ui/expandable-chat";
 import { ChatMessageList } from "@/components/ui/chat-message-list";
-import { useAuth } from "@/hooks/useAuth";
 
 export function ExpandableChatDemo() {
-  const { user } = useAuth();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -57,11 +55,8 @@ export function ExpandableChatDemo() {
     console.log("Microphone clicked");
   };
 
-  // Get the user's first initial if they are signed in
+  // Get user avatar
   const getUserAvatar = () => {
-    if (user && user.email) {
-      return user.email.charAt(0).toUpperCase();
-    }
     return <User className="h-4 w-4" />;
   };
 

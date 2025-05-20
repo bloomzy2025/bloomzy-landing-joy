@@ -37,43 +37,6 @@ const activityCategories = [{
     id: 'team-coordination',
     label: 'Team Coordination'
   }]
-}, {
-  id: 'focus',
-  label: 'FOCUS & PRODUCTIVITY',
-  options: [{
-    id: 'social-media',
-    label: 'Social Media'
-  }]
-}, {
-  id: 'task',
-  label: 'TASK MANAGEMENT',
-  options: [{
-    id: 'administrative-tasks',
-    label: 'Administrative Tasks'
-  }, {
-    id: 'planning',
-    label: 'Planning'
-  }, {
-    id: 'problem-solving',
-    label: 'Problem-Solving'
-  }]
-}, {
-  id: 'time',
-  label: 'TIME & ENERGY',
-  options: [{
-    id: 'travel-commute',
-    label: 'Travel/Commute'
-  }, {
-    id: 'breaks',
-    label: 'Breaks'
-  }]
-}, {
-  id: 'other',
-  label: 'OTHER',
-  options: [{
-    id: 'other',
-    label: 'Other'
-  }]
 }];
 
 const habitCategories = [{
@@ -436,45 +399,14 @@ const TimeWastersAudit = () => {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      const userId = currentUser?.id || user?.id;
-      
-      if (!userId) {
-        toast({
-          title: "Sign in required",
-          description: "Please sign in to save your audit results.",
-          variant: "destructive"
-        });
-        navigate('/signin?redirect=/time-wasters-audit');
-        return;
-      }
-
-      /*
-      const { data, error } = await supabase.from('time_audits').insert({
-        time_wasters: formData.time_wasters,
-        personal_habits: formData.personal_habits,
-        habit_control: formData.habit_control,
-        work_hours: formData.work_hours,
-        dependencies: formData.dependencies,
-        planning_issues: formData.planning_issues,
-        environmental_factors: formData.environmental_factors,
-        top_priorities: formData.top_priorities,
-        other_habits: formData.other_habits,
-        other_dependencies: formData.other_dependencies,
-        other_planning_issues: formData.other_planning_issues,
-        daily_activities: formData.daily_activities,
-        user_id: userId
-      }).select();
-
-      if (error) {
-        throw error;
-      }
-      */
-
+      // Since we removed auth, we'll just direct users to sign in
       toast({
-        title: "Audit Submitted Successfully!",
-        description: "We'll analyze your results and provide personalized recommendations."
+        title: "Sign in required",
+        description: "Please sign in to save your audit results.",
+        variant: "destructive"
       });
+      navigate('/signin?redirect=/time-wasters-audit');
+      return;
       
     } catch (error) {
       console.error('Error submitting audit:', error);

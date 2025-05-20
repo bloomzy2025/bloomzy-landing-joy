@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Wrench, ArrowRight, ArrowLeft, Check, Brain, LockKeyhole, Home, Star, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type QuestionType = {
@@ -36,18 +34,15 @@ const MakerManagerQuiz = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [result, setResult] = useState<ResultType | null>(null);
-  const { user } = useAuth();
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    if (user && location.pathname === '/maker-manager-quiz') {
-      const storedType = sessionStorage.getItem('quizResultType');
-      if (storedType && !result) {
-        setResult(results[storedType as keyof typeof results]);
-        setShowResults(true);
-      }
+    const storedType = sessionStorage.getItem('quizResultType');
+    if (storedType && !result) {
+      setResult(results[storedType as keyof typeof results]);
+      setShowResults(true);
     }
-  }, [user, location.pathname, result]);
+  }, [location.pathname, result]);
 
   const questions: QuestionType[] = [
     {

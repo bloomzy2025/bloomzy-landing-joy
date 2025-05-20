@@ -4,15 +4,11 @@ import { motion } from "framer-motion";
 import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
   const titles = useMemo(() => ["Burnout", "72 Hour Work Weeks", "Time-wasting tasks", "Lack of direction", "Startup Chaos"], []);
-  const {
-    user
-  } = useAuth();
   const isMobile = useIsMobile();
   
   useEffect(() => {

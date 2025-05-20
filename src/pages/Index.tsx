@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +9,6 @@ import { Header1 } from "@/components/ui/header";
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/features-section-with-hover-effects";
 import { Footerdemo } from "@/components/ui/footer-section";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, useScroll, useInView } from "framer-motion";
 
@@ -41,9 +41,6 @@ const Index = () => {
   const {
     toast
   } = useToast();
-  const {
-    user
-  } = useAuth();
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, {
