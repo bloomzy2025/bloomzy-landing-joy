@@ -7,7 +7,11 @@ import { toast } from "@/hooks/use-toast";
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/';
+  
+  // Sanitize and validate the redirectTo parameter
+  const redirectParam = searchParams.get('redirectTo') || '/';
+  // Only allow relative URLs that start with / for security
+  const redirectTo = redirectParam.startsWith('/') ? redirectParam : '/';
 
   useEffect(() => {
     const handleAuthCallback = async () => {
@@ -16,6 +20,7 @@ export default function AuthCallback() {
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
+          console.error('Authentication error:', error);
           toast({
             title: "Authentication error",
             description: error.message,
@@ -35,7 +40,11 @@ export default function AuthCallback() {
           // Check if we're coming from the quiz
           if (redirectTo.includes('/maker-manager-quiz')) {
             // Clear stored result type as it's no longer needed after sign-in
-            sessionStorage.removeItem('quizResultType');
+            try {
+              sessionStorage.removeItem('quizResultType');
+            } catch (e) {
+              console.error('Failed to clear session storage:', e);
+            }
           }
           
           navigate(redirectTo);

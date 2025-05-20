@@ -62,6 +62,7 @@ export function HeaderActions({
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "lg" }), 
             "text-xl font-bold bg-brand-green hover:bg-brand-green/90 text-white px-8 py-3"
           )}
+          rel="noopener noreferrer"
         >
           Let's Talk
         </Link>

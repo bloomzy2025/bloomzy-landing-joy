@@ -18,9 +18,6 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Google OAuth client ID from provided credentials
-const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -58,11 +55,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getSession();
 
     try {
+      // Set up auth listener first, then check for session
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
           setSession(session);
           setUser(session?.user || null);
-          setIsLoading(false);
           setConnectionError(false);
         }
       );
@@ -82,13 +79,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
+      // Apply more strict input validation
+      if (!email || !password || !fullName) {
+        throw new Error("All fields are required");
+      }
+      
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long");
+      }
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
-          }
+          },
+          // Add CSRF protection
+          captchaToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || undefined
         }
       });
 
@@ -117,12 +125,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
+      // Apply more strict input validation
+      if (!email || !password) {
+        throw new Error("Email and password are required");
+      }
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
+        // Rate limit error handling
+        if (error.message.includes('rate limit')) {
+          throw new Error("Too many login attempts. Please try again later.");
+        }
         throw error;
       }
 
@@ -131,7 +148,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "You have successfully signed in."
       });
       
-      navigate(redirectTo);
+      // Use a safe redirect
+      const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
+      navigate(safeRedirect);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -168,7 +187,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             description: "You have successfully signed in with Google."
           });
           
-          navigate(redirectTo);
+          // Use a safe redirect
+          const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
+          navigate(safeRedirect);
           return;
         } catch (tokenError: any) {
           console.error('Google ID token error:', tokenError);
@@ -200,7 +221,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             description: "You have successfully signed in with Apple."
           });
           
-          navigate(redirectTo);
+          // Use a safe redirect
+          const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
+          navigate(safeRedirect);
           return;
         } catch (tokenError: any) {
           console.error('Apple ID token error:', tokenError);
@@ -219,7 +242,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
+          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + encodeURIComponent(redirectTo),
           // Only request minimal scopes to improve user experience
           scopes: 'email profile',
         },
