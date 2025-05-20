@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { NavigationLink } from "./NavigationLink";
@@ -29,7 +28,7 @@ export function HeaderNavigation({
   const location = useLocation();
 
   return (
-    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-10 mx-auto'}`}>
+    <div className={`${isMobile ? (menuOpen ? 'flex absolute top-16 left-0 right-0 flex-col items-start p-4 gap-4 bg-white dark:bg-gray-800 shadow-md z-50' : 'hidden') : 'flex items-center gap-8 mx-auto'}`}>
       
       {/* Programs Dropdown */}
       <div className="relative">
@@ -57,11 +56,32 @@ export function HeaderNavigation({
         </DropdownMenu>
       </div>
       
-      {/* Resources Dropdown (renamed from Free Resources) */}
+      {/* Books Dropdown */}
       <div className="relative">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 whitespace-nowrap">
-            Resources <ChevronDown className="h-5 w-5" />
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Books <ChevronDown className="h-5 w-5" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-white dark:bg-gray-800">
+            <DropdownMenuItem>
+              <Link to="/book-1" className="w-full">
+                Book 1
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to="/book-2" className="w-full">
+                Book 2
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      
+      {/* Free Resources Dropdown */}
+      <div className="relative">
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
+            Free Resources <ChevronDown className="h-5 w-5" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white dark:bg-gray-800">
             <DropdownMenuItem>
@@ -103,6 +123,15 @@ export function HeaderNavigation({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      
+      {/* Contact Link */}
+      <NavigationLink 
+        to="/contact" 
+        isActive={location.pathname === "/contact"}
+        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300"
+      >
+        Contact
+      </NavigationLink>
     </div>
   );
 }

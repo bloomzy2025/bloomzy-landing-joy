@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -8,15 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { Eye, EyeOff, Info } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger 
-} from "@/components/ui/tooltip";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Icons } from "@/components/ui/icons";
 
 // Google OAuth client ID 
 const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
@@ -24,7 +17,7 @@ const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.goo
 const signUpSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type SignUpFormValues = z.infer<typeof signUpSchema>;
@@ -84,6 +77,9 @@ export default function SignUpForm() {
           text: 'signup_with',
           logo_alignment: 'left'
         });
+        
+        // Remove the setOauthConfig calls that are causing errors
+        // The origin_uri can be set directly in the initialize call if needed in the future
       } catch (error) {
         console.error('Error initializing Google Sign In:', error);
         setGoogleError('Error initializing Google Sign In. Please try the email option.');
@@ -115,13 +111,6 @@ export default function SignUpForm() {
       </div>
       
       {renderPermissionsInfo()}
-      
-      <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
-        <AlertDescription className="text-sm flex items-start gap-2">
-          <Info size={16} className="mt-0.5 flex-shrink-0 text-blue-500" />
-          <span>We check if passwords have been exposed in data breaches to keep your account secure.</span>
-        </AlertDescription>
-      </Alert>
       
       <div className="flex flex-col gap-4">
         <div className="w-full">
@@ -174,27 +163,7 @@ export default function SignUpForm() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel>Password</FormLabel>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-5 w-5" type="button">
-                          <Info size={14} className="text-muted-foreground" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-xs">
-                        <p>Create a strong password that:</p>
-                        <ul className="list-disc ml-4 mt-1 text-xs">
-                          <li>Is at least 8 characters long</li>
-                          <li>Contains a mix of uppercase and lowercase letters</li>
-                          <li>Includes numbers and special characters</li>
-                          <li>Hasn't been exposed in data breaches</li>
-                        </ul>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input 

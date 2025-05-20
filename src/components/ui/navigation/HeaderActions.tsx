@@ -15,15 +15,7 @@ interface HeaderActionsProps {
 export function HeaderActions({
   isMobile = false
 }: HeaderActionsProps) {
-  // Wrap the useAuth hook in a try-catch to prevent errors while the AuthProvider initializes
-  let user = null;
-  try {
-    const auth = useAuth();
-    user = auth?.user;
-  } catch (error) {
-    console.error("Auth provider not ready yet:", error);
-    // Auth provider not available yet, continue with null user
-  }
+  const { user } = useAuth();
 
   // Get user initials from email or full name if available
   const getUserInitials = () => {
@@ -65,12 +57,11 @@ export function HeaderActions({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Link 
-          to="/calendly"
+          to="/contact"
           className={cn(
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "lg" }), 
             "text-xl font-bold bg-brand-green hover:bg-brand-green/90 text-white px-8 py-3"
           )}
-          rel="noopener noreferrer"
         >
           Let's Talk
         </Link>

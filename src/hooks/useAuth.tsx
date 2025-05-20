@@ -18,52 +18,8 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Function to check if a password has been leaked
-async function isPasswordLeaked(password: string): Promise<boolean> {
-  try {
-    // Create a SHA-1 hash of the password
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-    
-    // Convert the hash to a hex string
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    
-    // Get the prefix (first 5 chars) and suffix (rest of the hash)
-    const prefix = hashHex.substring(0, 5).toUpperCase();
-    const suffix = hashHex.substring(5).toUpperCase();
-    
-    // Query the HaveIBeenPwned API with only the prefix for k-anonymity
-    const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
-      headers: {
-        'Add-Padding': 'true' // Additional security measure
-      }
-    });
-    
-    if (!response.ok) {
-      console.error('Error checking password status:', response.statusText);
-      return false; // If API is down, default to not blocking the password
-    }
-    
-    // Check if our hash suffix is in the response
-    const text = await response.text();
-    const lines = text.split('\n');
-    
-    for (const line of lines) {
-      const parts = line.split(':');
-      if (parts[0] === suffix) {
-        const count = parseInt(parts[1], 10);
-        return count > 0; // Password has been leaked
-      }
-    }
-    
-    return false; // Hash not found, password not leaked
-  } catch (error) {
-    console.error('Error checking password leak status:', error);
-    return false; // On error, default to not blocking the password
-  }
-}
+// Google OAuth client ID from provided credentials
+const GOOGLE_CLIENT_ID = '414810963757-5mj2kdpbda0gncbtsc33q7k7a1fph83e.apps.googleusercontent.com';
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -102,11 +58,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     getSession();
 
     try {
-      // Set up auth listener first, then check for session
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         (_event, session) => {
           setSession(session);
           setUser(session?.user || null);
+          setIsLoading(false);
           setConnectionError(false);
         }
       );
@@ -126,30 +82,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Apply more strict input validation
-      if (!email || !password || !fullName) {
-        throw new Error("All fields are required");
-      }
-      
-      if (password.length < 8) {
-        throw new Error("Password must be at least 8 characters long");
-      }
-      
-      // Check if password has been leaked
-      const isLeaked = await isPasswordLeaked(password);
-      if (isLeaked) {
-        throw new Error("This password appears in data breaches and isn't safe to use. Please choose a different password.");
-      }
-      
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
-          },
-          // Add CSRF protection
-          captchaToken: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || undefined
+          }
         }
       });
 
@@ -178,21 +117,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Apply more strict input validation
-      if (!email || !password) {
-        throw new Error("Email and password are required");
-      }
-      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        // Rate limit error handling
-        if (error.message.includes('rate limit')) {
-          throw new Error("Too many login attempts. Please try again later.");
-        }
         throw error;
       }
 
@@ -201,9 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         description: "You have successfully signed in."
       });
       
-      // Use a safe redirect
-      const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
-      navigate(safeRedirect);
+      navigate(redirectTo);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -240,9 +168,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             description: "You have successfully signed in with Google."
           });
           
-          // Use a safe redirect
-          const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
-          navigate(safeRedirect);
+          navigate(redirectTo);
           return;
         } catch (tokenError: any) {
           console.error('Google ID token error:', tokenError);
@@ -274,9 +200,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             description: "You have successfully signed in with Apple."
           });
           
-          // Use a safe redirect
-          const safeRedirect = redirectTo.startsWith('/') ? redirectTo : '/';
-          navigate(safeRedirect);
+          navigate(redirectTo);
           return;
         } catch (tokenError: any) {
           console.error('Apple ID token error:', tokenError);
@@ -295,7 +219,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + encodeURIComponent(redirectTo),
+          redirectTo: window.location.origin + '/auth/callback?redirectTo=' + redirectTo,
           // Only request minimal scopes to improve user experience
           scopes: 'email profile',
         },

@@ -23,40 +23,22 @@ import Terms from "./pages/Terms";
 import CookieSettings from "./pages/CookieSettings";
 import FirstPayingCustomerFinder from "./pages/FirstPayingCustomerFinder";
 
-// Create a new QueryClient instance with better error handling
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      refetchOnWindowFocus: false,
-      // Use meta for error handling which is supported in latest @tanstack/react-query
-      meta: {
-        onError: (error: any) => {
-          console.error('Query error:', error);
-        }
-      }
-    }
-  }
-});
+const queryClient = new QueryClient();
 
 function App() {
-  console.log("App rendering - AuthProvider will be initialized");
-  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <Toaster />
+        <Sonner />
         <Router>
-          {/* Make sure AuthProvider is inside Router but wrapping all routes */}
           <AuthProvider>
-            <Toaster />
-            <Sonner />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/calendly" element={<Calendly />} />
-              <Route path="/contact" element={<Calendly />} />
               <Route path="/waitlist" element={<Waitlist />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/enterprise" element={<EnterpriseContact />} />
