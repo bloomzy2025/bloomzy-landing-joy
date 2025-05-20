@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useLocation } from "react-router-dom";
 import { NavigationLink } from "./NavigationLink";
@@ -71,32 +72,6 @@ export function HeaderNavigation({
             <DropdownMenuItem>
               <Link to="/book-2" className="w-full">
                 Book 2
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      
-      {/* Free Resources Dropdown */}
-      <div className="relative">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-            Free Resources <ChevronDown className="h-5 w-5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-white dark:bg-gray-800">
-            <DropdownMenuItem>
-              <Link to="/time-wasters-audit" className="w-full">
-                Time Wasters Audit
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/maker-manager-quiz" className="w-full">
-                Maker vs Manager Quiz
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Link to="/customer-finder" className="w-full">
-                First Paying Customer Finder
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>

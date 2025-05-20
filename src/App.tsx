@@ -11,13 +11,10 @@ import Calendly from "./pages/Calendly";
 import Waitlist from "./pages/Waitlist";
 import Pricing from "./pages/Pricing";
 import EnterpriseContact from "./pages/EnterpriseContact";
-import MakerManagerQuiz from "./pages/MakerManagerQuiz";
-import TimeWastersAudit from "./pages/TimeWastersAudit";
 import AboutUs from "./pages/AboutUs";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import CookieSettings from "./pages/CookieSettings";
-import FirstPayingCustomerFinder from "./pages/FirstPayingCustomerFinder";
 
 const queryClient = new QueryClient();
 
@@ -35,9 +32,6 @@ function App() {
             <Route path="/waitlist" element={<Waitlist />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/enterprise" element={<EnterpriseContact />} />
-            <Route path="/maker-manager-quiz" element={<MakerManagerQuiz />} />
-            <Route path="/time-wasters-audit" element={<TimeWastersAudit />} />
-            <Route path="/customer-finder" element={<FirstPayingCustomerFinder />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
