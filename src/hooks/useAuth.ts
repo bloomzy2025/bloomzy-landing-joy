@@ -1,7 +1,6 @@
 
-// This is a placeholder for the removed authentication functionality
-// It returns a null user and empty functions to prevent errors in components
-// that still reference the auth hook
+// This is a simplified placeholder that returns a null user and empty functions
+// No authentication is being used in this application
 
 export const useAuth = () => {
   return {
