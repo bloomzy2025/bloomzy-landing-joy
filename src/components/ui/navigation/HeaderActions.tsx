@@ -57,7 +57,7 @@ export function HeaderActions({
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
         <Link 
-          to="/contact"
+          to="/calendly"
           className={cn(
             buttonVariants({ variant: "default", size: isMobile ? "sm" : "lg" }), 
             "text-xl font-bold bg-brand-green hover:bg-brand-green/90 text-white px-8 py-3"

@@ -23,7 +23,14 @@ import Terms from "./pages/Terms";
 import CookieSettings from "./pages/CookieSettings";
 import FirstPayingCustomerFinder from "./pages/FirstPayingCustomerFinder";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false
+    }
+  }
+});
 
 function App() {
   return (
@@ -50,6 +57,7 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/cookie-settings" element={<CookieSettings />} />
+              <Route path="/contact" element={<Calendly />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
