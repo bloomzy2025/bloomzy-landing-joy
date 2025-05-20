@@ -29,9 +29,11 @@ const queryClient = new QueryClient({
     queries: {
       retry: false,
       refetchOnWindowFocus: false,
-      // Add better error handling
-      onError: (error) => {
-        console.error('Query error:', error);
+      // Use meta for error handling which is supported in latest @tanstack/react-query
+      meta: {
+        onError: (error: any) => {
+          console.error('Query error:', error);
+        }
       }
     }
   }
