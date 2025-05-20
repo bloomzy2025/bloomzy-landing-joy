@@ -18,6 +18,53 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Function to check if a password has been leaked
+async function isPasswordLeaked(password: string): Promise<boolean> {
+  try {
+    // Create a SHA-1 hash of the password
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+    
+    // Convert the hash to a hex string
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    // Get the prefix (first 5 chars) and suffix (rest of the hash)
+    const prefix = hashHex.substring(0, 5).toUpperCase();
+    const suffix = hashHex.substring(5).toUpperCase();
+    
+    // Query the HaveIBeenPwned API with only the prefix for k-anonymity
+    const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+      headers: {
+        'Add-Padding': 'true' // Additional security measure
+      }
+    });
+    
+    if (!response.ok) {
+      console.error('Error checking password status:', response.statusText);
+      return false; // If API is down, default to not blocking the password
+    }
+    
+    // Check if our hash suffix is in the response
+    const text = await response.text();
+    const lines = text.split('\n');
+    
+    for (const line of lines) {
+      const parts = line.split(':');
+      if (parts[0] === suffix) {
+        const count = parseInt(parts[1], 10);
+        return count > 0; // Password has been leaked
+      }
+    }
+    
+    return false; // Hash not found, password not leaked
+  } catch (error) {
+    console.error('Error checking password leak status:', error);
+    return false; // On error, default to not blocking the password
+  }
+}
+
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -86,6 +133,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (password.length < 8) {
         throw new Error("Password must be at least 8 characters long");
+      }
+      
+      // Check if password has been leaked
+      const isLeaked = await isPasswordLeaked(password);
+      if (isLeaked) {
+        throw new Error("This password appears in data breaches and isn't safe to use. Please choose a different password.");
       }
       
       const { error } = await supabase.auth.signUp({
