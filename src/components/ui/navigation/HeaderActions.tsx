@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { UserRound } from "lucide-react";
 import AuthButton from "@/components/auth/AuthButton";
+import { useEffect, useState } from "react";
 
 interface HeaderActionsProps {
   isMobile?: boolean;
@@ -15,7 +16,27 @@ interface HeaderActionsProps {
 export function HeaderActions({
   isMobile = false
 }: HeaderActionsProps) {
-  const { user } = useAuth();
+  const [hasAuthProvider, setHasAuthProvider] = useState(true);
+  const [userData, setUserData] = useState<any>(null);
+  
+  // Try to use useAuth but handle the case where AuthProvider isn't available
+  let authData = null;
+  try {
+    authData = useAuth();
+    // If we get here, we have an auth provider
+  } catch (error) {
+    // No auth provider available
+    if (error instanceof Error && error.message.includes("within an AuthProvider")) {
+      console.warn("HeaderActions: useAuth called outside of AuthProvider");
+      if (hasAuthProvider) setHasAuthProvider(false);
+    } else {
+      // Some other error
+      console.error("HeaderActions: Unexpected error using auth:", error);
+    }
+  }
+  
+  // Get user from auth data or local state
+  const user = authData?.user || userData;
 
   // Get user initials from email or full name if available
   const getUserInitials = () => {
@@ -36,7 +57,7 @@ export function HeaderActions({
   
   return (
     <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-4 ml-6'}`}>
-      {!isMobile && (
+      {!isMobile && hasAuthProvider && (
         <>
           {user && (
             <div className="flex items-center gap-3">

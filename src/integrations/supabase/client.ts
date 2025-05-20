@@ -24,12 +24,18 @@ const clientOptions = {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
+    storageKey: 'supabase.auth.token',
   },
   global: {
     headers: {
       // Use generic headers that don't trigger filters
       'X-Client-Info': 'Web Application',
       'User-Agent': 'Mozilla/5.0 WebApp',
+    },
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
     },
   },
 };
@@ -40,3 +46,6 @@ export const supabase = createClient<Database>(
   getKey(),
   clientOptions
 );
+
+// Additional debug info
+console.info("Supabase client initialized with URL:", baseUrl.substring(0, 10) + "...");
